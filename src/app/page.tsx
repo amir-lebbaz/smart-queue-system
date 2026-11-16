@@ -1,13 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { 
   Smartphone, 
   Tv, 
-  Stethoscope, 
-  Scissors, 
-  GraduationCap, 
   Clock, 
   ShieldCheck, 
   Printer, 
@@ -15,7 +11,6 @@ import {
   CheckCircle2, 
   XCircle, 
   ArrowRight, 
-  ExternalLink, 
   Sparkles, 
   Zap, 
   PhoneCall, 
@@ -36,7 +31,9 @@ import {
   Flame,
   Award,
   Volume2,
-  CalendarCheck
+  CalendarCheck,
+  Headphones,
+  CheckCheck
 } from 'lucide-react';
 
 const WHATSAPP_NUMBER = '0666568039';
@@ -88,45 +85,6 @@ const screenshots = [
     description: 'إحصائيات لحظية عن عدد المراجعين ومتوسط وقت كل خدمة وتقييمات الرضا الفورية (😄/😐/🙁)، مع تصدير تقرير كامل لـ Excel بنقرة واحدة.',
     badge: 'باقة المحترفين والنخبة',
     highlights: ['تصدير Excel/CSV بترميز عربي سليم', 'مؤشرات رضا المراجعين الحقيقية', 'حساب سرعة خدمة كل موظف', 'أرشيف كامل للمراجعات اليومية'],
-  },
-];
-
-const demos = [
-  {
-    slug: 'clinic-amal',
-    title: 'عيادة الأمل الطبية',
-    subtitle: 'د. بوعلام - طب عام واستشارات',
-    sector: 'مريض',
-    staff: 'الطبيب',
-    avgMins: 15,
-    icon: Stethoscope,
-    plan: 'باقة المحترفين (Pro)',
-    planColor: 'bg-emerald-950/80 text-emerald-300 border-emerald-700/80',
-    features: ['شاشة تلفاز صالة الانتظار مفعلة', 'تصدير تقارير Excel', 'نداء صوتي عربي'],
-  },
-  {
-    slug: 'barber-elite',
-    title: 'صالون إيليت للحلاقة الرجالية',
-    subtitle: 'حلاقة عصرية وعناية شخصية',
-    sector: 'زبون',
-    staff: 'الحلاق',
-    avgMins: 20,
-    icon: Scissors,
-    plan: 'الباقة الأساسية (Starter)',
-    planColor: 'bg-slateNavy-900 text-slateNavy-300 border-slateNavy-700',
-    features: ['ريموت الحلاق الذكي', 'ملصق QR للطاولة', 'حجز إلكتروني بدون أجهزة'],
-  },
-  {
-    slug: 'univ-g2',
-    title: 'مصلحة الشؤون الطلابية',
-    subtitle: 'مدرج 2 - سحب الكشوفات والشهادات',
-    sector: 'طالب',
-    staff: 'مسؤول الشباك',
-    avgMins: 10,
-    icon: GraduationCap,
-    plan: 'باقة النخبة (Elite VIP)',
-    planColor: 'bg-amber-950/80 text-amber-300 border-amber-700/80',
-    features: ['شاشات متعددة', 'أولوية قصوى ودعم دائم', 'إحصائيات تدفق المراجعين'],
   },
 ];
 
@@ -229,7 +187,6 @@ export default function PromotionalLandingPage() {
             <a href="#showcase" className="hover:text-white transition">معرض الشاشات</a>
             <a href="#how-it-works" className="hover:text-white transition">كيف يعمل</a>
             <a href="#calculator" className="hover:text-white transition">حاسبة التوفير</a>
-            <a href="#demos" className="hover:text-white transition">تجربة حية (Demo)</a>
             <a href="#pricing" className="hover:text-white transition">الباقات والأسعار</a>
             <a href="#faq" className="hover:text-white transition">الأسئلة الشائعة</a>
           </nav>
@@ -288,11 +245,11 @@ export default function PromotionalLandingPage() {
             </a>
 
             <a
-              href="#demos"
+              href="#pricing"
               className="w-full sm:w-auto px-7 py-4 bg-slateNavy-900/90 hover:bg-slateNavy-850 border border-slateNavy-700/80 text-slateNavy-100 text-sm font-bold rounded-2xl transition flex items-center justify-center gap-2 shadow-lg"
             >
-              <Zap className="w-4 h-4 text-amber-400" />
-              <span>تجربة حية فورية للشاشات (Live Demo)</span>
+              <Crown className="w-4 h-4 text-amber-400" />
+              <span>استكشف الباقات والأسعار</span>
             </a>
           </div>
 
@@ -761,85 +718,62 @@ export default function PromotionalLandingPage() {
         </div>
       </section>
 
-      {/* 8. LIVE INTERACTIVE DEMOS */}
-      <section id="demos" className="py-20 px-4 sm:px-6 bg-slateNavy-900/40 border-y border-slateNavy-800/80">
+      {/* 8. OUR GUARANTEE & SERVICE EXCELLENCE */}
+      <section className="py-20 px-4 sm:px-6 bg-slateNavy-900/40 border-y border-slateNavy-800/80">
         <div className="max-w-5xl mx-auto space-y-10">
           <div className="text-center space-y-3">
-            <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">نماذج حية مهيأة بالباقات</span>
-            <h2 className="text-2xl sm:text-4xl font-black text-white">جرّب النظام بنفسك الآن</h2>
+            <span className="text-xs font-black text-emerald-400 uppercase tracking-widest flex items-center justify-center gap-1.5">
+              <ShieldCheck className="w-4 h-4" />
+              <span>معايير الجودة والالتزام</span>
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-white">لماذا يختار الأطباء والمهنيون طابوري الذكي؟</h2>
             <p className="text-xs sm:text-sm text-slateNavy-300 max-w-xl mx-auto">
-              شاهد كيف تعمل الميزات الحقيقية للباقات المختلفة في نماذج العيادة والصالون والمصلحة.
+              نضمن لك انتقالاً سلساً وفورياً لنظام رقمي فاخر بدون أي تعقيد تقني أو شراء عتاد إضافي.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {demos.map((d) => {
-              const Icon = d.icon;
-              return (
-                <div
-                  key={d.slug}
-                  className="bg-slateNavy-900 border border-slateNavy-800 hover:border-slateNavy-700 rounded-3xl p-6 flex flex-col justify-between shadow-2xl transition space-y-5"
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="w-12 h-12 rounded-2xl bg-slateNavy-800 border border-slateNavy-700 flex items-center justify-center text-white shadow">
-                        <Icon className="w-6 h-6" />
-                      </div>
-                      <span className={`text-[10px] px-3 py-1 rounded-full font-bold border ${d.planColor}`}>
-                        {d.plan}
-                      </span>
-                    </div>
+            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 space-y-4 shadow-xl">
+              <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center text-emerald-400">
+                <Zap className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-white">تفعيل فوري في 10 دقائق</h3>
+              <p className="text-xs sm:text-sm text-slateNavy-300 leading-relaxed">
+                بمجرد التواصل معنا عبر واتساب، يتم إنشاء حساب مؤسستك وإرسال ملصق الـ QR الرسمي المصمم بهويتك جاهزاً للطباعة والاستعمال فوراً.
+              </p>
+              <div className="pt-2 text-[11px] text-emerald-400 flex items-center gap-1.5 font-bold">
+                <CheckCheck className="w-4 h-4" />
+                <span>جاهز للعمل في نفس اليوم</span>
+              </div>
+            </div>
 
-                    <div>
-                      <h3 className="text-base font-black text-white">{d.title}</h3>
-                      <p className="text-xs text-slateNavy-400 mt-0.5">{d.subtitle}</p>
-                    </div>
+            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 space-y-4 shadow-xl">
+              <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-center text-amber-400">
+                <Shield className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-white">خصوصية وأمان تام</h3>
+              <p className="text-xs sm:text-sm text-slateNavy-300 leading-relaxed">
+                قاعدة بيانات سحابية مشفرة بالكامل. لوحة تحكمك محمية برمز PIN سري خاص بك، ولا يمكن لأي طرف خارجي الاطلاع على سجلات مراجعيك.
+              </p>
+              <div className="pt-2 text-[11px] text-amber-300 flex items-center gap-1.5 font-bold">
+                <ShieldCheck className="w-4 h-4" />
+                <span>بياناتك ملك لك وحدك 100%</span>
+              </div>
+            </div>
 
-                    <div className="bg-slateNavy-950 p-2.5 rounded-xl border border-slateNavy-800 flex items-center justify-between text-xs text-slateNavy-300">
-                      <span>متوسط وقت الخدمة:</span>
-                      <span className="font-bold text-white">{d.avgMins} دقيقة / {d.sector}</span>
-                    </div>
-
-                    <ul className="space-y-1 pt-1 text-[11px] text-slateNavy-400">
-                      {d.features.map((f, i) => (
-                        <li key={i} className="flex items-center gap-1.5">
-                          <Check className="w-3 h-3 text-emerald-400 shrink-0" />
-                          <span>{f}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="space-y-2 pt-3 border-t border-slateNavy-800">
-                    <Link
-                      href={`/q/${d.slug}`}
-                      target="_blank"
-                      className="w-full py-2.5 px-3 bg-slateNavy-100 hover:bg-white text-slateNavy-950 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 shadow"
-                    >
-                      <Smartphone className="w-3.5 h-3.5" />
-                      <span>تجربة حجز دور (شاشة الزبون)</span>
-                    </Link>
-
-                    <Link
-                      href={`/admin/${d.slug}`}
-                      target="_blank"
-                      className="w-full py-2.5 px-3 bg-slateNavy-800 hover:bg-slateNavy-700 text-slateNavy-100 text-xs font-bold rounded-xl border border-slateNavy-700 transition flex items-center justify-center gap-1.5"
-                    >
-                      <span>لوحة تحكم {d.staff} (PIN: 1234)</span>
-                    </Link>
-
-                    <Link
-                      href={`/display/${d.slug}`}
-                      target="_blank"
-                      className="w-full py-2 px-3 bg-slateNavy-950 hover:bg-slateNavy-900 text-slateNavy-400 hover:text-white text-[11px] font-semibold rounded-xl border border-slateNavy-800 transition flex items-center justify-center gap-1.5"
-                    >
-                      <Tv className="w-3.5 h-3.5" />
-                      <span>شاشة صالة الانتظار للتلفاز</span>
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
+            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 space-y-4 shadow-xl">
+              <div className="w-12 h-12 bg-sky-500/10 border border-sky-500/30 rounded-2xl flex items-center justify-center text-sky-400">
+                <Headphones className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-white">متابعة ودعم مستمر</h3>
+              <p className="text-xs sm:text-sm text-slateNavy-300 leading-relaxed">
+                خط دعم مباشر عبر الواتساب للإجابة عن أي استفسار، وتدريب فريق عملك ومساعدتك على تحقيق أقصى استفادة من كل مزايا النظام.
+              </p>
+              <div className="pt-2 text-[11px] text-sky-300 flex items-center gap-1.5 font-bold">
+                <Phone className="w-4 h-4" />
+                <span>دعم مباشر: {WHATSAPP_NUMBER}</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
