@@ -217,13 +217,34 @@ export function findActiveTicketByPhone(orgSlug: string, phone: string): Ticket 
 }
 
 // Submit 1-tap experience feedback
-export function submitTicketFeedback(ticketId: number, rating: FeedbackRating): boolean {
+export function submitTicketFeedback(
+  identifier: { ticketId?: number; orgSlug?: string; ticketNumber?: number } | number,
+  rating: FeedbackRating
+): boolean {
   const db = getDb();
+  let id: number | undefined;
+
+  if (typeof identifier === 'number') {
+    id = identifier;
+  } else {
+    id = identifier.ticketId;
+    if (!id && identifier.orgSlug && identifier.ticketNumber) {
+      const row = db.prepare(`
+        SELECT id FROM tickets 
+        WHERE org_slug = ? AND ticket_number = ? 
+        ORDER BY id DESC LIMIT 1
+      `).get(identifier.orgSlug, identifier.ticketNumber) as { id: number } | undefined;
+      id = row?.id;
+    }
+  }
+
+  if (!id) return false;
+
   const res = db.prepare(`
     UPDATE tickets 
     SET feedback_rating = ?, feedback_created_at = ? 
     WHERE id = ?
-  `).run(rating, Date.now(), ticketId);
+  `).run(rating, Date.now(), id);
   return Number(res.changes) > 0;
 }
 
@@ -405,7 +426,7 @@ export function resetDailyQueue(orgSlug: string): Organization {
 }
 
 // Get full queue state for admin or customer
-export function getQueueState(orgSlug: string): QueueState | null {
+export function getQueueState(orgSlug: string, ticketNumber?: number): QueueState | null {
   const db = getDb();
   const organization = getOrganization(orgSlug);
   if (!organization) return null;
@@ -435,6 +456,18 @@ export function getQueueState(orgSlug: string): QueueState | null {
     WHERE org_slug = ? AND status = 'completed'
   `).get(orgSlug) as { count: number } | undefined;
 
+  let myTicketStatus: any = null;
+  if (ticketNumber) {
+    const t = db.prepare(`
+      SELECT status FROM tickets 
+      WHERE org_slug = ? AND ticket_number = ? 
+      ORDER BY id DESC LIMIT 1
+    `).get(orgSlug, ticketNumber) as { status: string } | undefined;
+    if (t) {
+      myTicketStatus = t.status;
+    }
+  }
+
   const stats = getDailyStats(orgSlug);
 
   return {
@@ -445,6 +478,7 @@ export function getQueueState(orgSlug: string): QueueState | null {
     completedCount: completedCountRow ? Number(completedCountRow.count) : 0,
     totalWaiting: waitingTickets.length,
     stats,
+    myTicketStatus,
   };
 }
 

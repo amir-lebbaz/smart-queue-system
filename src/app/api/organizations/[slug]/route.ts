@@ -7,7 +7,9 @@ export async function GET(
 ) {
   try {
     const { slug } = await params;
-    const queueState = getQueueState(slug);
+    const { searchParams } = new URL(req.url);
+    const ticketParam = searchParams.get('ticketNumber') || searchParams.get('myTicket');
+    const queueState = getQueueState(slug, ticketParam ? Number(ticketParam) : undefined);
 
     if (!queueState) {
       return NextResponse.json({ success: false, error: 'Organization not found' }, { status: 404 });

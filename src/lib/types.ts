@@ -52,4 +52,5 @@ export interface QueueState {
   completedCount: number;
   totalWaiting: number;
   stats?: DailyStats;
+  myTicketStatus?: TicketStatus | null;
 }

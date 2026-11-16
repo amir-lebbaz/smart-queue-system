@@ -22,10 +22,7 @@ import {
   Bell,
   Search,
   AlertTriangle,
-  Smile,
-  Meh,
-  Frown,
-  Smartphone,
+  RotateCcw,
   Sparkles
 } from 'lucide-react';
 import { QueueState, FeedbackRating } from '@/lib/types';
@@ -81,6 +78,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   const [alertTriggered, setAlertTriggered] = useState(false);
   const [earlyProximityAlertTriggered, setEarlyProximityAlertTriggered] = useState(false);
   const [calledSpoken, setCalledSpoken] = useState(false);
+  const [completionNotified, setCompletionNotified] = useState(false);
   const [copied, setCopied] = useState(false);
 
   // Notifications & Wake Lock state
@@ -130,7 +128,8 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   // Fetch queue state from server
   const fetchState = async () => {
     try {
-      const res = await fetch(`/api/organizations/${slug}`);
+      const ticketParam = myTicket?.ticketNumber ? `?ticketNumber=${myTicket.ticketNumber}` : '';
+      const res = await fetch(`/api/organizations/${slug}${ticketParam}`);
       if (!res.ok) {
         if (res.status === 404) {
           setError('المؤسسة غير موجودة');
@@ -151,16 +150,16 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
     }
   };
 
-  // Poll state every 3.5s when online
+  // Poll state every 3s when online
   useEffect(() => {
     fetchState();
     const interval = setInterval(() => {
       if (navigator.onLine) {
         fetchState();
       }
-    }, 3500);
+    }, 3000);
     return () => clearInterval(interval);
-  }, [slug]);
+  }, [slug, myTicket?.ticketNumber]);
 
   // Autonomous Countdown Timer (works completely offline)
   useEffect(() => {
@@ -196,23 +195,31 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   let isCompletedForMe = false;
   let livePeopleAhead = 0;
 
-  if (myTicket && activeCurrent) {
-    if (activeCurrent.ticket_number === myTicket.ticketNumber) {
-      if (activeCurrent.status === 'called') {
-        isMyTurnCalled = true;
-      } else if (activeCurrent.status === 'serving') {
-        isMyTurnInside = true;
+  if (myTicket) {
+    if (queueState?.myTicketStatus === 'completed') {
+      isCompletedForMe = true;
+    } else if (activeCurrent) {
+      if (activeCurrent.ticket_number === myTicket.ticketNumber) {
+        if (activeCurrent.status === 'called') {
+          isMyTurnCalled = true;
+        } else if (activeCurrent.status === 'serving') {
+          isMyTurnInside = true;
+        }
+      } else if (activeCurrent.ticket_number > myTicket.ticketNumber) {
+        isCompletedForMe = true;
+      } else {
+        livePeopleAhead = myTicket.ticketNumber - activeCurrent.ticket_number;
       }
-    } else if (activeCurrent.ticket_number > myTicket.ticketNumber) {
-      isCompletedForMe = true;
-    } else {
-      livePeopleAhead = myTicket.ticketNumber - activeCurrent.ticket_number;
-    }
-  } else if (myTicket && org) {
-    if (org.current_ticket_number > myTicket.ticketNumber) {
-      isCompletedForMe = true;
-    } else if (org.current_ticket_number > 0) {
-      livePeopleAhead = Math.max(0, myTicket.ticketNumber - org.current_ticket_number);
+    } else if (org) {
+      const isInWaiting = queueState?.waitingTickets?.some(t => t.ticket_number === myTicket.ticketNumber);
+      const isInHeld = queueState?.heldTickets?.some(t => t.ticket_number === myTicket.ticketNumber);
+      if (!isInWaiting && !isInHeld && org.last_issued_number >= myTicket.ticketNumber && queueState?.totalWaiting !== undefined) {
+        isCompletedForMe = true;
+      } else if (org.current_ticket_number > myTicket.ticketNumber) {
+        isCompletedForMe = true;
+      } else if (org.current_ticket_number > 0) {
+        livePeopleAhead = Math.max(0, myTicket.ticketNumber - org.current_ticket_number);
+      }
     }
   }
 
@@ -231,7 +238,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
 
   // Field Feature: Early Proximity Warning (when at most 2 people ahead)
   useEffect(() => {
-    if (myTicket && livePeopleAhead <= 2 && livePeopleAhead > 0 && !earlyProximityAlertTriggered && !isMyTurnCalled && !isMyTurnInside) {
+    if (myTicket && livePeopleAhead <= 2 && livePeopleAhead > 0 && !earlyProximityAlertTriggered && !isMyTurnCalled && !isMyTurnInside && !isCompletedForMe) {
       playQueueChime();
       sendBrowserNotification(
         `⚠️ تنبيه عاجل: اقترب دورك (#${myTicket.ticketNumber})`,
@@ -239,7 +246,21 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
       );
       setEarlyProximityAlertTriggered(true);
     }
-  }, [livePeopleAhead, myTicket, earlyProximityAlertTriggered, isMyTurnCalled, isMyTurnInside]);
+  }, [livePeopleAhead, myTicket, earlyProximityAlertTriggered, isMyTurnCalled, isMyTurnInside, isCompletedForMe]);
+
+  // Automatic Queue Exit & Completion Chime
+  useEffect(() => {
+    if (isCompletedForMe && !completionNotified) {
+      playQueueChime();
+      speakArabicAnnouncement(`شكراً لك، اكتملت خدمتك وتفضل بمغادرة القاعة. نرجو تقييم تجربتك.`);
+      sendBrowserNotification(
+        '✓ انتهت خدمتك بنجاح',
+        'شكراً لزيارتك! لقد خرجت من الطابور تلقائياً، يمكنك تقييم الخدمة بنقرة واحدة.'
+      );
+      releaseScreenWakeLock();
+      setCompletionNotified(true);
+    }
+  }, [isCompletedForMe, completionNotified]);
 
   // Request notifications and screen wake lock
   const handleEnableAlertsAndWakeLock = async () => {
@@ -305,6 +326,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
         setAlertTriggered(false);
         setEarlyProximityAlertTriggered(false);
         setCalledSpoken(false);
+        setCompletionNotified(false);
         setFeedbackSubmitted(false);
         playQueueChime();
 
@@ -353,6 +375,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
         setRecoveryPhone('');
         setShowRecovery(false);
         setEarlyProximityAlertTriggered(false);
+        setCompletionNotified(false);
         playQueueChime();
         fetchState();
       } else {
@@ -367,17 +390,15 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
 
   // Handle 1-Tap Post-Service Feedback
   const handleFeedback = async (rating: FeedbackRating) => {
-    if (!myTicket?.ticketId) {
-      setFeedbackSubmitted(true);
-      return;
-    }
     try {
       await fetch('/api/tickets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'feedback',
-          ticketId: myTicket.ticketId,
+          ticketId: myTicket?.ticketId,
+          orgSlug: slug,
+          ticketNumber: myTicket?.ticketNumber,
           rating,
         }),
       });
@@ -386,6 +407,20 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
     } catch {
       setFeedbackSubmitted(true);
     }
+  };
+
+  // Reset to initial booking screen once completed (Customer is already out of queue)
+  const handleResetForNewBooking = () => {
+    localStorage.removeItem(`smart_queue_ticket_${slug}`);
+    localStorage.removeItem(`smart_queue_feedback_${slug}`);
+    setMyTicket(null);
+    setRemainingSeconds(null);
+    setCalledSpoken(false);
+    setCompletionNotified(false);
+    setEarlyProximityAlertTriggered(false);
+    setFeedbackSubmitted(false);
+    releaseScreenWakeLock();
+    fetchState();
   };
 
   // Share Ticket Link
@@ -405,16 +440,10 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
     }
   };
 
-  // Leave queue
+  // Leave queue manually while still in progress
   const handleLeaveQueue = () => {
     if (confirm('هل أنت متأكد من مغادرة الطابور وإلغاء متابعة التذكرة؟')) {
-      localStorage.removeItem(`smart_queue_ticket_${slug}`);
-      localStorage.removeItem(`smart_queue_feedback_${slug}`);
-      setMyTicket(null);
-      setRemainingSeconds(null);
-      setCalledSpoken(false);
-      setEarlyProximityAlertTriggered(false);
-      releaseScreenWakeLock();
+      handleResetForNewBooking();
     }
   };
 
@@ -496,8 +525,94 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
         )}
       </header>
 
-      {/* Screen 1: Active Ticket Card */}
-      {myTicket ? (
+      {/* CASE 1: SERVICE COMPLETED & CUSTOMER EXITED AUTOMATICALLY (شاشة الخروج التلقائي والتقييم فقط) */}
+      {isCompletedForMe && myTicket ? (
+        <div className="space-y-4 my-auto">
+          {/* Main Completion Card */}
+          <div className="bg-slateNavy-900 border-2 border-emerald-500/60 rounded-3xl p-6 text-center shadow-2xl space-y-4">
+            <div className="w-16 h-16 rounded-3xl bg-emerald-950/80 border-2 border-emerald-500/80 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-900/30">
+              <CheckCircle2 className="w-9 h-9" />
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold px-3 py-1 bg-emerald-950 border border-emerald-500/40 text-emerald-300 rounded-full">
+                تم خروجك بنجاح من الطابور
+              </span>
+              <h2 className="text-xl font-black text-white pt-2">انتهت خدمتك بنجاح</h2>
+              <p className="text-xs text-slateNavy-300 leading-relaxed">
+                شكراً لزيارتك لـ <strong>{org?.name || myTicket.orgName}</strong>. لقد خرجت من قائمة الانتظار تلقائياً.
+              </p>
+            </div>
+
+            {/* Ticket details summary */}
+            <div className="p-3 bg-slateNavy-950 border border-slateNavy-800 rounded-2xl flex items-center justify-around">
+              <div>
+                <p className="text-[10px] text-slateNavy-400">تذكرتك</p>
+                <p className="text-2xl font-black text-slateNavy-100">#{myTicket.ticketNumber}</p>
+              </div>
+              <div className="h-8 border-r border-slateNavy-800" />
+              <div>
+                <p className="text-[10px] text-slateNavy-400">الحالة</p>
+                <p className="text-xs font-bold text-emerald-400">مكتملة ومغلقة ✓</p>
+              </div>
+            </div>
+
+            {/* THE ONLY ACTIVE TASK: 1-Tap Experience Feedback */}
+            <div className="pt-2 border-t border-slateNavy-800/80 space-y-3">
+              {feedbackSubmitted ? (
+                <div className="py-3 bg-slateNavy-950 border border-slateNavy-800 rounded-2xl space-y-1">
+                  <span className="text-2xl">✨</span>
+                  <h4 className="text-xs font-bold text-slateNavy-100">تم تسجيل تقييمك، شكراً جزيلاً!</h4>
+                  <p className="text-[11px] text-slateNavy-400">رأيك يساهم في تحسين جودة وسرعة الخدمة دائماً.</p>
+                </div>
+              ) : (
+                <>
+                  <div>
+                    <h4 className="text-xs font-bold text-slateNavy-100">كيف كانت سرعة وجودة الخدمة اليوم؟</h4>
+                    <p className="text-[10px] text-slateNavy-400 mt-0.5">تقييمك مهم جداً لـ {staffTitle} (نقرة واحدة فقط)</p>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      onClick={() => handleFeedback('great')}
+                      className="p-3 bg-slateNavy-950 hover:bg-slateNavy-800 border border-slateNavy-800 hover:border-emerald-500/50 rounded-2xl flex flex-col items-center gap-1 transition active:scale-95 group"
+                    >
+                      <span className="text-2xl group-hover:scale-110 transition">😄</span>
+                      <span className="text-xs font-bold text-slateNavy-100">ممتازة</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleFeedback('okay')}
+                      className="p-3 bg-slateNavy-950 hover:bg-slateNavy-800 border border-slateNavy-800 hover:border-slateNavy-700 rounded-2xl flex flex-col items-center gap-1 transition active:scale-95 group"
+                    >
+                      <span className="text-2xl group-hover:scale-110 transition">😐</span>
+                      <span className="text-xs font-bold text-slateNavy-100">عادية</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleFeedback('bad')}
+                      className="p-3 bg-slateNavy-950 hover:bg-slateNavy-800 border border-slateNavy-800 hover:border-rose-500/50 rounded-2xl flex flex-col items-center gap-1 transition active:scale-95 group"
+                    >
+                      <span className="text-2xl group-hover:scale-110 transition">🙁</span>
+                      <span className="text-xs font-bold text-slateNavy-100">تحتاج تحسين</span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Clean Action: Book a new ticket if customer needs another turn */}
+          <button
+            onClick={handleResetForNewBooking}
+            className="w-full py-3.5 px-4 bg-slateNavy-900 hover:bg-slateNavy-800 border border-slateNavy-800 hover:border-slateNavy-700 text-slateNavy-300 hover:text-white rounded-2xl text-xs font-bold transition flex items-center justify-center gap-2"
+          >
+            <RotateCcw className="w-4 h-4 text-slateNavy-400" />
+            <span>حجز دور جديد في الطابور</span>
+          </button>
+        </div>
+      ) : myTicket ? (
+        /* CASE 2: Active Waiting Ticket in Progress */
         <div className="space-y-3.5 my-auto">
           {/* Main Card */}
           <div className={`relative bg-slateNavy-900 border rounded-3xl p-6 shadow-2xl transition-all ${
@@ -565,15 +680,8 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
                 <h3 className="text-base font-bold text-slateNavy-100">أنت في الداخل حالياً</h3>
                 <p className="text-xs text-slateNavy-400">جاري تقديم الخدمة لك لدى {staffTitle}</p>
               </div>
-            ) : isCompletedForMe ? (
-              /* PRESENCE STATE 3: COMPLETED */
-              <div className="bg-slateNavy-800/80 border border-slateNavy-800 rounded-2xl p-4 text-center space-y-1">
-                <CheckCircle2 className="w-8 h-8 text-slateNavy-400 mx-auto mb-1" />
-                <h3 className="text-base font-bold text-slateNavy-100">اكتملت هذه الخدمة</h3>
-                <p className="text-xs text-slateNavy-400">شكراً لزيارتك وتعاملك معنا</p>
-              </div>
             ) : (
-              /* PRESENCE STATE 4: WAITING */
+              /* PRESENCE STATE 3: WAITING */
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-slateNavy-950 border border-slateNavy-800 rounded-2xl p-3 text-center">
                   <p className="text-[10px] text-slateNavy-400 mb-0.5">الرقم المستدعى</p>
@@ -592,7 +700,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
             )}
 
             {/* Circular Countdown Progress Ring & Clock Estimation */}
-            {!isCompletedForMe && !isMyTurnInside && !isMyTurnCalled && (
+            {!isMyTurnInside && !isMyTurnCalled && (
               <div className="mt-4 bg-slateNavy-950 border border-slateNavy-800 rounded-2xl p-3.5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-slateNavy-800 text-slateNavy-100 flex items-center justify-center">
@@ -660,77 +768,31 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
           )}
 
           {/* Screen Wake Lock & Notification Toggle Widget */}
-          {!isCompletedForMe && (
-            <div className="flex items-center justify-between p-3 bg-slateNavy-900 border border-slateNavy-800 rounded-2xl">
-              <div className="flex items-center gap-2.5">
-                <Bell className={`w-4 h-4 ${notificationsAllowed ? 'text-emerald-400' : 'text-slateNavy-400'}`} />
-                <div>
-                  <p className="text-xs font-bold text-slateNavy-100">
-                    {notificationsAllowed && wakeLockActive
-                      ? 'التنبيهات وتثبيت الشاشة نشطة'
-                      : 'تنبيهات عند إغلاق الشاشة'}
-                  </p>
-                  <p className="text-[10px] text-slateNavy-400">
-                    {notificationsAllowed
-                      ? 'ستصلك إشعارات ورنة حتى لو وضعت الهاتف في جيبك'
-                      : 'فعّل الإشعارات لمنع قفل الشاشة وفوات الدور'}
-                  </p>
-                </div>
+          <div className="flex items-center justify-between p-3 bg-slateNavy-900 border border-slateNavy-800 rounded-2xl">
+            <div className="flex items-center gap-2.5">
+              <Bell className={`w-4 h-4 ${notificationsAllowed ? 'text-emerald-400' : 'text-slateNavy-400'}`} />
+              <div>
+                <p className="text-xs font-bold text-slateNavy-100">
+                  {notificationsAllowed && wakeLockActive
+                    ? 'التنبيهات وتثبيت الشاشة نشطة'
+                    : 'تنبيهات عند إغلاق الشاشة'}
+                </p>
+                <p className="text-[10px] text-slateNavy-400">
+                  {notificationsAllowed
+                    ? 'ستصلك إشعارات ورنة حتى لو وضعت الهاتف في جيبك'
+                    : 'فعّل الإشعارات لمنع قفل الشاشة وفوات الدور'}
+                </p>
               </div>
-              {!notificationsAllowed && (
-                <button
-                  onClick={handleEnableAlertsAndWakeLock}
-                  className="px-3 py-1.5 bg-slateNavy-800 hover:bg-slateNavy-700 border border-slateNavy-700 text-slateNavy-100 text-[11px] font-bold rounded-xl transition"
-                >
-                  تفعيل الآن
-                </button>
-              )}
             </div>
-          )}
-
-          {/* 1-Tap Post-Service Feedback Rating (When Completed) */}
-          {isCompletedForMe && (
-            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-2xl p-4 text-center space-y-3">
-              {feedbackSubmitted ? (
-                <div className="py-2 space-y-1">
-                  <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
-                  <h3 className="text-sm font-bold text-slateNavy-100">شكراً جزيلاً لتقييمك!</h3>
-                  <p className="text-xs text-slateNavy-400">ملاحظتك تساعدنا على تحسين سرعة وجودة الخدمة دائماً.</p>
-                </div>
-              ) : (
-                <>
-                  <p className="text-xs text-slateNavy-300 font-semibold">
-                    كيف كانت تجربتك اليوم في خدمة {sectorLabel}؟
-                  </p>
-                  <div className="grid grid-cols-3 gap-2">
-                    <button
-                      onClick={() => handleFeedback('great')}
-                      className="p-3 bg-slateNavy-950 hover:bg-slateNavy-800 border border-slateNavy-800 rounded-xl flex flex-col items-center gap-1 transition active:scale-95"
-                    >
-                      <span className="text-2xl">😄</span>
-                      <span className="text-xs font-bold text-slateNavy-100">ممتازة</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleFeedback('okay')}
-                      className="p-3 bg-slateNavy-950 hover:bg-slateNavy-800 border border-slateNavy-800 rounded-xl flex flex-col items-center gap-1 transition active:scale-95"
-                    >
-                      <span className="text-2xl">😐</span>
-                      <span className="text-xs font-bold text-slateNavy-100">عادية</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleFeedback('bad')}
-                      className="p-3 bg-slateNavy-950 hover:bg-slateNavy-800 border border-slateNavy-800 rounded-xl flex flex-col items-center gap-1 transition active:scale-95"
-                    >
-                      <span className="text-2xl">🙁</span>
-                      <span className="text-xs font-bold text-slateNavy-100">تحتاج تحسين</span>
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
+            {!notificationsAllowed && (
+              <button
+                onClick={handleEnableAlertsAndWakeLock}
+                className="px-3 py-1.5 bg-slateNavy-800 hover:bg-slateNavy-700 border border-slateNavy-700 text-slateNavy-100 text-[11px] font-bold rounded-xl transition"
+              >
+                تفعيل الآن
+              </button>
+            )}
+          </div>
 
           {/* Reassurance Banner */}
           <div className="p-3.5 bg-slateNavy-900 border border-slateNavy-800 rounded-2xl flex items-start gap-3">
@@ -758,7 +820,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
           </div>
         </div>
       ) : (
-        /* Screen 2: Booking Form */
+        /* CASE 3: Booking Form (No Active Ticket) */
         <div className="space-y-4 my-auto">
           {/* Status Metrics */}
           <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-2xl p-4">

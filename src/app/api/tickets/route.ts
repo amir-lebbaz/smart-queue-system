@@ -39,11 +39,18 @@ export async function POST(req: Request) {
 
     // Feedback submission
     if (body.action === 'feedback') {
-      const { ticketId, rating } = body;
-      if (!ticketId || !rating) {
+      const { ticketId, orgSlug, ticketNumber, rating } = body;
+      if ((!ticketId && (!orgSlug || !ticketNumber)) || !rating) {
         return NextResponse.json({ success: false, error: 'بيانات التقييم غير مكتملة' }, { status: 400 });
       }
-      const ok = submitTicketFeedback(Number(ticketId), rating);
+      const ok = submitTicketFeedback(
+        {
+          ticketId: ticketId ? Number(ticketId) : undefined,
+          orgSlug,
+          ticketNumber: ticketNumber ? Number(ticketNumber) : undefined,
+        },
+        rating
+      );
       return NextResponse.json({ success: ok });
     }
 
