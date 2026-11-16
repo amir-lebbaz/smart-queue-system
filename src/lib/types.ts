@@ -1,5 +1,5 @@
 export type TicketType = 'qr' | 'walkin';
-export type TicketStatus = 'waiting' | 'serving' | 'held' | 'completed' | 'cancelled';
+export type TicketStatus = 'waiting' | 'called' | 'serving' | 'held' | 'completed' | 'cancelled';
 
 export interface Organization {
   id: number;
@@ -38,7 +38,7 @@ export interface DailyStats {
 
 export interface QueueState {
   organization: Organization;
-  currentTicket: Ticket | null;
+  currentTicket: Ticket | null; // Currently called or serving
   heldTickets: Ticket[];
   waitingTickets: Ticket[];
   completedCount: number;
