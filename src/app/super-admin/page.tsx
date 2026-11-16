@@ -8,14 +8,43 @@ import {
   ExternalLink, 
   CheckCircle2, 
   XCircle, 
-  ArrowRight
+  ArrowRight,
+  Lock,
+  ShieldAlert
 } from 'lucide-react';
 import { Organization } from '@/lib/types';
 
 export default function SuperAdminPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [masterPin, setMasterPin] = useState('');
+  const [pinError, setPinError] = useState(false);
+
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedAuth = sessionStorage.getItem('queue_super_admin_auth');
+      if (savedAuth === 'true') {
+        setIsAuthenticated(true);
+      }
+    }
+  }, []);
+
+  const handleMasterLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Authorized Master PINs: 8039 (last 4 digits of phone 0666568039) or 0666568039 or 2026
+    const clean = masterPin.trim();
+    if (clean === '8039' || clean === '0666568039' || clean === '2026') {
+      setIsAuthenticated(true);
+      setPinError(false);
+      sessionStorage.setItem('queue_super_admin_auth', 'true');
+    } else {
+      setPinError(true);
+      setMasterPin('');
+    }
+  };
 
   // Form state
   const [name, setName] = useState('');
@@ -92,6 +121,48 @@ export default function SuperAdminPage() {
       alert('فشل في تعديل حالة الاشتراك');
     }
   };
+
+  if (!isAuthenticated) {
+    return (
+      <main className="min-h-screen bg-slateNavy-950 text-slateNavy-100 flex items-center justify-center p-4" dir="rtl">
+        <div className="w-full max-w-sm bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 shadow-2xl text-center space-y-4">
+          <div className="w-14 h-14 bg-slateNavy-800 text-slateNavy-100 rounded-2xl flex items-center justify-center mx-auto border border-slateNavy-700">
+            <Lock className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-base font-black text-white">منطقة المالك المحمية</h1>
+            <p className="text-xs text-slateNavy-400 mt-1">هذه الصفحة خاصة بمالك النظام فقط لإدارة وتفعيل المؤسسات</p>
+          </div>
+
+          <form onSubmit={handleMasterLogin} className="space-y-3">
+            <input
+              type="password"
+              required
+              placeholder="أدخل رمز المالك السري..."
+              value={masterPin}
+              onChange={(e) => setMasterPin(e.target.value)}
+              className="w-full bg-slateNavy-950 border border-slateNavy-800 rounded-xl px-3 py-2.5 text-center text-sm font-bold text-white focus:outline-none focus:border-slateNavy-400"
+            />
+            {pinError && (
+              <p className="text-xs text-rose-400 font-medium">الرمز السري غير صحيح! الدخول محمي بالكامل.</p>
+            )}
+            <button
+              type="submit"
+              className="w-full py-2.5 bg-slateNavy-100 hover:bg-white text-slateNavy-950 font-bold rounded-xl text-xs transition"
+            >
+              دخول المشرف الرئيسي
+            </button>
+          </form>
+
+          <div className="pt-3 border-t border-slateNavy-800">
+            <Link href="/" className="text-xs text-slateNavy-400 hover:text-white transition">
+              ← العودة للموقع الترويجي الرئيسي
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-slateNavy-950 text-slateNavy-100 p-4 sm:p-8" dir="rtl">
