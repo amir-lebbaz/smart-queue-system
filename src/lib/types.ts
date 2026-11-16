@@ -19,6 +19,9 @@ export interface Organization {
   plan?: SubscriptionPlan;
   billing_cycle?: BillingCycle;
   subscription_expires_at?: string | number | null;
+  contact_phone?: string | null;
+  notes?: string | null;
+  created_at?: number | null;
 }
 
 export interface Ticket {
@@ -58,4 +61,41 @@ export interface QueueState {
   totalWaiting: number;
   stats?: DailyStats;
   myTicketStatus?: TicketStatus | null;
+}
+
+export interface GlobalSystemStats {
+  totalOrgs: number;
+  activeOrgs: number;
+  inactiveOrgs: number;
+  planCounts: {
+    starter: number;
+    pro: number;
+    elite: number;
+  };
+  financials: {
+    estimatedMRR: number; // in DZD
+    estimatedARR: number; // in DZD
+  };
+  tickets: {
+    totalIssued: number;
+    waitingNow: number;
+    completed: number;
+    held: number;
+    satisfactionRate: number;
+  };
+  systemHealth: {
+    cloudConnected: boolean;
+    dbProvider: string;
+    latencyMs: number;
+    checkedAt: number;
+  };
+  recentActivity: Array<{
+    id: number;
+    org_slug: string;
+    ticket_number: number;
+    customer_name: string | null;
+    customer_phone: string;
+    status: TicketStatus;
+    created_at: number;
+  }>;
 }

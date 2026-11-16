@@ -1,12 +1,18 @@
 import { NextResponse } from 'next/server';
-import { getAllOrganizations, createOrganization } from '@/lib/db';
+import { getAllOrganizations, createOrganization, getGlobalSystemStats } from '@/lib/db';
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+    if (searchParams.get('stats') === 'true') {
+      const stats = await getGlobalSystemStats();
+      return NextResponse.json({ success: true, data: stats });
+    }
+
     const orgs = await getAllOrganizations();
     return NextResponse.json({ success: true, data: orgs });
   } catch (error) {
-    console.error('Failed to get organizations:', error);
+    console.error('Failed to get organizations or stats:', error);
     return NextResponse.json({ success: false, error: 'Failed to retrieve organizations' }, { status: 500 });
   }
 }
@@ -14,7 +20,19 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { slug, name, sector_label, staff_title, pin_code, avg_service_mins, plan, billing_cycle } = body;
+    const { 
+      slug, 
+      name, 
+      sector_label, 
+      staff_title, 
+      pin_code, 
+      avg_service_mins, 
+      plan, 
+      billing_cycle,
+      contact_phone,
+      notes,
+      subscription_expires_at
+    } = body;
 
     if (!slug || !name) {
       return NextResponse.json({ success: false, error: 'Slug and Name are required' }, { status: 400 });
@@ -29,6 +47,9 @@ export async function POST(req: Request) {
       avg_service_mins: Number(avg_service_mins) || 15,
       plan: plan || 'pro',
       billing_cycle: billing_cycle || 'monthly',
+      contact_phone,
+      notes,
+      subscription_expires_at,
     });
 
     return NextResponse.json({ success: true, data: org }, { status: 201 });

@@ -1,6 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
 import path from 'path';
-import { Organization, Ticket, QueueState, DailyStats, FeedbackRating, TicketStatus, TicketType, SubscriptionPlan, BillingCycle } from './types';
+import { Organization, Ticket, QueueState, DailyStats, FeedbackRating, TicketStatus, TicketType, SubscriptionPlan, BillingCycle, GlobalSystemStats } from './types';
 
 // Supabase Cloud Configuration (Default shared cluster for instant cross-device synchronization)
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://mtuhuzmyhbemdfsbyhpf.supabase.co";
@@ -130,10 +130,15 @@ export async function createOrganization(data: {
   avg_service_mins: number;
   plan?: SubscriptionPlan;
   billing_cycle?: BillingCycle;
+  contact_phone?: string;
+  notes?: string;
+  subscription_expires_at?: number;
 }): Promise<Organization> {
   const cleanSlug = data.slug.trim().toLowerCase();
   const selectedPlan = data.plan || 'pro';
   const selectedCycle = data.billing_cycle || 'monthly';
+  const now = Date.now();
+  const defaultExpiresAt = data.subscription_expires_at || (selectedCycle === 'yearly' ? now + 365 * 86400 * 1000 : now + 30 * 86400 * 1000);
 
   if (isCloudEnabled) {
     try {
@@ -152,6 +157,10 @@ export async function createOrganization(data: {
           is_active: 1,
           plan: selectedPlan,
           billing_cycle: selectedCycle,
+          subscription_expires_at: defaultExpiresAt,
+          contact_phone: data.contact_phone ? data.contact_phone.trim() : null,
+          notes: data.notes ? data.notes.trim() : null,
+          created_at: now,
         }),
       });
       return rows[0];
@@ -199,14 +208,32 @@ export async function toggleOrganizationActive(slug: string): Promise<Organizati
 
 export async function updateOrganizationSettings(
   slug: string,
-  updates: { avg_service_mins?: number; pin_code?: string; name?: string; plan?: SubscriptionPlan; billing_cycle?: BillingCycle }
+  updates: {
+    avg_service_mins?: number;
+    pin_code?: string;
+    name?: string;
+    sector_label?: string;
+    staff_title?: string;
+    plan?: SubscriptionPlan;
+    billing_cycle?: BillingCycle;
+    subscription_expires_at?: number | null;
+    contact_phone?: string | null;
+    notes?: string | null;
+    is_active?: number;
+  }
 ): Promise<Organization | null> {
-  const patchData: Record<string, string | number> = {};
+  const patchData: Record<string, string | number | null> = {};
   if (typeof updates.avg_service_mins === 'number') patchData.avg_service_mins = updates.avg_service_mins;
   if (updates.pin_code && updates.pin_code.trim()) patchData.pin_code = updates.pin_code.trim();
   if (updates.name && updates.name.trim()) patchData.name = updates.name.trim();
+  if (updates.sector_label && updates.sector_label.trim()) patchData.sector_label = updates.sector_label.trim();
+  if (updates.staff_title && updates.staff_title.trim()) patchData.staff_title = updates.staff_title.trim();
   if (updates.plan) patchData.plan = updates.plan;
   if (updates.billing_cycle) patchData.billing_cycle = updates.billing_cycle;
+  if (typeof updates.subscription_expires_at !== 'undefined') patchData.subscription_expires_at = updates.subscription_expires_at;
+  if (typeof updates.contact_phone !== 'undefined') patchData.contact_phone = updates.contact_phone ? updates.contact_phone.trim() : null;
+  if (typeof updates.notes !== 'undefined') patchData.notes = updates.notes ? updates.notes.trim() : null;
+  if (typeof updates.is_active === 'number') patchData.is_active = updates.is_active;
 
   if (Object.keys(patchData).length === 0) return getOrganization(slug);
 
@@ -233,7 +260,140 @@ export async function updateOrganizationSettings(
   if (patchData.name) {
     db.prepare('UPDATE organizations SET name = ? WHERE slug = ?').run(patchData.name, slug);
   }
+  if (typeof patchData.is_active === 'number') {
+    db.prepare('UPDATE organizations SET is_active = ? WHERE slug = ?').run(patchData.is_active, slug);
+  }
   return getOrganization(slug);
+}
+
+export async function deleteOrganization(slug: string): Promise<boolean> {
+  const cleanSlug = slug.trim().toLowerCase();
+  if (isCloudEnabled) {
+    try {
+      await supaFetch(`queue_tickets?org_slug=eq.${encodeURIComponent(cleanSlug)}`, { method: 'DELETE' });
+      await supaFetch(`queue_organizations?slug=eq.${encodeURIComponent(cleanSlug)}`, { method: 'DELETE' });
+      return true;
+    } catch (e) {
+      console.warn('Cloud deleteOrganization error', e);
+    }
+  }
+  const db = getSqliteDb();
+  db.prepare('DELETE FROM tickets WHERE org_slug = ?').run(cleanSlug);
+  db.prepare('DELETE FROM organizations WHERE slug = ?').run(cleanSlug);
+  return true;
+}
+
+export async function getGlobalSystemStats(): Promise<GlobalSystemStats> {
+  const startPing = Date.now();
+  let orgs: Organization[] = [];
+  let allTickets: Ticket[] = [];
+  let cloudWorking = false;
+
+  if (isCloudEnabled) {
+    try {
+      const [orgRows, ticketRows] = await Promise.all([
+        supaFetch<Organization[]>('queue_organizations?order=id.desc'),
+        supaFetch<Ticket[]>('queue_tickets?order=created_at.desc&limit=150'),
+      ]);
+      orgs = orgRows || [];
+      allTickets = ticketRows || [];
+      cloudWorking = true;
+    } catch (e) {
+      console.warn('Cloud getGlobalSystemStats error, falling back to SQLite', e);
+    }
+  }
+
+  if (!cloudWorking) {
+    const db = getSqliteDb();
+    orgs = db.prepare('SELECT * FROM organizations ORDER BY id DESC').all() as unknown as Organization[];
+    allTickets = db.prepare('SELECT * FROM tickets ORDER BY created_at DESC LIMIT 150').all() as unknown as Ticket[];
+  }
+
+  const latencyMs = Date.now() - startPing;
+
+  // Plan distribution & financials
+  let starterCount = 0;
+  let proCount = 0;
+  let eliteCount = 0;
+  let activeCount = 0;
+  let inactiveCount = 0;
+
+  for (const org of orgs) {
+    if (org.is_active === 1) activeCount++;
+    else inactiveCount++;
+
+    const p = org.plan || 'pro';
+    if (p === 'starter') starterCount++;
+    else if (p === 'elite') eliteCount++;
+    else proCount++;
+  }
+
+  // Monthly revenue calculation:
+  // Starter = 1,500 DZD, Pro = 2,500 DZD, Elite = 3,000 DZD
+  const estimatedMRR = (starterCount * 1500) + (proCount * 2500) + (eliteCount * 3000);
+  const estimatedARR = estimatedMRR * 12;
+
+  // Ticket stats
+  let totalIssued = 0;
+  let waitingNow = 0;
+  let completed = 0;
+  let held = 0;
+  let greatRatings = 0;
+  let ratedTotal = 0;
+
+  for (const t of allTickets) {
+    totalIssued++;
+    if (t.status === 'waiting') waitingNow++;
+    else if (t.status === 'completed') completed++;
+    else if (t.status === 'held') held++;
+
+    if (t.feedback_rating) {
+      ratedTotal++;
+      if (t.feedback_rating === 'great' || t.feedback_rating === 'okay') greatRatings++;
+    }
+  }
+
+  const satisfactionRate = ratedTotal > 0 ? Math.round((greatRatings / ratedTotal) * 100) : 98;
+
+  // Recent 10 activities
+  const recentActivity = allTickets.slice(0, 10).map((t) => ({
+    id: t.id,
+    org_slug: t.org_slug,
+    ticket_number: t.ticket_number,
+    customer_name: t.customer_name,
+    customer_phone: t.customer_phone,
+    status: t.status,
+    created_at: t.created_at,
+  }));
+
+  return {
+    totalOrgs: orgs.length,
+    activeOrgs: activeCount,
+    inactiveOrgs: inactiveCount,
+    planCounts: {
+      starter: starterCount,
+      pro: proCount,
+      elite: eliteCount,
+    },
+    financials: {
+      estimatedMRR,
+      estimatedARR,
+    },
+    tickets: {
+      totalIssued: orgs.reduce((acc, o) => acc + (o.last_issued_number || 0), 0) || totalIssued,
+      waitingNow,
+      completed,
+      held,
+      satisfactionRate,
+    },
+    systemHealth: {
+      cloudConnected: cloudWorking,
+      dbProvider: cloudWorking ? 'Supabase Cloud (PostgreSQL 17)' : 'Local SQLite (Fallback)',
+      latencyMs,
+      checkedAt: Date.now(),
+    },
+    recentActivity,
+  };
 }
 
 export async function updateAvgServiceMins(slug: string, mins: number): Promise<Organization | null> {
