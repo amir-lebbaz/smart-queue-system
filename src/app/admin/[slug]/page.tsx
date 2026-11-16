@@ -28,7 +28,9 @@ import {
   LogIn,
   LogOut,
   UserCheck,
-  Tv
+  Tv,
+  Download,
+  Key
 } from 'lucide-react';
 import { QueueState, Ticket } from '@/lib/types';
 import { playQueueChime } from '@/lib/audio';
@@ -59,6 +61,8 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
 
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [newAvgMins, setNewAvgMins] = useState<number>(15);
+  const [newPin, setNewPin] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
 
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
@@ -342,21 +346,102 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
     }
   };
 
-  // Action: Update Avg Service Mins
+  // Action: Update Settings (Speed & PIN)
   const handleSaveSettings = async () => {
     try {
+      const payload: { avg_service_mins: number; pin_code?: string } = {
+        avg_service_mins: Number(newAvgMins),
+      };
+
+      if (newPin.trim()) {
+        if (newPin.trim().length < 4) {
+          alert('الرمز السري الجديد يجب ألا يقل عن 4 أرقام/حروف');
+          return;
+        }
+        payload.pin_code = newPin.trim();
+      }
+
       const res = await fetch(`/api/organizations/${slug}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ avg_service_mins: Number(newAvgMins) }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (data.success) {
+        alert('تم حفظ الإعدادات بنجاح!');
+        if (newPin.trim()) {
+          setPinInput(newPin.trim());
+        }
+        setNewPin('');
         setShowSettingsModal(false);
         fetchState();
+      } else {
+        alert(data.error || 'تعذر تحديث الإعدادات');
       }
     } catch {
       alert('تعذر تحديث الإعدادات');
+    }
+  };
+
+  // Action: Export Daily Report to Excel / CSV
+  const handleExportCsv = async () => {
+    setIsExporting(true);
+    try {
+      const res = await fetch(`/api/organizations/${slug}?export=true`);
+      const json = await res.json();
+      if (!json.success || !json.data) {
+        alert('تعذر تحميل بيانات التقرير');
+        return;
+      }
+      const tickets: Ticket[] = json.data;
+      if (tickets.length === 0) {
+        alert('لا توجد تذاكر مسجلة لتصديرها اليوم');
+        return;
+      }
+
+      const headers = ['رقم التذكرة', 'رقم الهاتف', 'الاسم', 'نوع التذكرة', 'الحالة', 'وقت الانتظار (دقيقة)', 'تقييم العميل', 'تاريخ ووقت التسجيل'];
+      const rows = tickets.map((t) => {
+        const dateStr = new Date(t.created_at).toLocaleString('ar-DZ');
+        const typeLabel = t.ticket_type === 'walkin' ? 'حضوري' : 'QR هاتف';
+        const statusLabel =
+          t.status === 'completed' ? 'مكتمل وخارج' :
+          t.status === 'serving' ? 'داخل الصالة قيد الخدمة' :
+          t.status === 'called' ? 'مستدعى حالياً' :
+          t.status === 'held' ? 'مؤجل' :
+          t.status === 'cancelled' ? 'ملغى' : 'في الانتظار';
+        const ratingLabel =
+          t.feedback_rating === 'great' ? 'ممتازة (راضي جداً)' :
+          t.feedback_rating === 'okay' ? 'عادية' :
+          t.feedback_rating === 'bad' ? 'تحتاج تحسين' : 'لم يقيّم بعد';
+
+        return [
+          t.ticket_number,
+          `"${t.customer_phone || ''}"`,
+          `"${t.customer_name || ''}"`,
+          typeLabel,
+          statusLabel,
+          t.estimated_wait_mins,
+          ratingLabel,
+          `"${dateStr}"`,
+        ].join(',');
+      });
+
+      // UTF-8 BOM so Excel opens Arabic correctly
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `تقرير_طابور_${slug}_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Export error', err);
+      alert('حدث خطأ أثناء تصدير التقرير');
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -982,8 +1067,17 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
             </div>
 
             <button
+              onClick={handleExportCsv}
+              disabled={isExporting}
+              className="w-full py-2.5 bg-slateNavy-800 hover:bg-slateNavy-700 text-slateNavy-100 rounded-xl text-xs font-bold flex items-center justify-center gap-2 border border-slateNavy-700 transition disabled:opacity-50"
+            >
+              <Download className="w-4 h-4 text-emerald-400" />
+              <span>{isExporting ? 'جاري تجهيز الملف...' : 'تصدير تقرير اليوم (ملف Excel / CSV)'}</span>
+            </button>
+
+            <button
               onClick={() => setShowStatsModal(false)}
-              className="w-full py-2.5 bg-slateNavy-800 hover:bg-slateNavy-700 text-slateNavy-100 rounded-xl text-xs font-bold transition"
+              className="w-full py-2.5 bg-slateNavy-950 hover:bg-slateNavy-800 text-slateNavy-300 rounded-xl text-xs font-bold transition"
             >
               إغلاق
             </button>
@@ -991,21 +1085,21 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
         </div>
       )}
 
-      {/* Modal 3: Settings & Service Speed */}
+      {/* Modal 3: Settings & Service Speed & PIN */}
       {showSettingsModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-5 w-full max-w-sm shadow-2xl space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slateNavy-800">
               <h3 className="text-base font-bold text-slateNavy-100 flex items-center gap-1.5">
                 <Settings className="w-4 h-4 text-slateNavy-400" />
-                إعدادات سرعة الطابور
+                إعدادات العيادة وسرعة الطابور
               </h3>
               <button onClick={() => setShowSettingsModal(false)} className="text-slateNavy-400 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div>
                 <label className="block text-xs text-slateNavy-400 font-semibold mb-1">
                   متوسط وقت خدمة كل {sectorLabel} (بالدقائق)
@@ -1018,6 +1112,26 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
                   onChange={(e) => setNewAvgMins(Number(e.target.value))}
                   className="w-full bg-slateNavy-950 border border-slateNavy-800 rounded-xl px-3 py-2 text-base text-slateNavy-100 text-center font-bold focus:outline-none focus:border-slateNavy-400"
                 />
+                <p className="text-[10px] text-slateNavy-400 mt-1">
+                  يستخدم لحساب وقت الانتظار التقديري لكل زبون فور حجزه.
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-slateNavy-800">
+                <label className="block text-xs text-slateNavy-300 font-semibold mb-1 flex items-center gap-1.5">
+                  <Key className="w-3.5 h-3.5 text-slateNavy-400" />
+                  <span>تغيير الرمز السري (PIN) للدخول</span>
+                </label>
+                <input
+                  type="password"
+                  placeholder="اتركه فارغاً للإبقاء على الرمز الحالي"
+                  value={newPin}
+                  onChange={(e) => setNewPin(e.target.value)}
+                  className="w-full bg-slateNavy-950 border border-slateNavy-800 rounded-xl px-3 py-2 text-xs text-slateNavy-100 focus:outline-none focus:border-slateNavy-400"
+                />
+                <p className="text-[10px] text-slateNavy-400 mt-1">
+                  الرمز الحالي: <span className="font-mono text-slateNavy-200">{queueState?.organization.pin_code}</span>
+                </p>
               </div>
 
               <button
@@ -1034,50 +1148,85 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
       {/* Modal 4: 100% Offline Vector Printable QR Code Poster */}
       {showQrModal && (
         <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slateNavy-900 text-slateNavy-100 border border-slateNavy-800 rounded-3xl p-6 w-full max-w-sm shadow-2xl text-center space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slateNavy-400">
-                ملصق الحائط الذكي للطابور
+          <div className="bg-slateNavy-900 text-slateNavy-100 border border-slateNavy-800 rounded-3xl p-6 w-full max-w-md shadow-2xl text-center space-y-4 max-h-[92vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-2 border-b border-slateNavy-800">
+              <span className="text-xs font-bold text-slateNavy-400 flex items-center gap-1.5">
+                <QrCode className="w-4 h-4" />
+                معاينة ملصق الطاولة أو الحائط (ستاند A4)
               </span>
               <button onClick={() => setShowQrModal(false)} className="text-slateNavy-400 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="border-b pb-3 border-slateNavy-800">
-              <h2 className="text-xl font-black text-slateNavy-100">{org?.name}</h2>
-              <p className="text-xs text-slateNavy-400 mt-1">
-                احجز دورك وغادر القاعة، وسننبهك صوتياً وقت حضورك
-              </p>
-            </div>
+            {/* Printable Stand Container (Clean high-contrast for A4 print) */}
+            <div id="printable-stand" className="bg-white text-slate-900 p-6 rounded-2xl flex flex-col items-center justify-between border border-slate-200 shadow-md space-y-4">
+              <div className="w-full text-center border-b pb-3 border-slate-200">
+                <span className="inline-block px-3 py-0.5 bg-slate-100 text-slate-700 rounded-full text-[11px] font-bold tracking-wider mb-1.5">
+                  نظام الانتظار الرقمي الذكي
+                </span>
+                <h2 className="text-2xl font-black text-slate-950">{org?.name}</h2>
+                <p className="text-xs text-slate-600 mt-0.5 font-medium">
+                  احجز دورك وغادر القاعة، وسننبهك صوتياً عبر هاتفك عند اقتراب موعدك
+                </p>
+              </div>
 
-            <div className="bg-white p-4 rounded-2xl flex flex-col items-center justify-center">
-              {qrDataUrl ? (
-                <img
-                  src={qrDataUrl}
-                  alt="QR Code"
-                  className="w-48 h-48 rounded-lg shadow-sm"
-                />
-              ) : (
-                <div className="w-48 h-48 flex items-center justify-center text-xs text-slate-400">
-                  جاري التوليد...
+              <div className="py-2 flex flex-col items-center justify-center">
+                <div className="p-3 bg-white border-2 border-slate-900 rounded-2xl shadow-sm">
+                  {qrDataUrl ? (
+                    <img
+                      src={qrDataUrl}
+                      alt="QR Code"
+                      className="w-48 h-48 rounded-lg"
+                    />
+                  ) : (
+                    <div className="w-48 h-48 flex items-center justify-center text-xs text-slate-400">
+                      جاري التوليد...
+                    </div>
+                  )}
                 </div>
-              )}
-              <p className="text-xs font-mono font-bold text-slate-900 mt-2">
-                /q/{slug}
-              </p>
+                <p className="text-[11px] font-mono font-bold text-slate-700 mt-2 dir-ltr">
+                  smart-queue-system-zeta.vercel.app/q/{slug}
+                </p>
+              </div>
+
+              {/* 3 Steps instructions */}
+              <div className="w-full text-right bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+                  <p className="text-xs text-slate-800 font-semibold leading-relaxed">
+                    <strong>امسح الرمز بكاميرا الهاتف:</strong> لا داعي لتثبيت أي تطبيق أو كتابة اسمك.
+                  </p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+                  <p className="text-xs text-slate-800 font-semibold leading-relaxed">
+                    <strong>شاهد دورك والوقت المتبقي:</strong> ستعرف بدقة كم شخص قبلك وساعة دخولك.
+                  </p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+                  <p className="text-xs text-slate-800 font-semibold leading-relaxed">
+                    <strong>انتظر في أي مكان براحتك:</strong> سيرن هاتفك تلقائياً عندما يتبقى شخصين قبلك لتأتي للقاعة.
+                  </p>
+                </div>
+              </div>
+
+              <div className="w-full text-center pt-2 text-[11px] text-slate-500 font-medium">
+                نتشرف بخدمتكم دائماً | نرجو التواجد فور استلام التنبيه الصوتي
+              </div>
             </div>
 
             <div className="text-xs text-slateNavy-400 leading-relaxed">
-              اطبع هذا الملصق وعلقه عند المدخل. لا حاجة لشراء طابعة تذاكر ورقية.
+              اطبع هذا الملصق وعلقه عند المدخل أو ضعه على طاولة الاستقبال.
             </div>
 
             <button
               onClick={() => window.print()}
-              className="w-full py-3 bg-slateNavy-100 hover:bg-white text-slateNavy-950 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition"
+              className="w-full py-3 bg-slateNavy-100 hover:bg-white text-slateNavy-950 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition shadow-lg"
             >
               <Printer className="w-4 h-4" />
-              طباعة ملصق الحائط الآن
+              طباعة ملصق الحائط الآن (A4)
             </button>
           </div>
         </div>

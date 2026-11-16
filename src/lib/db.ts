@@ -190,23 +190,60 @@ export async function toggleOrganizationActive(slug: string): Promise<Organizati
   return getOrganization(slug);
 }
 
-export async function updateAvgServiceMins(slug: string, mins: number): Promise<Organization | null> {
+export async function updateOrganizationSettings(
+  slug: string,
+  updates: { avg_service_mins?: number; pin_code?: string; name?: string }
+): Promise<Organization | null> {
+  const patchData: Record<string, string | number> = {};
+  if (typeof updates.avg_service_mins === 'number') patchData.avg_service_mins = updates.avg_service_mins;
+  if (updates.pin_code && updates.pin_code.trim()) patchData.pin_code = updates.pin_code.trim();
+  if (updates.name && updates.name.trim()) patchData.name = updates.name.trim();
+
+  if (Object.keys(patchData).length === 0) return getOrganization(slug);
+
   if (isCloudEnabled) {
     try {
       const rows = await supaFetch<Organization[]>(`queue_organizations?slug=eq.${encodeURIComponent(slug)}`, {
         method: 'PATCH',
         headers: { 'Prefer': 'return=representation' },
-        body: JSON.stringify({ avg_service_mins: mins }),
+        body: JSON.stringify(patchData),
       });
       return rows[0];
     } catch (e) {
-      console.warn('Cloud updateAvgServiceMins error', e);
+      console.warn('Cloud updateOrganizationSettings error', e);
     }
   }
 
   const db = getSqliteDb();
-  db.prepare('UPDATE organizations SET avg_service_mins = ? WHERE slug = ?').run(mins, slug);
+  if (patchData.avg_service_mins) {
+    db.prepare('UPDATE organizations SET avg_service_mins = ? WHERE slug = ?').run(patchData.avg_service_mins, slug);
+  }
+  if (patchData.pin_code) {
+    db.prepare('UPDATE organizations SET pin_code = ? WHERE slug = ?').run(patchData.pin_code, slug);
+  }
+  if (patchData.name) {
+    db.prepare('UPDATE organizations SET name = ? WHERE slug = ?').run(patchData.name, slug);
+  }
   return getOrganization(slug);
+}
+
+export async function updateAvgServiceMins(slug: string, mins: number): Promise<Organization | null> {
+  return updateOrganizationSettings(slug, { avg_service_mins: mins });
+}
+
+export async function getOrganizationTickets(slug: string): Promise<Ticket[]> {
+  if (isCloudEnabled) {
+    try {
+      const rows = await supaFetch<Ticket[]>(
+        `queue_tickets?org_slug=eq.${encodeURIComponent(slug)}&order=ticket_number.asc`
+      );
+      return rows || [];
+    } catch (e) {
+      console.warn('Cloud getOrganizationTickets error', e);
+    }
+  }
+  const db = getSqliteDb();
+  return db.prepare('SELECT * FROM tickets WHERE org_slug = ? ORDER BY ticket_number ASC').all(slug) as unknown as Ticket[];
 }
 
 export async function issueTicket(

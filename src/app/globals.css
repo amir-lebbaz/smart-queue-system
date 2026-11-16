@@ -30,3 +30,51 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #4A5C6A;
 }
+
+/* ==========================================================================
+   High-Resolution Printable A4 Stand Styles (@media print)
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 1cm;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #06141B !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide normal web elements */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Show the printable stand poster */
+  #printable-stand,
+  #printable-stand * {
+    visibility: visible !important;
+  }
+
+  #printable-stand {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: #ffffff !important;
+    color: #06141B !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 2.5rem 2rem !important;
+    box-sizing: border-box !important;
+    z-index: 999999 !important;
+    border: none !important;
+  }
+}
