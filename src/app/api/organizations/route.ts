@@ -14,7 +14,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { slug, name, sector_label, staff_title, pin_code, avg_service_mins } = body;
+    const { slug, name, sector_label, staff_title, pin_code, avg_service_mins, plan, billing_cycle } = body;
 
     if (!slug || !name) {
       return NextResponse.json({ success: false, error: 'Slug and Name are required' }, { status: 400 });
@@ -27,6 +27,8 @@ export async function POST(req: Request) {
       staff_title: staff_title || 'المسير',
       pin_code: pin_code || '1234',
       avg_service_mins: Number(avg_service_mins) || 15,
+      plan: plan || 'pro',
+      billing_cycle: billing_cycle || 'monthly',
     });
 
     return NextResponse.json({ success: true, data: org }, { status: 201 });

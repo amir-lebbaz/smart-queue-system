@@ -53,6 +53,8 @@ export default function SuperAdminPage() {
   const [staffTitle, setStaffTitle] = useState('المسير');
   const [pinCode, setPinCode] = useState('1234');
   const [avgMins, setAvgMins] = useState(15);
+  const [plan, setPlan] = useState<'starter' | 'pro' | 'elite'>('pro');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchOrgs = async () => {
@@ -87,6 +89,8 @@ export default function SuperAdminPage() {
           staff_title: staffTitle,
           pin_code: pinCode,
           avg_service_mins: Number(avgMins),
+          plan,
+          billing_cycle: billingCycle,
         }),
       });
 
@@ -220,6 +224,20 @@ export default function SuperAdminPage() {
                       <div>
                         <h3 className="font-bold text-base text-slateNavy-100">{org.name}</h3>
                         <p className="text-[11px] font-mono text-slateNavy-400">slug: {org.slug}</p>
+                        <div className="flex items-center gap-1.5 mt-1.5">
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                            org.plan === 'starter'
+                              ? 'bg-slateNavy-800 text-slateNavy-300 border-slateNavy-700'
+                              : org.plan === 'elite'
+                              ? 'bg-amber-950/60 text-amber-300 border-amber-700/80'
+                              : 'bg-emerald-950/60 text-emerald-300 border-emerald-700/80'
+                          }`}>
+                            {org.plan === 'starter' ? 'باقة أساسية (1,500 دج)' : org.plan === 'elite' ? '👑 باقة النخبة (3,000 دج)' : '⭐ باقة المحترفين (2,500 دج)'}
+                          </span>
+                          <span className="text-[10px] text-slateNavy-400 bg-slateNavy-950 px-2 py-0.5 rounded-full border border-slateNavy-800">
+                            {org.billing_cycle === 'yearly' ? 'سنوي' : 'شهري'}
+                          </span>
+                        </div>
                       </div>
 
                       <button
@@ -395,6 +413,82 @@ export default function SuperAdminPage() {
                       onChange={(e) => setAvgMins(Number(e.target.value))}
                       className="w-full bg-slateNavy-950 border border-slateNavy-800 rounded-xl px-3 py-2 text-sm text-slateNavy-100 focus:outline-none focus:border-slateNavy-400 text-center font-bold"
                     />
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-slateNavy-800">
+                  <label className="block text-xs text-slateNavy-300 font-semibold mb-1.5">
+                    نوع باقة الاشتراك:
+                  </label>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setPlan('starter')}
+                      className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
+                        plan === 'starter'
+                          ? 'bg-slateNavy-100 text-slateNavy-950 border-white'
+                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800'
+                      }`}
+                    >
+                      <span>أساسية</span>
+                      <span className="block text-[10px] font-normal opacity-80">1,500 دج</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setPlan('pro')}
+                      className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
+                        plan === 'pro'
+                          ? 'bg-emerald-500 text-slateNavy-950 border-emerald-400'
+                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800'
+                      }`}
+                    >
+                      <span>محترفة ⭐</span>
+                      <span className="block text-[10px] font-normal opacity-80">2,500 دج</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setPlan('elite')}
+                      className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
+                        plan === 'elite'
+                          ? 'bg-amber-400 text-slateNavy-950 border-amber-300'
+                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800'
+                      }`}
+                    >
+                      <span>نخبة VIP 👑</span>
+                      <span className="block text-[10px] font-normal opacity-80">3,000 دج</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs text-slateNavy-300 font-semibold mb-1.5">
+                    دورة الدفع والتجديد:
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setBillingCycle('monthly')}
+                      className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
+                        billingCycle === 'monthly'
+                          ? 'bg-slateNavy-800 text-white border-slateNavy-600'
+                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800'
+                      }`}
+                    >
+                      دفع شهري
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setBillingCycle('yearly')}
+                      className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
+                        billingCycle === 'yearly'
+                          ? 'bg-slateNavy-800 text-white border-slateNavy-600'
+                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800'
+                      }`}
+                    >
+                      دفع سنوي
+                    </button>
                   </div>
                 </div>
 

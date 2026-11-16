@@ -32,9 +32,11 @@ import {
   Phone,
   Calculator,
   Shield,
-  BadgeCheck,
-  TrendingUp,
-  Sliders
+  Crown,
+  Flame,
+  Award,
+  Volume2,
+  CalendarCheck
 } from 'lucide-react';
 
 const WHATSAPP_NUMBER = '0666568039';
@@ -45,9 +47,10 @@ const screenshots = [
   {
     id: 'customer',
     title: '📱 هاتف المراجع',
-    tag: 'شاشة الزبون الذكية',
+    tag: 'شاشة الزبون التفاعلية',
     image: '/shots/customer-mobile-ticket.png',
     description: 'تذكرة رقمية متطورة على هاتف المراجع، تحسب وقت الدخول بالدقيقة وتنبّهه صوتياً عند اقتراب دوره (قبل شخصين) ليحضر للصالة مرتاحاً.',
+    badge: 'متاحة في كل الباقات',
     highlights: ['بدون تحميل أي تطبيق', 'عد تنازلي لحظي بالدقيقة', 'تنبيه اهتزاز وصوت للحضور', 'تقييم فوري للخدمة عند الخروج'],
   },
   {
@@ -56,6 +59,7 @@ const screenshots = [
     tag: 'لوحة التحكم الفائقة',
     image: '/shots/admin-dashboard-desktop.png',
     description: 'ريموت متطور يعمل من الهاتف أو الكمبيوتر: استدعاء المراجع، تأكيد دخوله، خروجه التلقائي، تأجيل المتأخر بضغطة زر، ورنة هاتفية سريعة.',
+    badge: 'متاحة في كل الباقات',
     highlights: ['محمي برمز PIN خاص', 'تأجيل ذكي للمتأخر (Hold)', 'رنة هاتفية سريعة (Bip)', 'تسجيل تذكرة حضورية في ثوانٍ'],
   },
   {
@@ -64,6 +68,7 @@ const screenshots = [
     tag: 'عرض Full HD سينمائي',
     image: '/shots/tv-display-1080p.png',
     description: 'شاشة عرض سينمائية عالية الوضوح تعمل على أي تلفاز ذكي (Smart TV) بفتح الرابط فقط، مع نداء صوتي وقائمة انتظار مرتبة بدون كابلات.',
+    badge: 'باقة المحترفين والنخبة',
     highlights: ['تعمل بدون كابلات أو حواسيب', 'جرس نداء صوتي عند الاستدعاء', 'عرض فائق الوضوح 1080p', 'تصميم داكن ومريح للعين'],
   },
   {
@@ -72,6 +77,7 @@ const screenshots = [
     tag: 'ستاند A4 جاهز للطباعة',
     image: '/shots/admin-stand-modal.png',
     description: 'بوستر رسمي أنيق يطبع بضغطة زر واحدة على أي طابعة عادية ليوضع على طاولة الاستقبال أو باب العيادة متضمناً كود QR و3 خطوات واضحة.',
+    badge: 'متاحة في كل الباقات',
     highlights: ['جاهز بضغطة زر (A4)', 'تعليمات مرقمة ومصورة', 'يغنيك عن شراء طابعة تذاكر', 'شكل رسمي احترافي للمؤسسة'],
   },
   {
@@ -80,6 +86,7 @@ const screenshots = [
     tag: 'تحليلات يومية دقيقة',
     image: '/shots/admin-stats-modal.png',
     description: 'إحصائيات لحظية عن عدد المراجعين ومتوسط وقت كل خدمة وتقييمات الرضا الفورية (😄/😐/🙁)، مع تصدير تقرير كامل لـ Excel بنقرة واحدة.',
+    badge: 'باقة المحترفين والنخبة',
     highlights: ['تصدير Excel/CSV بترميز عربي سليم', 'مؤشرات رضا المراجعين الحقيقية', 'حساب سرعة خدمة كل موظف', 'أرشيف كامل للمراجعات اليومية'],
   },
 ];
@@ -93,7 +100,9 @@ const demos = [
     staff: 'الطبيب',
     avgMins: 15,
     icon: Stethoscope,
-    badge: 'الأكثر طلباً للعيادات الطبية',
+    plan: 'باقة المحترفين (Pro)',
+    planColor: 'bg-emerald-950/80 text-emerald-300 border-emerald-700/80',
+    features: ['شاشة تلفاز صالة الانتظار مفعلة', 'تصدير تقارير Excel', 'نداء صوتي عربي'],
   },
   {
     slug: 'barber-elite',
@@ -103,7 +112,9 @@ const demos = [
     staff: 'الحلاق',
     avgMins: 20,
     icon: Scissors,
-    badge: 'صالونات ومراكز التجميل',
+    plan: 'الباقة الأساسية (Starter)',
+    planColor: 'bg-slateNavy-900 text-slateNavy-300 border-slateNavy-700',
+    features: ['ريموت الحلاق الذكي', 'ملصق QR للطاولة', 'حجز إلكتروني بدون أجهزة'],
   },
   {
     slug: 'univ-g2',
@@ -113,14 +124,24 @@ const demos = [
     staff: 'مسؤول الشباك',
     avgMins: 10,
     icon: GraduationCap,
-    badge: 'الإدارات ومكاتب التوثيق',
+    plan: 'باقة النخبة (Elite VIP)',
+    planColor: 'bg-amber-950/80 text-amber-300 border-amber-700/80',
+    features: ['شاشات متعددة', 'أولوية قصوى ودعم دائم', 'إحصائيات تدفق المراجعين'],
   },
 ];
 
 const faqs = [
   {
     q: 'كيف أشترك وأفعّل النظام لعيادتي أو صالوني؟',
-    a: `الأمر فائق السهولة ويستغرق أقل من 10 دقائق! يكفي أن تتواصل معنا عبر واتساب على الرقم ${WHATSAPP_NUMBER}، وسنقوم بإنشاء حسابك الخاص، وضبط اسم مؤسستك ورمزك السري، وإرسال رابط النظام وملصق الـ QR الجاهز للطباعة فوراً.`,
+    a: `الأمر فائق البساطة ويستغرق أقل من 10 دقائق! يكفي أن تتواصل معنا عبر واتساب على الرقم ${WHATSAPP_NUMBER}، وسنقوم بإنشاء حسابك الخاص وتحديد باقتك، وإرسال رابط النظام وملصق الـ QR الجاهز للطباعة فوراً.`,
+  },
+  {
+    q: 'ما الفرق الجوهري بين الباقة الأساسية (1,500 دج) وباقة المحترفين (2,500 دج)؟',
+    a: 'الباقة الأساسية ممتازة لمن يريد فقط إلغاء الطوابير الورقية والتحكم من الهاتف. بينما باقة المحترفين تفتح لك شاشة تلفاز صالة الانتظار Full HD مع جرس النداء الصوتي، وتصدير تقارير Excel اليومية، ونظام التأجيل الذكي (Hold) للزبائن المتأخرين، ومؤشرات تقييم رضا الزبائن.',
+  },
+  {
+    q: 'هل يمكنني الدفع شهرياً أو الاستفادة من خصم الدفع السنوي؟',
+    a: 'نعم بالتأكيد! يمكنك الدفع شهرياً بكل مرونة، أو اختيار الاشتراك السنوي لتحصل على شهرين مجاناً (توفر حتى 6,000 دج سنوياً) مع تثبيت السعر لعام كامل.',
   },
   {
     q: 'هل يحتاج المراجع أو المريض إلى تحميل أي تطبيق على هاتفه؟',
@@ -138,32 +159,39 @@ const faqs = [
     q: 'ماذا يحدث إذا تأخر الزبون وكان جالساً في المقهى أو خارج العيادة؟',
     a: 'أولاً: يرسل له النظام تنبيهاً صوتياً واهتزازاً عندما يتبقى شخصين فقط أمامه ليحضر للقاعة. ثانياً: إذا نودي ولم يحضر، يضغط الطبيب على زر "تأجيل (Hold)" فيمر الذي بعده دون تعطيل القاعة، وعندما يعود الزبون يستدعيه الطبيب بنقرة زر واحدة فوراً.',
   },
-  {
-    q: 'هل يتحمل النظام أوقات الذروة وآلاف المراجعين دون بطء؟',
-    a: 'نعم، النظام مبني على بنية سحابية عالمية فائقة السرعة مع كاش حافة ذكي (Edge Caching) يضمن استقراراً تاماً وسرعة استجابة مذهلة في أجزاء من الثانية حتى في أشد أوقات الذروة.',
-  },
 ];
 
 export default function PromotionalLandingPage() {
   const [activeShot, setActiveShot] = useState('customer');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [isYearly, setIsYearly] = useState<boolean>(true);
   const [dailyVisitors, setDailyVisitors] = useState<number>(40);
 
   const currentScreenshot = screenshots.find((s) => s.id === activeShot) || screenshots[0];
 
+  // Pricing values based on psychology
+  // Starter: 1500 / mo | 15000 / yr (Save 3,000)
+  // Pro: 2500 / mo | 25000 / yr (Save 5,000)
+  // Elite: 3000 / mo (was 3500) | 30000 / yr (Save 6,000)
+  const pricing = {
+    starter: isYearly ? { price: '15,000', period: 'سنوياً', subtext: 'ما يعادل 1,250 دج / شهر فقط (وفرت شهرين)' } : { price: '1,500', period: 'شهرياً', subtext: 'تجديد شهري مرن بدون التزام' },
+    pro: isYearly ? { price: '25,000', period: 'سنوياً', subtext: 'ما يعادل 2,080 دج / شهر فقط (وفرت 5,000 دج)' } : { price: '2,500', period: 'شهرياً', subtext: 'الباقة الأكثر طلباً للعيادات النشطة' },
+    elite: isYearly ? { price: '30,000', period: 'سنوياً', subtext: 'ما يعادل 2,500 دج / شهر فقط (وفرت 6,000 دج)' } : { price: '3,000', period: 'شهرياً', subtext: 'خصم خاص (كانت 3,500 دج) للمراكز الكبرى' },
+  };
+
   // ROI calculations based on daily visitors
-  const annualPaperSavings = Math.round(dailyVisitors * 300 * 12); // ~12 DZD per printed slip + ink/thermal depreciation
-  const hoursSavedPerYear = Math.round((dailyVisitors * 300 * 25) / 60); // 25 mins idle wait saved per patient
+  const annualPaperSavings = Math.round(dailyVisitors * 300 * 12);
+  const hoursSavedPerYear = Math.round((dailyVisitors * 300 * 25) / 60);
 
   return (
     <div className="min-h-screen bg-slateNavy-950 text-slateNavy-100 flex flex-col selection:bg-slateNavy-400 selection:text-slateNavy-950 font-sans relative overflow-x-hidden" dir="rtl">
       
-      {/* 1. TOP ANNOUNCEMENT / WHATSAPP BAR */}
-      <div className="bg-gradient-to-r from-slateNavy-900 via-slateNavy-850 to-slateNavy-900 border-b border-slateNavy-800/80 py-2.5 px-4 text-center text-xs font-semibold text-slateNavy-200">
+      {/* 1. LUXURY TOP ANNOUNCEMENT / WHATSAPP BAR */}
+      <div className="bg-gradient-to-r from-slateNavy-900 via-slateNavy-850 to-slateNavy-900 border-b border-slateNavy-800/80 py-2.5 px-4 text-center text-xs font-semibold text-slateNavy-200 relative z-30">
         <div className="max-w-6xl mx-auto flex items-center justify-center flex-wrap gap-2 sm:gap-4">
           <span className="inline-flex items-center gap-1.5 text-amber-300">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>نظام إدارة الطوابير الذكي للعيادات والمراكز والصالونات</span>
+            <span>نظام إدارة الطوابير والمواعيد الذكي للعيادات والصالونات والمراكز</span>
           </span>
           <span className="hidden sm:inline text-slateNavy-600">•</span>
           <a
@@ -180,19 +208,19 @@ export default function PromotionalLandingPage() {
       </div>
 
       {/* 2. MAIN NAVBAR */}
-      <header className="sticky top-0 z-40 bg-slateNavy-950/90 backdrop-blur-xl border-b border-slateNavy-800/70">
+      <header className="sticky top-0 z-40 bg-slateNavy-950/90 backdrop-blur-2xl border-b border-slateNavy-800/80 shadow-2xl">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-18 py-3 flex items-center justify-between">
           {/* Brand Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-slateNavy-700 via-slateNavy-850 to-slateNavy-950 border border-slateNavy-700/80 flex items-center justify-center text-white font-black shadow-xl">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-slateNavy-700 via-slateNavy-850 to-slateNavy-950 border border-slateNavy-700 flex items-center justify-center text-white font-black shadow-xl">
               <Zap className="w-5 h-5 text-slateNavy-200" />
             </div>
             <div>
               <span className="text-lg font-black tracking-tight text-white flex items-center gap-1.5">
                 طابوري الذكي
-                <span className="text-[10px] bg-slateNavy-800/90 text-slateNavy-300 px-2 py-0.5 rounded-full border border-slateNavy-700 font-mono font-normal">PRO</span>
+                <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono font-bold">SAAS 2.0</span>
               </span>
-              <p className="text-[11px] text-slateNavy-400 -mt-0.5">الحل السحابي لإفراغ صالات الانتظار</p>
+              <p className="text-[11px] text-slateNavy-400 -mt-0.5">منصة إفراغ قاعات الانتظار السحابية</p>
             </div>
           </div>
 
@@ -212,29 +240,29 @@ export default function PromotionalLandingPage() {
               href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاشتراك%20في%20نظام%20طابوري%20الذكي`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-950/40 transition transform active:scale-95 flex items-center gap-2"
+              className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-950/50 transition transform active:scale-95 flex items-center gap-2"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>اشتراك عبر واتساب: {WHATSAPP_NUMBER}</span>
+              <span>واتساب: {WHATSAPP_NUMBER}</span>
             </a>
           </div>
         </div>
       </header>
 
-      {/* 3. HERO SECTION (High-Converting Agency Visual) */}
-      <section className="relative pt-12 pb-20 px-4 sm:px-6 overflow-hidden">
-        {/* Glow ambient meshes */}
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-slateNavy-700/20 blur-[140px] rounded-full pointer-events-none -z-10" />
-        <div className="absolute top-48 right-10 w-[300px] h-[300px] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none -z-10" />
+      {/* 3. HERO SECTION (High-Converting Luxury Aesthetic) */}
+      <section className="relative pt-14 pb-24 px-4 sm:px-6 overflow-hidden">
+        {/* Glow ambient background meshes */}
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-slateNavy-700/25 via-slateNavy-800/10 to-transparent blur-[160px] rounded-full pointer-events-none -z-10" />
+        <div className="absolute top-48 right-4 w-[350px] h-[350px] bg-emerald-500/10 blur-[140px] rounded-full pointer-events-none -z-10" />
 
         <div className="max-w-4xl mx-auto text-center space-y-7">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slateNavy-900/90 border border-slateNavy-700/60 text-slateNavy-300 text-xs font-bold shadow-lg backdrop-blur-md">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slateNavy-900/90 border border-slateNavy-700/60 text-slateNavy-300 text-xs font-bold shadow-xl backdrop-blur-md">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-            <span className="text-white">وداعاً للاكتظاظ، المشادات، وتكاليف الورق الباهظة</span>
+            <span className="text-white">أحدث نظام رقمي لإلغاء الاكتظاظ والتزاحم الميداني</span>
           </div>
 
-          {/* Title */}
+          {/* Headline */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.2]">
             أفرغ صالة الانتظار تماماً.. <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-slateNavy-100 via-slateNavy-300 to-white">
@@ -244,24 +272,24 @@ export default function PromotionalLandingPage() {
 
           {/* Subtitle */}
           <p className="text-sm sm:text-lg text-slateNavy-300 max-w-2xl mx-auto leading-relaxed">
-            حوّل هاتف مراجعك إلى تذكرة إلكترونية حية تحسب ساعة دخوله بالدقيقة وتنبّهه صوتياً قبل دوره ليحضر للصالة مرتاحاً. بدون شراء طابعات ورقية، وبدون كابلات أو صيانة.
+            حوّل هاتف مراجعك إلى تذكرة رقمية حية تحسب ساعة دخوله بالدقيقة وتنبّهه صوتياً قبل دوره ليحضر للصالة مرتاحاً. بدون شراء طابعات ورقية مكلفة، وبدون كابلات أو صيانة.
           </p>
 
           {/* Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-3">
             <a
               href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاشتراك%20وتفعيل%20حساب%20لعيادتي%20اليوم`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white text-sm font-black rounded-2xl shadow-xl shadow-emerald-950/50 transition transform active:scale-95 flex items-center justify-center gap-2.5"
+              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white text-sm font-black rounded-2xl shadow-xl shadow-emerald-950/60 transition transform active:scale-95 flex items-center justify-center gap-2.5"
             >
               <MessageCircle className="w-5 h-5 text-white" />
-              <span>احجز نسختك الآن عبر واتساب ({WHATSAPP_NUMBER})</span>
+              <span>اشترك الآن عبر واتساب ({WHATSAPP_NUMBER})</span>
             </a>
 
             <a
               href="#demos"
-              className="w-full sm:w-auto px-7 py-4 bg-slateNavy-900/90 hover:bg-slateNavy-850 border border-slateNavy-700/80 text-slateNavy-100 text-sm font-bold rounded-2xl transition flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-7 py-4 bg-slateNavy-900/90 hover:bg-slateNavy-850 border border-slateNavy-700/80 text-slateNavy-100 text-sm font-bold rounded-2xl transition flex items-center justify-center gap-2 shadow-lg"
             >
               <Zap className="w-4 h-4 text-amber-400" />
               <span>تجربة حية فورية للشاشات (Live Demo)</span>
@@ -269,7 +297,7 @@ export default function PromotionalLandingPage() {
           </div>
 
           {/* Value Badges */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 max-w-3xl mx-auto text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-6 max-w-3xl mx-auto text-center">
             <div className="p-3.5 bg-slateNavy-900/60 backdrop-blur-md border border-slateNavy-800 rounded-2xl shadow-sm">
               <p className="text-lg font-black text-white">0 دج</p>
               <p className="text-[11px] text-slateNavy-400 mt-0.5">تكلفة عتاد إضافي</p>
@@ -290,12 +318,12 @@ export default function PromotionalLandingPage() {
         </div>
       </section>
 
-      {/* 4. INTERACTIVE DEVICE SHOWCASE (Real Screenshots in High-Res Frames) */}
+      {/* 4. REAL SHOWCASE GALLERY (High-Res Screenshots Mockup) */}
       <section id="showcase" className="py-20 px-4 sm:px-6 bg-slateNavy-900/40 border-y border-slateNavy-800/80">
         <div className="max-w-6xl mx-auto space-y-10">
           <div className="text-center space-y-3 max-w-2xl mx-auto">
             <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">معرض الشاشات الواقعية</span>
-            <h2 className="text-2xl sm:text-4xl font-black text-white">واجهات ميدانية صُممت لتبهر الزبائن والمسيرين</h2>
+            <h2 className="text-2xl sm:text-4xl font-black text-white">شاهد المنظومة الحقيقية أثناء العمل</h2>
             <p className="text-xs sm:text-sm text-slateNavy-300">
               انقر على أي شاشة لمشاهدة صور حقيقية عالية الدقة لكيفية عمل النظام في الميدان.
             </p>
@@ -322,7 +350,12 @@ export default function PromotionalLandingPage() {
           <div className="bg-slateNavy-900/90 border border-slateNavy-800 rounded-3xl p-5 sm:p-8 shadow-2xl space-y-6">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slateNavy-800 pb-6">
               <div className="space-y-1">
-                <span className="text-[11px] font-bold text-emerald-400">{currentScreenshot.tag}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-bold text-emerald-400">{currentScreenshot.tag}</span>
+                  <span className="text-[10px] bg-slateNavy-800 text-slateNavy-300 px-2 py-0.5 rounded-full border border-slateNavy-700">
+                    {currentScreenshot.badge}
+                  </span>
+                </div>
                 <h3 className="text-xl sm:text-2xl font-black text-white">{currentScreenshot.title}</h3>
                 <p className="text-xs sm:text-sm text-slateNavy-300 leading-relaxed max-w-2xl pt-1">
                   {currentScreenshot.description}
@@ -351,8 +384,243 @@ export default function PromotionalLandingPage() {
         </div>
       </section>
 
-      {/* 5. INTERACTIVE SAVINGS & ROI CALCULATOR */}
-      <section id="calculator" className="py-20 px-4 sm:px-6">
+      {/* 5. PRICING & PACKAGES SECTION (Monthly vs Yearly Psychology) */}
+      <section id="pricing" className="py-24 px-4 sm:px-6 relative">
+        <div className="max-w-6xl mx-auto space-y-12">
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <span className="text-xs font-black text-emerald-400 uppercase tracking-widest flex items-center justify-center gap-1.5">
+              <Crown className="w-4 h-4 text-amber-400" />
+              <span>خطط اشتراك شفافة ومدروسة</span>
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-white">اختر الباقة المناسبة لحجم نشاطك</h2>
+            <p className="text-xs sm:text-sm text-slateNavy-300">
+              ادفع شهرياً بمرونة كاملة، أو وفّر شهرين مجاناً عند اختيار الاشتراك السنوي.
+            </p>
+
+            {/* Monthly / Yearly Switcher */}
+            <div className="pt-4 flex items-center justify-center">
+              <div className="bg-slateNavy-900 border border-slateNavy-800 p-1 rounded-2xl flex items-center gap-1 shadow-inner">
+                <button
+                  onClick={() => setIsYearly(false)}
+                  className={`px-5 py-2 rounded-xl text-xs font-bold transition ${
+                    !isYearly 
+                      ? 'bg-slateNavy-100 text-slateNavy-950 shadow font-black' 
+                      : 'text-slateNavy-400 hover:text-white'
+                  }`}
+                >
+                  دفع شهري
+                </button>
+                <button
+                  onClick={() => setIsYearly(true)}
+                  className={`px-5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                    isYearly 
+                      ? 'bg-emerald-500 text-slateNavy-950 shadow font-black' 
+                      : 'text-slateNavy-400 hover:text-white'
+                  }`}
+                >
+                  <span>دفع سنوي</span>
+                  <span className="text-[10px] bg-slateNavy-950 text-emerald-300 px-2 py-0.5 rounded-full font-bold">
+                    وفر شهرين 🎁
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Pricing Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+            {/* TIER 1: STARTER */}
+            <div className="bg-slateNavy-900/90 border border-slateNavy-800 rounded-3xl p-6 sm:p-7 space-y-6 flex flex-col justify-between shadow-xl">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slateNavy-400">العيادات الفردية والصالونات</span>
+                  <span className="text-[10px] bg-slateNavy-950 text-slateNavy-300 px-2.5 py-0.5 rounded-full border border-slateNavy-800">
+                    Starter
+                  </span>
+                </div>
+
+                <h3 className="text-xl font-black text-white">الباقة الأساسية</h3>
+                <p className="text-xs text-slateNavy-400 leading-relaxed">
+                  مثالية للأطباء العامين، صالونات الحلاقة، ومكاتب الأعمال الفردية لإلغاء الطابور الورقي.
+                </p>
+
+                <div className="py-4 border-y border-slateNavy-800 space-y-1">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-black text-white tracking-tight">{pricing.starter.price}</span>
+                    <span className="text-xs text-slateNavy-400 font-bold">دج / {pricing.starter.period}</span>
+                  </div>
+                  <p className="text-[11px] text-emerald-400 font-medium">{pricing.starter.subtext}</p>
+                </div>
+
+                <ul className="space-y-3 text-xs text-slateNavy-300">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>رابط خاص وملصق QR رسمي للعيادة</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>تذاكر رقمية غير محدودة طوال فترة الاشتراك</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>تنبيه صوتي واهتزاز لحضور المراجعين</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>ريموت المسير (استدعاء، تأكيد، وإنهاء وخروج)</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-slateNavy-600 line-through">
+                    <XCircle className="w-4 h-4 shrink-0 text-slateNavy-600" />
+                    <span>شاشة تلفاز صالة الانتظار (غير مشمولة)</span>
+                  </li>
+                  <li className="flex items-center gap-2 text-slateNavy-600 line-through">
+                    <XCircle className="w-4 h-4 shrink-0 text-slateNavy-600" />
+                    <span>تصدير تقارير Excel (غير مشمولة)</span>
+                  </li>
+                </ul>
+              </div>
+
+              <a
+                href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاشتراك%20في%20الباقة%20الأساسية%20(${pricing.starter.price}%20دج%20/${pricing.starter.period})`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3.5 bg-slateNavy-800 hover:bg-slateNavy-750 text-slateNavy-100 font-bold text-xs rounded-2xl border border-slateNavy-700 transition text-center flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4 text-emerald-400" />
+                <span>طلب الباقة الأساسية عبر واتساب</span>
+              </a>
+            </div>
+
+            {/* TIER 2: PRO (MOST POPULAR) */}
+            <div className="bg-slateNavy-900/95 border-2 border-emerald-400/90 rounded-3xl p-6 sm:p-7 space-y-6 flex flex-col justify-between relative shadow-2xl shadow-emerald-950/40">
+              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-emerald-500 to-emerald-400 text-slateNavy-950 font-black text-[11px] rounded-full uppercase tracking-wider shadow-lg flex items-center gap-1">
+                <Star className="w-3.5 h-3.5 fill-slateNavy-950" />
+                <span>الباقة الأكثر طلباً للعيادات</span>
+              </span>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-emerald-400">العيادات النشطة والمراكز الطبية</span>
+                  <span className="text-[10px] bg-emerald-950 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-800 font-bold">
+                    PRO ⭐
+                  </span>
+                </div>
+
+                <h3 className="text-xl font-black text-white">باقة المحترفين (Pro)</h3>
+                <p className="text-xs text-slateNavy-400 leading-relaxed">
+                  الحل المتكامل للعيادات التخصصية، طب الأسنان، والمراكز التي ترغب في صالة انتظار ذكية وشاشة تلفاز.
+                </p>
+
+                <div className="py-4 border-y border-slateNavy-800 space-y-1">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-black text-white tracking-tight">{pricing.pro.price}</span>
+                    <span className="text-xs text-slateNavy-400 font-bold">دج / {pricing.pro.period}</span>
+                  </div>
+                  <p className="text-[11px] text-emerald-400 font-medium">{pricing.pro.subtext}</p>
+                </div>
+
+                <ul className="space-y-3 text-xs text-slateNavy-200">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span className="font-bold text-white">شاشة صالة الانتظار للتلفاز Full HD 1080p مفعلة</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span className="font-bold text-white">جرس نداء صوتي عربي تلقائي عند الاستدعاء</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span className="font-bold text-white">تصدير تقارير Excel/CSV اليومية بضغطة زر</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>نظام التأجيل الذكي (Hold) للزبائن المتأخرين</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>تقييمات رضا المراجعين اللحظية (😄/😐/🙁)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>دعم فني وتدريب مجاني للفريق</span>
+                  </li>
+                </ul>
+              </div>
+
+              <a
+                href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاشتراك%20في%20باقة%20المحترفين%20Pro%20(${pricing.pro.price}%20دج%20/${pricing.pro.period})`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-black text-xs rounded-2xl shadow-xl shadow-emerald-950/60 transition text-center flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4 text-white" />
+                <span>طلب باقة المحترفين عبر واتساب</span>
+              </a>
+            </div>
+
+            {/* TIER 3: ELITE VIP */}
+            <div className="bg-slateNavy-900/90 border border-slateNavy-800 rounded-3xl p-6 sm:p-7 space-y-6 flex flex-col justify-between shadow-xl">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-amber-300">المجمعات والمؤسسات الكبرى</span>
+                  <span className="text-[10px] bg-amber-950/70 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-800 font-bold">
+                    Elite VIP 👑
+                  </span>
+                </div>
+
+                <h3 className="text-xl font-black text-white">باقة النخبة (Elite)</h3>
+                <p className="text-xs text-slateNavy-400 leading-relaxed">
+                  للمجمعات الطبية الكبرى والمختبرات والمؤسسات التي تحتاج شاشات متعددة ودعماً استثنائياً.
+                </p>
+
+                <div className="py-4 border-y border-slateNavy-800 space-y-1">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-black text-white tracking-tight">{pricing.elite.price}</span>
+                    <span className="text-xs text-slateNavy-400 font-bold">دج / {pricing.elite.period}</span>
+                  </div>
+                  <p className="text-[11px] text-amber-300 font-medium">{pricing.elite.subtext}</p>
+                </div>
+
+                <ul className="space-y-3 text-xs text-slateNavy-300">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>كل مميزات باقة المحترفين بالكامل</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>تخصيص كامل للشعار والرسالة الترحيبية</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>إحصائيات تدفق المراجعين المتقدمة بالساعة</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>أولوية قصوى ودعم فني دائم على مدار الساعة</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>ربط شاشات متعددة في نفس المؤسسة</span>
+                  </li>
+                </ul>
+              </div>
+
+              <a
+                href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاشتراك%20في%20باقة%20النخبة%20Elite%20VIP%20(${pricing.elite.price}%20دج%20/${pricing.elite.period})`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3.5 bg-slateNavy-800 hover:bg-slateNavy-750 text-slateNavy-100 font-bold text-xs rounded-2xl border border-slateNavy-700 transition text-center flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4 text-amber-400" />
+                <span>طلب باقة النخبة VIP عبر واتساب</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. INTERACTIVE SAVINGS & ROI CALCULATOR */}
+      <section id="calculator" className="py-20 px-4 sm:px-6 bg-slateNavy-900/40 border-y border-slateNavy-800/80">
         <div className="max-w-4xl mx-auto space-y-10">
           <div className="text-center space-y-3">
             <span className="text-xs font-black text-emerald-400 uppercase tracking-widest flex items-center justify-center gap-1.5">
@@ -419,7 +687,7 @@ export default function PromotionalLandingPage() {
 
             <div className="bg-slateNavy-950/80 p-4 rounded-2xl border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-center sm:text-right">
-                <p className="text-xs font-bold text-white">وفر هذه الأموال واجعل عيادتك الأرقى في منطقتك اليوم</p>
+                <p className="text-xs font-bold text-white">وفّر هذه الأموال واجعل عيادتك الأرقى في منطقتك اليوم</p>
                 <p className="text-[11px] text-slateNavy-400">تفعيل فوري خلال 10 دقائق بدون أي أجهزة</p>
               </div>
               <a
@@ -436,8 +704,8 @@ export default function PromotionalLandingPage() {
         </div>
       </section>
 
-      {/* 6. HOW IT WORKS (3 Simple Steps) */}
-      <section id="how-it-works" className="py-20 px-4 sm:px-6 bg-slateNavy-900/40 border-y border-slateNavy-800/80">
+      {/* 7. HOW IT WORKS (3 Simple Steps) */}
+      <section id="how-it-works" className="py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto space-y-12">
           <div className="text-center space-y-3">
             <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">بساطة تشغيل ميدانية</span>
@@ -448,7 +716,7 @@ export default function PromotionalLandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 space-y-4">
+            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 space-y-4 shadow-xl">
               <div className="w-12 h-12 bg-slateNavy-800 border border-slateNavy-700 rounded-2xl flex items-center justify-center text-white font-black text-lg">
                 1
               </div>
@@ -462,7 +730,7 @@ export default function PromotionalLandingPage() {
               </div>
             </div>
 
-            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 space-y-4">
+            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 space-y-4 shadow-xl">
               <div className="w-12 h-12 bg-slateNavy-800 border border-slateNavy-700 rounded-2xl flex items-center justify-center text-white font-black text-lg">
                 2
               </div>
@@ -476,7 +744,7 @@ export default function PromotionalLandingPage() {
               </div>
             </div>
 
-            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 space-y-4">
+            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 space-y-4 shadow-xl">
               <div className="w-12 h-12 bg-slateNavy-800 border border-slateNavy-700 rounded-2xl flex items-center justify-center text-white font-black text-lg">
                 3
               </div>
@@ -493,14 +761,14 @@ export default function PromotionalLandingPage() {
         </div>
       </section>
 
-      {/* 7. LIVE INTERACTIVE DEMOS */}
-      <section id="demos" className="py-20 px-4 sm:px-6">
+      {/* 8. LIVE INTERACTIVE DEMOS */}
+      <section id="demos" className="py-20 px-4 sm:px-6 bg-slateNavy-900/40 border-y border-slateNavy-800/80">
         <div className="max-w-5xl mx-auto space-y-10">
           <div className="text-center space-y-3">
-            <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">نماذج حية جاهزة للتجربة</span>
+            <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">نماذج حية مهيأة بالباقات</span>
             <h2 className="text-2xl sm:text-4xl font-black text-white">جرّب النظام بنفسك الآن</h2>
             <p className="text-xs sm:text-sm text-slateNavy-300 max-w-xl mx-auto">
-              اختر نشاطك، وجرب أخذ تذكرة بهاتفك وفي نفس الوقت افتح لوحة الطبيب وشاشة الصالة.
+              شاهد كيف تعمل الميزات الحقيقية للباقات المختلفة في نماذج العيادة والصالون والمصلحة.
             </p>
           </div>
 
@@ -517,8 +785,8 @@ export default function PromotionalLandingPage() {
                       <div className="w-12 h-12 rounded-2xl bg-slateNavy-800 border border-slateNavy-700 flex items-center justify-center text-white shadow">
                         <Icon className="w-6 h-6" />
                       </div>
-                      <span className="text-[10px] bg-slateNavy-800 text-slateNavy-300 px-3 py-1 rounded-full font-bold border border-slateNavy-700">
-                        {d.badge}
+                      <span className={`text-[10px] px-3 py-1 rounded-full font-bold border ${d.planColor}`}>
+                        {d.plan}
                       </span>
                     </div>
 
@@ -531,6 +799,15 @@ export default function PromotionalLandingPage() {
                       <span>متوسط وقت الخدمة:</span>
                       <span className="font-bold text-white">{d.avgMins} دقيقة / {d.sector}</span>
                     </div>
+
+                    <ul className="space-y-1 pt-1 text-[11px] text-slateNavy-400">
+                      {d.features.map((f, i) => (
+                        <li key={i} className="flex items-center gap-1.5">
+                          <Check className="w-3 h-3 text-emerald-400 shrink-0" />
+                          <span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
                   <div className="space-y-2 pt-3 border-t border-slateNavy-800">
@@ -557,163 +834,12 @@ export default function PromotionalLandingPage() {
                       className="w-full py-2 px-3 bg-slateNavy-950 hover:bg-slateNavy-900 text-slateNavy-400 hover:text-white text-[11px] font-semibold rounded-xl border border-slateNavy-800 transition flex items-center justify-center gap-1.5"
                     >
                       <Tv className="w-3.5 h-3.5" />
-                      <span>شاشة صالة الانتظار الكبيرة</span>
+                      <span>شاشة صالة الانتظار للتلفاز</span>
                     </Link>
                   </div>
                 </div>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* 8. PACKAGES & PRICING (Direct WhatsApp Booking) */}
-      <section id="pricing" className="py-20 px-4 sm:px-6 bg-slateNavy-900/40 border-y border-slateNavy-800/80">
-        <div className="max-w-5xl mx-auto space-y-12">
-          <div className="text-center space-y-3">
-            <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">باقات شفافة ومدروسة</span>
-            <h2 className="text-2xl sm:text-4xl font-black text-white">اختر الباقة المناسبة لمؤسستك</h2>
-            <p className="text-xs sm:text-sm text-slateNavy-300 max-w-xl mx-auto">
-              بأقل من تكلفة رولات الورق لشهرين، استثمر في راحة مرضاك واجعل عيادتك منظمة بنسبة 100%.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Tier 1 */}
-            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 space-y-6 flex flex-col justify-between">
-              <div className="space-y-4">
-                <span className="text-xs font-bold text-slateNavy-400">العيادة الفردية</span>
-                <h3 className="text-xl font-black text-white">الباقة الأساسية (Starter)</h3>
-                <p className="text-xs text-slateNavy-400">مناسبة لطبيب عام، عيادة أسنان، أو صالون حلاقة فردي.</p>
-
-                <div className="py-3 border-y border-slateNavy-800">
-                  <span className="text-3xl font-black text-white">15,000</span>
-                  <span className="text-xs text-slateNavy-400 mr-1.5">دج / سنوياً</span>
-                </div>
-
-                <ul className="space-y-2.5 text-xs text-slateNavy-300">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>رابط خاص وملصق QR رسمي للعيادة</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>تذاكر رقمية غير محدودة طوال العام</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>تنبيه صوتي لحضور المراجعين قبل شخصين</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>تأكيد الدخول والخروج والتقييم اللحظي</span>
-                  </li>
-                </ul>
-              </div>
-
-              <a
-                href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاشتراك%20في%20الباقة%20الأساسية%20(15,000%20دج)`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3 bg-slateNavy-800 hover:bg-slateNavy-700 text-slateNavy-100 font-bold text-xs rounded-xl border border-slateNavy-700 transition text-center flex items-center justify-center gap-1.5"
-              >
-                <MessageCircle className="w-4 h-4 text-emerald-400" />
-                <span>طلب الباقة عبر واتساب</span>
-              </a>
-            </div>
-
-            {/* Tier 2: Most Popular */}
-            <div className="bg-slateNavy-900 border-2 border-emerald-400/80 rounded-3xl p-6 space-y-6 flex flex-col justify-between relative shadow-2xl">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-1 bg-emerald-400 text-slateNavy-950 font-black text-[10px] rounded-full uppercase tracking-wider shadow">
-                الأكثر اختياراً للمراكز والعيادات
-              </span>
-
-              <div className="space-y-4">
-                <span className="text-xs font-bold text-emerald-400">المراكز والمجمعات</span>
-                <h3 className="text-xl font-black text-white">باقة المحترفين (Pro)</h3>
-                <p className="text-xs text-slateNavy-400">مثالية للعيادات النشطة، المراكز الطبية، ومكاتب التوثيق.</p>
-
-                <div className="py-3 border-y border-slateNavy-800">
-                  <span className="text-3xl font-black text-white">28,000</span>
-                  <span className="text-xs text-slateNavy-400 mr-1.5">دج / سنوياً</span>
-                </div>
-
-                <ul className="space-y-2.5 text-xs text-slateNavy-300">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>كل مميزات الباقة الأساسية</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>شاشة صالة الانتظار التلفزيونية 1080p مع جرس نداء</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>تصدير تقارير Excel اليومية وإحصائيات الرضا</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>نظام التأجيل الذكي (Hold) والرنة الهاتفية</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>دعم فني مخصص وتدريب كامل للفريق</span>
-                  </li>
-                </ul>
-              </div>
-
-              <a
-                href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاشتراك%20في%20باقة%20المحترفين%20Pro%20(28,000%20دج)`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-black text-xs rounded-xl shadow-lg transition text-center flex items-center justify-center gap-2"
-              >
-                <MessageCircle className="w-4 h-4 text-white" />
-                <span>طلب باقة المحترفين عبر واتساب</span>
-              </a>
-            </div>
-
-            {/* Tier 3: Enterprise */}
-            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 space-y-6 flex flex-col justify-between">
-              <div className="space-y-4">
-                <span className="text-xs font-bold text-slateNavy-400">المستشفيات والجهات الكبرى</span>
-                <h3 className="text-xl font-black text-white">المؤسسية (Enterprise)</h3>
-                <p className="text-xs text-slateNavy-400">للمستشفيات، المعامل الكبرى، والمؤسسات متعددة الفروع.</p>
-
-                <div className="py-3 border-y border-slateNavy-800">
-                  <span className="text-2xl font-black text-white">حسب الطلب</span>
-                </div>
-
-                <ul className="space-y-2.5 text-xs text-slateNavy-300">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>ربط مئات الأقسام والشبابيك في لوحة موحدة</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>نطاق مخصص خاص بمؤسستكم (Domain)</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>تخصيص كامل للشعار والألوان والنداءات</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>عقد صيانة ودعم ميداني دائم</span>
-                  </li>
-                </ul>
-              </div>
-
-              <a
-                href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20طلب%20عرض%20سعر%20خاص%20لباقة%20المؤسسات`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3 bg-slateNavy-800 hover:bg-slateNavy-700 text-slateNavy-100 font-bold text-xs rounded-xl border border-slateNavy-700 transition text-center flex items-center justify-center gap-1.5"
-              >
-                <MessageCircle className="w-4 h-4 text-emerald-400" />
-                <span>طلب عرض سعر مخصص</span>
-              </a>
-            </div>
           </div>
         </div>
       </section>
@@ -784,7 +910,7 @@ export default function PromotionalLandingPage() {
 
               <a
                 href={`tel:${WHATSAPP_NUMBER}`}
-                className="w-full sm:w-auto px-7 py-4 bg-slateNavy-900 hover:bg-slateNavy-800 text-slateNavy-200 font-bold text-sm rounded-2xl border border-slateNavy-700 transition flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-7 py-4 bg-slateNavy-900 hover:bg-slateNavy-850 text-slateNavy-200 font-bold text-sm rounded-2xl border border-slateNavy-700 transition flex items-center justify-center gap-2"
               >
                 <Phone className="w-4 h-4 text-slateNavy-300" />
                 <span>اتصال هاتفي مباشر</span>
@@ -801,8 +927,8 @@ export default function PromotionalLandingPage() {
 
             <div className="flex items-center gap-6 text-xs text-slateNavy-400">
               <a href="#showcase" className="hover:text-white transition">معرض الشاشات</a>
-              <a href="#calculator" className="hover:text-white transition">حاسبة التوفير</a>
               <a href="#pricing" className="hover:text-white transition">الباقات</a>
+              <a href="#calculator" className="hover:text-white transition">حاسبة التوفير</a>
               <a href="#faq" className="hover:text-white transition">الأسئلة الشائعة</a>
               <a
                 href={`${WHATSAPP_BASE}`}
@@ -823,7 +949,7 @@ export default function PromotionalLandingPage() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="تواصل معنا عبر واتساب"
-        className="fixed bottom-5 left-5 z-50 group flex items-center gap-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white py-3 px-4 rounded-full shadow-2xl shadow-emerald-950/60 transition-all duration-300 transform hover:scale-105 active:scale-95 border border-emerald-400/30"
+        className="fixed bottom-5 left-5 z-50 group flex items-center gap-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white py-3 px-4 rounded-full shadow-2xl shadow-emerald-950/70 transition-all duration-300 transform hover:scale-105 active:scale-95 border border-emerald-400/30"
       >
         <span className="relative flex h-3 w-3">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>

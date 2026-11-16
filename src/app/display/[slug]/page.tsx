@@ -163,6 +163,35 @@ export default function TvDisplayPage({ params }: { params: Promise<{ slug: stri
     );
   }
 
+  // Feature gate: TV Display requires 'pro' or 'elite' package
+  if (org?.plan === 'starter') {
+    return (
+      <div className="min-h-screen bg-slateNavy-950 flex flex-col items-center justify-center p-6 text-center text-slateNavy-100" dir="rtl">
+        <div className="max-w-md bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-8 space-y-4 shadow-2xl">
+          <div className="w-16 h-16 bg-slateNavy-800 text-amber-400 rounded-3xl flex items-center justify-center mx-auto border border-slateNavy-700">
+            <Tv className="w-8 h-8" />
+          </div>
+          <h2 className="text-xl font-black text-white">{org?.name}</h2>
+          <div className="bg-slateNavy-950 p-3 rounded-2xl border border-slateNavy-800">
+            <span className="text-xs text-slateNavy-400">باقة اشتراك هذه العيادة:</span>
+            <p className="text-sm font-bold text-slateNavy-200 mt-0.5">الباقة الأساسية (Starter - 1,500 دج/شهر)</p>
+          </div>
+          <p className="text-xs text-slateNavy-300 leading-relaxed">
+            شاشة صالة الانتظار التلفزيونية والنداء الصوتي ميزة مخصصة لمشتركي <strong>باقة المحترفين (Pro)</strong> و <strong>باقة النخبة (Elite)</strong>.
+          </p>
+          <a
+            href="https://wa.me/213666568039?text=مرحباً،%20أريد%20ترقية%20باقتي%20إلى%20باقة%20المحترفين%20(Pro)%20لتشغيل%20شاشة%20التلفاز"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slateNavy-950 font-black text-xs rounded-xl shadow transition inline-block text-center"
+          >
+            ترقية الباقة عبر واتساب (0666 56 80 39)
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slateNavy-950 text-slateNavy-100 flex flex-col select-none overflow-hidden font-sans" dir="rtl">
       {/* Top Header Bar */}

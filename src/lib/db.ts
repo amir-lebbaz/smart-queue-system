@@ -128,8 +128,13 @@ export async function createOrganization(data: {
   staff_title: string;
   pin_code: string;
   avg_service_mins: number;
+  plan?: SubscriptionPlan;
+  billing_cycle?: BillingCycle;
 }): Promise<Organization> {
   const cleanSlug = data.slug.trim().toLowerCase();
+  const selectedPlan = data.plan || 'pro';
+  const selectedCycle = data.billing_cycle || 'monthly';
+
   if (isCloudEnabled) {
     try {
       const rows = await supaFetch<Organization[]>('queue_organizations', {
@@ -145,6 +150,8 @@ export async function createOrganization(data: {
           current_ticket_number: 0,
           last_issued_number: 0,
           is_active: 1,
+          plan: selectedPlan,
+          billing_cycle: selectedCycle,
         }),
       });
       return rows[0];
@@ -192,12 +199,14 @@ export async function toggleOrganizationActive(slug: string): Promise<Organizati
 
 export async function updateOrganizationSettings(
   slug: string,
-  updates: { avg_service_mins?: number; pin_code?: string; name?: string }
+  updates: { avg_service_mins?: number; pin_code?: string; name?: string; plan?: SubscriptionPlan; billing_cycle?: BillingCycle }
 ): Promise<Organization | null> {
   const patchData: Record<string, string | number> = {};
   if (typeof updates.avg_service_mins === 'number') patchData.avg_service_mins = updates.avg_service_mins;
   if (updates.pin_code && updates.pin_code.trim()) patchData.pin_code = updates.pin_code.trim();
   if (updates.name && updates.name.trim()) patchData.name = updates.name.trim();
+  if (updates.plan) patchData.plan = updates.plan;
+  if (updates.billing_cycle) patchData.billing_cycle = updates.billing_cycle;
 
   if (Object.keys(patchData).length === 0) return getOrganization(slug);
 

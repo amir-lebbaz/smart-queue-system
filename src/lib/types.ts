@@ -1,6 +1,8 @@
 export type TicketType = 'qr' | 'walkin';
 export type TicketStatus = 'waiting' | 'called' | 'serving' | 'held' | 'completed' | 'cancelled';
 export type FeedbackRating = 'great' | 'okay' | 'bad';
+export type SubscriptionPlan = 'starter' | 'pro' | 'elite';
+export type BillingCycle = 'monthly' | 'yearly';
 
 export interface Organization {
   id: number;
@@ -14,6 +16,9 @@ export interface Organization {
   last_issued_number: number;
   last_call_timestamp: number | null;
   is_active: number;
+  plan?: SubscriptionPlan;
+  billing_cycle?: BillingCycle;
+  subscription_expires_at?: string | number | null;
 }
 
 export interface Ticket {

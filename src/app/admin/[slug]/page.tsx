@@ -385,6 +385,11 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
 
   // Action: Export Daily Report to Excel / CSV
   const handleExportCsv = async () => {
+    if (org?.plan === 'starter') {
+      alert('تصدير تقارير Excel و CSV ميزة حصرية لمشتركي باقة المحترفين Pro (2,500 دج/شهر). يرجى الترقية بالتواصل مع الإدارة عبر واتساب: 0666 56 80 39');
+      return;
+    }
+
     setIsExporting(true);
     try {
       const res = await fetch(`/api/organizations/${slug}?export=true`);
@@ -511,9 +516,20 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
                 {org?.name}
               </h1>
             </div>
-            <p className="text-[11px] text-slateNavy-400">
-              ريموت {staffTitle} • خدمة الـ {sectorLabel}
-            </p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="text-[11px] text-slateNavy-400">
+                ريموت {staffTitle} • خدمة الـ {sectorLabel}
+              </span>
+              <span className={`text-[9px] px-2 py-0.2 rounded-full font-bold border ${
+                org?.plan === 'starter'
+                  ? 'bg-slateNavy-900 text-slateNavy-400 border-slateNavy-800'
+                  : org?.plan === 'elite'
+                  ? 'bg-amber-950/60 text-amber-300 border-amber-700/80'
+                  : 'bg-emerald-950/60 text-emerald-300 border-emerald-700/80'
+              }`}>
+                {org?.plan === 'starter' ? 'أساسية' : org?.plan === 'elite' ? '👑 نخبة VIP' : '⭐ محترفة PRO'}
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center gap-1.5">
