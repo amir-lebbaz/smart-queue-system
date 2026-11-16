@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #06141B;
-  --foreground: #CCD0CF;
+  --background: #08131F;
+  --foreground: #E8EFF3;
 }
 
 body {
@@ -13,22 +13,99 @@ body {
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Cairo', 'Tajawal', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 /* Minimalist scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #06141B;
+  background: #08131F;
 }
 ::-webkit-scrollbar-thumb {
-  background: #253745;
+  background: #2E4F6B;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #4A5C6A;
+  background: #5F7F98;
+}
+
+/* ==========================================================================
+   Arctic Harbor Luxury Animations & Visual FX
+   ========================================================================== */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(40px, -45px) scale(1.08);
+  }
+  66% {
+    transform: translate(-30px, 25px) scale(0.96);
+  }
+}
+
+@keyframes floatReverse {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(-35px, 35px) scale(1.06);
+  }
+  66% {
+    transform: translate(25px, -30px) scale(0.94);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes shimmerHorizon {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 22s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: floatReverse 26s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 8s ease-in-out infinite;
+}
+
+.arctic-grid-pattern {
+  background-image: radial-gradient(rgba(95, 127, 152, 0.18) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.arctic-glass-card {
+  background: rgba(22, 49, 74, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(46, 79, 107, 0.65);
+}
+
+.arctic-glass-card:hover {
+  border-color: rgba(95, 127, 152, 0.9);
+  box-shadow: 0 20px 40px -15px rgba(8, 19, 31, 0.8), 0 0 30px rgba(46, 79, 107, 0.25);
 }
 
 /* ==========================================================================
