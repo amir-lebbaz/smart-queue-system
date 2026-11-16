@@ -15,7 +15,7 @@ export async function POST(
       // Body may be empty
     }
 
-    const result = completeCurrentTicket(slug, ticketId);
+    const result = await completeCurrentTicket(slug, ticketId);
     return NextResponse.json({ success: true, data: result });
   } catch (error: unknown) {
     console.error('Failed to complete ticket:', error);

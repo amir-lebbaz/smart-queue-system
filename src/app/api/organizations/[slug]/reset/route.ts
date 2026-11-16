@@ -7,7 +7,7 @@ export async function POST(
 ) {
   try {
     const { slug } = await params;
-    const org = resetDailyQueue(slug);
+    const org = await resetDailyQueue(slug);
     return NextResponse.json({ success: true, data: org });
   } catch (error: unknown) {
     console.error('Failed to reset queue:', error);

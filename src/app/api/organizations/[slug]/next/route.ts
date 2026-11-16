@@ -7,7 +7,7 @@ export async function POST(
 ) {
   try {
     const { slug } = await params;
-    const result = callNextTicket(slug);
+    const result = await callNextTicket(slug);
     return NextResponse.json({ success: true, data: result });
   } catch (error: unknown) {
     console.error('Failed to call next ticket:', error);

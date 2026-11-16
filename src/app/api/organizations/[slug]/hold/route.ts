@@ -7,7 +7,7 @@ export async function POST(
 ) {
   try {
     const { slug } = await params;
-    const result = holdCurrentTicket(slug);
+    const result = await holdCurrentTicket(slug);
     return NextResponse.json({ success: true, data: result });
   } catch (error: unknown) {
     console.error('Failed to hold ticket:', error);

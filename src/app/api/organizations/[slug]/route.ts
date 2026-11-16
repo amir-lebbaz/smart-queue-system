@@ -9,7 +9,7 @@ export async function GET(
     const { slug } = await params;
     const { searchParams } = new URL(req.url);
     const ticketParam = searchParams.get('ticketNumber') || searchParams.get('myTicket');
-    const queueState = getQueueState(slug, ticketParam ? Number(ticketParam) : undefined);
+    const queueState = await getQueueState(slug, ticketParam ? Number(ticketParam) : undefined);
 
     if (!queueState) {
       return NextResponse.json({ success: false, error: 'Organization not found' }, { status: 404 });
@@ -31,12 +31,12 @@ export async function PATCH(
     const body = await req.json();
 
     if (body.action === 'toggle_active') {
-      const org = toggleOrganizationActive(slug);
+      const org = await toggleOrganizationActive(slug);
       return NextResponse.json({ success: true, data: org });
     }
 
     if (typeof body.avg_service_mins === 'number') {
-      const org = updateAvgServiceMins(slug, body.avg_service_mins);
+      const org = await updateAvgServiceMins(slug, body.avg_service_mins);
       return NextResponse.json({ success: true, data: org });
     }
 

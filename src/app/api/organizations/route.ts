@@ -3,7 +3,7 @@ import { getAllOrganizations, createOrganization } from '@/lib/db';
 
 export async function GET() {
   try {
-    const orgs = getAllOrganizations();
+    const orgs = await getAllOrganizations();
     return NextResponse.json({ success: true, data: orgs });
   } catch (error) {
     console.error('Failed to get organizations:', error);
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Slug and Name are required' }, { status: 400 });
     }
 
-    const org = createOrganization({
+    const org = await createOrganization({
       slug,
       name,
       sector_label: sector_label || 'زبون',

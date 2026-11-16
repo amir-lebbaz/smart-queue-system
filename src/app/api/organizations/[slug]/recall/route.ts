@@ -14,7 +14,7 @@ export async function POST(
       return NextResponse.json({ success: false, error: 'ticketId is required' }, { status: 400 });
     }
 
-    const result = recallHeldTicket(slug, Number(ticketId));
+    const result = await recallHeldTicket(slug, Number(ticketId));
     return NextResponse.json({ success: true, data: result });
   } catch (error: unknown) {
     console.error('Failed to recall held ticket:', error);

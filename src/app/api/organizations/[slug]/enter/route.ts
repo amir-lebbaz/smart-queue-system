@@ -15,7 +15,7 @@ export async function POST(
       // Body may be empty if not passed
     }
 
-    const result = confirmCustomerEntered(slug, ticketId);
+    const result = await confirmCustomerEntered(slug, ticketId);
     return NextResponse.json({ success: true, data: result });
   } catch (error: unknown) {
     console.error('Failed to confirm customer entry:', error);
