@@ -1,6 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
 import path from 'path';
-import { Organization, Ticket, QueueState, DailyStats, FeedbackRating, TicketStatus, TicketType } from './types';
+import { Organization, Ticket, QueueState, DailyStats, FeedbackRating, TicketStatus, TicketType, SubscriptionPlan, BillingCycle } from './types';
 
 // Supabase Cloud Configuration (Default shared cluster for instant cross-device synchronization)
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://mtuhuzmyhbemdfsbyhpf.supabase.co";
