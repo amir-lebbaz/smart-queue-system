@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="50%" stop-color="#047857" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+  </defs>
+  <!-- Rounded Background -->
+  <rect width="512" height="512" rx="128" fill="url(#bg)" />
+  
+  <!-- Outer glowing ring -->
+  <circle cx="256" cy="256" r="190" fill="none" stroke="#10b981" stroke-width="8" stroke-dasharray="16 12" opacity="0.6" />
+  
+  <!-- Central Ticket Badge -->
+  <rect x="140" y="160" width="232" height="192" rx="36" fill="#0f172a" stroke="#34d399" stroke-width="8" />
+  <circle cx="140" cy="256" r="20" fill="url(#bg)" />
+  <circle cx="372" cy="256" r="20" fill="url(#bg)" />
+  
+  <!-- Ticket Number / Symbol -->
+  <text x="256" y="278" font-family="system-ui, sans-serif" font-weight="900" font-size="78" fill="#34d399" text-anchor="middle">#1</text>
+  <path d="M 230 195 L 282 195" stroke="#6ee7b7" stroke-width="6" stroke-linecap="round" />
+  <path d="M 210 320 L 302 320" stroke="#059669" stroke-width="6" stroke-linecap="round" />
+</svg>
