@@ -1,42 +1,68 @@
 import { NextResponse } from 'next/server';
-import { issueTicket, getTicket, cancelTicket } from '@/lib/db';
+import { issueTicket, getTicket, cancelTicket, findActiveTicketByPhone, submitTicketFeedback } from '@/lib/db';
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const orgSlug = searchParams.get('orgSlug');
     const ticketNumber = searchParams.get('ticketNumber');
+    const phone = searchParams.get('phone');
+
+    // Phone recovery lookup
+    if (orgSlug && phone) {
+      const ticket = findActiveTicketByPhone(orgSlug, phone);
+      if (!ticket) {
+        return NextResponse.json({ success: false, error: 'لم يتم العثور على تذكرة نشطة مسجلة بهذا الرقم' }, { status: 404 });
+      }
+      return NextResponse.json({ success: true, data: ticket });
+    }
 
     if (!orgSlug || !ticketNumber) {
-      return NextResponse.json({ success: false, error: 'orgSlug and ticketNumber are required' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'المعطيات غير مكتملة' }, { status: 400 });
     }
 
     const ticket = getTicket(orgSlug, Number(ticketNumber));
     if (!ticket) {
-      return NextResponse.json({ success: false, error: 'Ticket not found' }, { status: 404 });
+      return NextResponse.json({ success: false, error: 'التذكرة غير موجودة' }, { status: 404 });
     }
 
     return NextResponse.json({ success: true, data: ticket });
   } catch (error) {
     console.error('Failed to get ticket:', error);
-    return NextResponse.json({ success: false, error: 'Failed to retrieve ticket' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'تعذر جلب التذكرة' }, { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+
+    // Feedback submission
+    if (body.action === 'feedback') {
+      const { ticketId, rating } = body;
+      if (!ticketId || !rating) {
+        return NextResponse.json({ success: false, error: 'بيانات التقييم غير مكتملة' }, { status: 400 });
+      }
+      const ok = submitTicketFeedback(Number(ticketId), rating);
+      return NextResponse.json({ success: ok });
+    }
+
+    // Normal ticket issuance
     const { orgSlug, customerName, customerPhone, ticketType } = body;
 
     if (!orgSlug) {
-      return NextResponse.json({ success: false, error: 'orgSlug is required' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'معرف المؤسسة مطلوب' }, { status: 400 });
     }
 
-    const ticket = issueTicket(orgSlug, customerName, customerPhone, ticketType || 'qr');
+    if (!customerPhone || customerPhone.trim().length < 8) {
+      return NextResponse.json({ success: false, error: 'رقم الهاتف إجباري لضمان متابعة دورك واستلام التنبيهات' }, { status: 400 });
+    }
+
+    const ticket = issueTicket(orgSlug, customerPhone, customerName, ticketType || 'qr');
     return NextResponse.json({ success: true, data: ticket }, { status: 201 });
   } catch (error: unknown) {
     console.error('Failed to issue ticket:', error);
-    const msg = error instanceof Error ? error.message : 'Failed to issue ticket';
+    const msg = error instanceof Error ? error.message : 'فشل إصدار التذكرة';
     return NextResponse.json({ success: false, error: msg }, { status: 500 });
   }
 }

@@ -27,7 +27,8 @@ import {
   BarChart3,
   LogIn,
   LogOut,
-  UserCheck
+  UserCheck,
+  Tv
 } from 'lucide-react';
 import { QueueState, Ticket } from '@/lib/types';
 import { playQueueChime } from '@/lib/audio';
@@ -289,6 +290,11 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   // Action: Walk-in ticket creation
   const handleCreateWalkin = async (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanPhone = walkinPhone.trim().replace(/\s+/g, '');
+    if (!cleanPhone || cleanPhone.length < 8) {
+      alert('رقم الهاتف إجباري (8 أرقام على الأقل) لإمكانية رن الزبون أو تنبيهه بـ SMS');
+      return;
+    }
     setIsCreatingWalkin(true);
     try {
       const res = await fetch('/api/tickets', {
@@ -781,14 +787,26 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
           <span>تصفير ليوم جديد</span>
         </button>
 
-        <Link
-          href={`/q/${slug}`}
-          target="_blank"
-          className="text-xs text-slateNavy-100 hover:underline font-medium flex items-center gap-1 transition"
-        >
-          <span>معاينة شاشة الزبون</span>
-          <ArrowRight className="w-3.5 h-3.5 rotate-180" />
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/display/${slug}`}
+            target="_blank"
+            className="text-xs text-slateNavy-400 hover:text-slateNavy-100 flex items-center gap-1 transition"
+            title="فتح شاشة التلفاز التفاعلية في الصالة"
+          >
+            <Tv className="w-3.5 h-3.5 text-slateNavy-400" />
+            <span>شاشة الصالة</span>
+          </Link>
+
+          <Link
+            href={`/q/${slug}`}
+            target="_blank"
+            className="text-xs text-slateNavy-100 hover:underline font-medium flex items-center gap-1 transition"
+          >
+            <span>معاينة الزبون</span>
+            <ArrowRight className="w-3.5 h-3.5 rotate-180" />
+          </Link>
+        </div>
       </footer>
 
       {/* Modal 1: Walk-in Ticket Creator */}
@@ -855,10 +873,12 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
 
                 <div>
                   <label className="block text-xs text-slateNavy-400 font-semibold mb-1">
-                    رقم الهاتف (لإجراء Bip أو SMS)
+                    رقم الهاتف (إجباري لإجراء رنة Bip أو SMS) <span className="text-amber-400">*</span>
                   </label>
                   <input
                     type="tel"
+                    required
+                    minLength={8}
                     value={walkinPhone}
                     onChange={(e) => setWalkinPhone(e.target.value)}
                     placeholder="05 / 06 / 07..."
@@ -927,6 +947,37 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
               <p className="text-[11px] text-slateNavy-400">متوسط وتيرة الخدمة الحالية</p>
               <p className="text-xl font-bold text-slateNavy-100 mt-0.5">
                 {org?.avg_service_mins} دقيقة لكل {sectorLabel}
+              </p>
+            </div>
+
+            {/* Customer Satisfaction Ratings */}
+            <div className="bg-slateNavy-950 p-3 rounded-2xl border border-slateNavy-800 text-center space-y-2">
+              <p className="text-[11px] font-semibold text-slateNavy-400">تقييمات رضا الزبائن</p>
+              <div className="grid grid-cols-3 gap-1.5 text-center">
+                <div className="p-2 bg-slateNavy-900 rounded-xl border border-slateNavy-800">
+                  <span className="text-lg">😄</span>
+                  <p className="text-xs font-bold text-slateNavy-100 mt-0.5">
+                    {queueState?.stats?.ratings?.great || 0}
+                  </p>
+                  <p className="text-[9px] text-slateNavy-400">ممتازة</p>
+                </div>
+                <div className="p-2 bg-slateNavy-900 rounded-xl border border-slateNavy-800">
+                  <span className="text-lg">😐</span>
+                  <p className="text-xs font-bold text-slateNavy-100 mt-0.5">
+                    {queueState?.stats?.ratings?.okay || 0}
+                  </p>
+                  <p className="text-[9px] text-slateNavy-400">عادية</p>
+                </div>
+                <div className="p-2 bg-slateNavy-900 rounded-xl border border-slateNavy-800">
+                  <span className="text-lg">🙁</span>
+                  <p className="text-xs font-bold text-slateNavy-100 mt-0.5">
+                    {queueState?.stats?.ratings?.bad || 0}
+                  </p>
+                  <p className="text-[9px] text-slateNavy-400">تحتاج تحسين</p>
+                </div>
+              </div>
+              <p className="text-[10px] text-slateNavy-400">
+                إجمالي التقييمات: {((queueState?.stats?.ratings?.great || 0) + (queueState?.stats?.ratings?.okay || 0) + (queueState?.stats?.ratings?.bad || 0))}
               </p>
             </div>
 

@@ -1,6 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
 import path from 'path';
-import { Organization, Ticket, QueueState, DailyStats } from './types';
+import { Organization, Ticket, QueueState, DailyStats, FeedbackRating } from './types';
 
 // Store queue.db in project root or /tmp on serverless environments (Vercel / Netlify)
 const isServerless = Boolean(process.env.VERCEL || process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME);
@@ -39,14 +39,24 @@ function initDatabase(db: DatabaseSync): void {
       org_slug TEXT NOT NULL,
       ticket_number INTEGER NOT NULL,
       customer_name TEXT,
-      customer_phone TEXT,
+      customer_phone TEXT NOT NULL,
       ticket_type TEXT NOT NULL DEFAULT 'qr',
       status TEXT NOT NULL DEFAULT 'waiting',
       estimated_wait_mins INTEGER NOT NULL,
       estimated_clock_time TEXT NOT NULL,
+      feedback_rating TEXT,
+      feedback_created_at INTEGER,
       created_at INTEGER NOT NULL
     );
   `);
+
+  // Migrate tickets table if columns are missing
+  try {
+    db.exec(`ALTER TABLE tickets ADD COLUMN feedback_rating TEXT;`);
+  } catch {}
+  try {
+    db.exec(`ALTER TABLE tickets ADD COLUMN feedback_created_at INTEGER;`);
+  } catch {}
 
   // 2. Seed default demo organizations if not present
   const countRow = db.prepare('SELECT COUNT(*) as count FROM organizations').get() as { count: number };
@@ -145,17 +155,22 @@ export function updateAvgServiceMins(slug: string, mins: number): Organization |
   return getOrganization(slug);
 }
 
-// Issue a new ticket (QR or Walk-in)
+// Issue a new ticket (Mandatory Phone Number)
 export function issueTicket(
   orgSlug: string,
+  customerPhone: string,
   customerName?: string,
-  customerPhone?: string,
   ticketType: 'qr' | 'walkin' = 'qr'
 ): Ticket {
   const db = getDb();
   const org = getOrganization(orgSlug);
   if (!org) {
-    throw new Error('Organization not found');
+    throw new Error('المؤسسة غير موجودة');
+  }
+
+  const cleanPhone = (customerPhone || '').trim().replace(/\s+/g, '');
+  if (!cleanPhone || cleanPhone.length < 8) {
+    throw new Error('رقم الهاتف إجباري ومطلوب لضمان تلقي التنبيهات ومتابعة دورك');
   }
 
   const nextNumber = org.last_issued_number + 1;
@@ -171,7 +186,7 @@ export function issueTicket(
     orgSlug,
     nextNumber,
     customerName?.trim() || null,
-    customerPhone?.trim() || null,
+    cleanPhone,
     ticketType,
     estimatedWaitMins,
     estimatedClockTime,
@@ -184,11 +199,39 @@ export function issueTicket(
   return db.prepare('SELECT * FROM tickets WHERE id = ?').get(info.lastInsertRowid) as unknown as Ticket;
 }
 
+// Lookup active ticket by phone number (Field recovery feature)
+export function findActiveTicketByPhone(orgSlug: string, phone: string): Ticket | null {
+  const db = getDb();
+  const cleanPhone = phone.trim().replace(/\s+/g, '');
+  if (!cleanPhone) return null;
+
+  const ticket = db.prepare(`
+    SELECT * FROM tickets 
+    WHERE org_slug = ? 
+      AND customer_phone LIKE ? 
+      AND status IN ('waiting', 'called', 'serving', 'held')
+    ORDER BY id DESC LIMIT 1
+  `).get(orgSlug, `%${cleanPhone}%`) as unknown as Ticket | undefined;
+
+  return ticket || null;
+}
+
+// Submit 1-tap experience feedback
+export function submitTicketFeedback(ticketId: number, rating: FeedbackRating): boolean {
+  const db = getDb();
+  const res = db.prepare(`
+    UPDATE tickets 
+    SET feedback_rating = ?, feedback_created_at = ? 
+    WHERE id = ?
+  `).run(rating, Date.now(), ticketId);
+  return Number(res.changes) > 0;
+}
+
 // Step 1: Call next ticket -> status becomes 'called' (waiting to enter)
 export function callNextTicket(orgSlug: string): { currentTicket: Ticket | null; organization: Organization } {
   const db = getDb();
   const org = getOrganization(orgSlug);
-  if (!org) throw new Error('Organization not found');
+  if (!org) throw new Error('المؤسسة غير موجودة');
 
   // If there's an existing active ticket in 'called' or 'serving', complete it
   db.prepare(`
@@ -231,7 +274,7 @@ export function callNextTicket(orgSlug: string): { currentTicket: Ticket | null;
 export function confirmCustomerEntered(orgSlug: string, ticketId?: number): { currentTicket: Ticket | null; organization: Organization } {
   const db = getDb();
   const org = getOrganization(orgSlug);
-  if (!org) throw new Error('Organization not found');
+  if (!org) throw new Error('المؤسسة غير موجودة');
 
   let targetId = ticketId;
   if (!targetId) {
@@ -258,7 +301,7 @@ export function confirmCustomerEntered(orgSlug: string, ticketId?: number): { cu
 export function completeCurrentTicket(orgSlug: string, ticketId?: number): { organization: Organization } {
   const db = getDb();
   const org = getOrganization(orgSlug);
-  if (!org) throw new Error('Organization not found');
+  if (!org) throw new Error('المؤسسة غير موجودة');
 
   const now = Date.now();
   let newAvg = org.avg_service_mins;
@@ -296,9 +339,8 @@ export function completeCurrentTicket(orgSlug: string, ticketId?: number): { org
 export function holdCurrentTicket(orgSlug: string): { heldTicket: Ticket | null; organization: Organization } {
   const db = getDb();
   const org = getOrganization(orgSlug);
-  if (!org) throw new Error('Organization not found');
+  if (!org) throw new Error('المؤسسة غير موجودة');
 
-  // Find currently called or serving ticket
   const activeTicket = db.prepare(`
     SELECT * FROM tickets 
     WHERE org_slug = ? AND status IN ('called', 'serving') 
@@ -325,14 +367,12 @@ export function holdCurrentTicket(orgSlug: string): { heldTicket: Ticket | null;
 export function recallHeldTicket(orgSlug: string, ticketId: number): { currentTicket: Ticket | null; organization: Organization } {
   const db = getDb();
 
-  // If there is another active ticket in called or serving, complete it
   db.prepare(`
     UPDATE tickets 
     SET status = 'completed' 
     WHERE org_slug = ? AND status IN ('called', 'serving')
   `).run(orgSlug);
 
-  // Set the held ticket directly to 'called' (or 'serving')
   db.prepare("UPDATE tickets SET status = 'called' WHERE id = ? AND org_slug = ?").run(ticketId, orgSlug);
 
   const recalled = db.prepare('SELECT * FROM tickets WHERE id = ?').get(ticketId) as unknown as Ticket | undefined;
@@ -370,7 +410,6 @@ export function getQueueState(orgSlug: string): QueueState | null {
   const organization = getOrganization(orgSlug);
   if (!organization) return null;
 
-  // Active ticket is either 'serving' (first priority) or 'called'
   const currentTicket = (db.prepare(`
     SELECT * FROM tickets 
     WHERE org_slug = ? AND status IN ('serving', 'called') 
@@ -433,12 +472,21 @@ export function getDailyStats(orgSlug: string): DailyStats {
   const cancelledRow = db.prepare(`SELECT COUNT(*) as c FROM tickets WHERE org_slug = ? AND status = 'cancelled' AND created_at >= ?`).get(orgSlug, startTs) as { c: number } | undefined;
   const waitingRow = db.prepare(`SELECT COUNT(*) as c FROM tickets WHERE org_slug = ? AND status = 'waiting'`).get(orgSlug) as { c: number } | undefined;
 
+  const greatRow = db.prepare(`SELECT COUNT(*) as c FROM tickets WHERE org_slug = ? AND feedback_rating = 'great' AND created_at >= ?`).get(orgSlug, startTs) as { c: number } | undefined;
+  const okayRow = db.prepare(`SELECT COUNT(*) as c FROM tickets WHERE org_slug = ? AND feedback_rating = 'okay' AND created_at >= ?`).get(orgSlug, startTs) as { c: number } | undefined;
+  const badRow = db.prepare(`SELECT COUNT(*) as c FROM tickets WHERE org_slug = ? AND feedback_rating = 'bad' AND created_at >= ?`).get(orgSlug, startTs) as { c: number } | undefined;
+
   return {
     totalIssued: totalRow ? Number(totalRow.c) : 0,
     totalCompleted: completedRow ? Number(completedRow.c) : 0,
     totalHeld: heldRow ? Number(heldRow.c) : 0,
     totalCancelled: cancelledRow ? Number(cancelledRow.c) : 0,
     currentWaiting: waitingRow ? Number(waitingRow.c) : 0,
+    ratings: {
+      great: greatRow ? Number(greatRow.c) : 0,
+      okay: okayRow ? Number(okayRow.c) : 0,
+      bad: badRow ? Number(badRow.c) : 0,
+    },
   };
 }
 

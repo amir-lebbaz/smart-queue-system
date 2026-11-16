@@ -11,7 +11,8 @@ import {
   PhoneCall, 
   ArrowRight,
   ExternalLink,
-  Sparkles
+  Sparkles,
+  Tv
 } from 'lucide-react';
 
 const demos = [
@@ -128,13 +129,25 @@ export default function HomePage() {
                     <ArrowRight className="w-3.5 h-3.5 rotate-180" />
                   </Link>
 
-                  <Link
-                    href={`/q/${d.slug}`}
-                    className="w-full py-2.5 px-3 bg-slateNavy-800 hover:bg-slateNavy-700 text-slateNavy-100 font-semibold rounded-xl text-xs flex items-center justify-center gap-1.5 transition border border-slateNavy-700"
-                  >
-                    <span>شاشة حجز تذكرة الزبون</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </Link>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link
+                      href={`/q/${d.slug}`}
+                      className="py-2 px-2 bg-slateNavy-800 hover:bg-slateNavy-700 text-slateNavy-100 font-semibold rounded-xl text-[11px] flex items-center justify-center gap-1 transition border border-slateNavy-700"
+                    >
+                      <span>حجز الزبون</span>
+                      <ExternalLink className="w-3 h-3 text-slateNavy-400" />
+                    </Link>
+
+                    <Link
+                      href={`/display/${d.slug}`}
+                      target="_blank"
+                      className="py-2 px-2 bg-slateNavy-950 hover:bg-slateNavy-800 text-slateNavy-400 hover:text-slateNavy-100 font-semibold rounded-xl text-[11px] flex items-center justify-center gap-1 transition border border-slateNavy-800"
+                      title="شاشة التلفاز التفاعلية في قاعة الانتظار"
+                    >
+                      <Tv className="w-3 h-3" />
+                      <span>شاشة الصالة</span>
+                    </Link>
+                  </div>
                 </div>
               </div>
             );

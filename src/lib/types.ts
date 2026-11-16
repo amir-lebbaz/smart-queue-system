@@ -1,5 +1,6 @@
 export type TicketType = 'qr' | 'walkin';
 export type TicketStatus = 'waiting' | 'called' | 'serving' | 'held' | 'completed' | 'cancelled';
+export type FeedbackRating = 'great' | 'okay' | 'bad';
 
 export interface Organization {
   id: number;
@@ -20,11 +21,13 @@ export interface Ticket {
   org_slug: string;
   ticket_number: number;
   customer_name: string | null;
-  customer_phone: string | null;
+  customer_phone: string; // Mandatory phone number
   ticket_type: TicketType;
   status: TicketStatus;
   estimated_wait_mins: number;
   estimated_clock_time: string; // formatted 'HH:MM'
+  feedback_rating?: FeedbackRating | null;
+  feedback_created_at?: number | null;
   created_at: number;
 }
 
@@ -34,6 +37,11 @@ export interface DailyStats {
   totalHeld: number;
   totalCancelled: number;
   currentWaiting: number;
+  ratings?: {
+    great: number;
+    okay: number;
+    bad: number;
+  };
 }
 
 export interface QueueState {

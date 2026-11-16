@@ -18,13 +18,28 @@ import {
   Share2, 
   Check,
   DoorOpen,
-  UserCheck
+  UserCheck,
+  Bell,
+  Search,
+  AlertTriangle,
+  Smile,
+  Meh,
+  Frown,
+  Smartphone,
+  Sparkles
 } from 'lucide-react';
-import { QueueState } from '@/lib/types';
+import { QueueState, FeedbackRating } from '@/lib/types';
 import { playQueueChime } from '@/lib/audio';
 import { speakArabicAnnouncement } from '@/lib/speech';
+import { 
+  requestScreenWakeLock, 
+  releaseScreenWakeLock, 
+  requestNotificationPermission, 
+  sendBrowserNotification 
+} from '@/lib/notifications';
 
 interface CachedTicket {
+  ticketId?: number;
   ticketNumber: number;
   orgSlug: string;
   orgName: string;
@@ -32,6 +47,8 @@ interface CachedTicket {
   estimatedTargetTimestamp: number;
   initialEstimatedClockTime: string;
   customerName?: string;
+  customerPhone?: string;
+  totalEstimatedSeconds?: number;
   createdAt: number;
 }
 
@@ -46,7 +63,14 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   // Form states for booking
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Recovery modal / input
+  const [showRecovery, setShowRecovery] = useState(false);
+  const [recoveryPhone, setRecoveryPhone] = useState('');
+  const [isRecovering, setIsRecovering] = useState(false);
+  const [recoveryError, setRecoveryError] = useState<string | null>(null);
 
   // Active ticket in localStorage
   const [myTicket, setMyTicket] = useState<CachedTicket | null>(null);
@@ -55,8 +79,16 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   const [isOnline, setIsOnline] = useState(true);
   const [remainingSeconds, setRemainingSeconds] = useState<number | null>(null);
   const [alertTriggered, setAlertTriggered] = useState(false);
+  const [earlyProximityAlertTriggered, setEarlyProximityAlertTriggered] = useState(false);
   const [calledSpoken, setCalledSpoken] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Notifications & Wake Lock state
+  const [wakeLockActive, setWakeLockActive] = useState(false);
+  const [notificationsAllowed, setNotificationsAllowed] = useState(false);
+
+  // Feedback state
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   // Load cached ticket on mount
   useEffect(() => {
@@ -72,6 +104,15 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
         }
       }
 
+      const storedFeedback = localStorage.getItem(`smart_queue_feedback_${slug}`);
+      if (storedFeedback) {
+        setFeedbackSubmitted(true);
+      }
+
+      if ('Notification' in window && Notification.permission === 'granted') {
+        setNotificationsAllowed(true);
+      }
+
       const handleOnline = () => setIsOnline(true);
       const handleOffline = () => setIsOnline(false);
 
@@ -81,6 +122,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
       return () => {
         window.removeEventListener('online', handleOnline);
         window.removeEventListener('offline', handleOffline);
+        releaseScreenWakeLock();
       };
     }
   }, [slug]);
@@ -132,6 +174,10 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
 
       if (secondsLeft > 0 && secondsLeft <= 600 && !alertTriggered) {
         playQueueChime();
+        sendBrowserNotification(
+          `اقترب دورك (#${myTicket.ticketNumber})`,
+          'بقي حوالي 10 دقائق على دورك. يرجى التوجه لمحيط القاعة.'
+        );
         setAlertTriggered(true);
       }
     }, 1000);
@@ -175,13 +221,54 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
     if (isMyTurnCalled && !calledSpoken) {
       playQueueChime();
       speakArabicAnnouncement(`الرقم ${myTicket?.ticketNumber}، تفضل بالدخول عند ${staffTitle} الآن`);
+      sendBrowserNotification(
+        `دورك الآن! (#${myTicket?.ticketNumber})`,
+        `تفضل بالدخول عند ${staffTitle} فوراً.`
+      );
       setCalledSpoken(true);
     }
   }, [isMyTurnCalled, calledSpoken, myTicket, staffTitle]);
 
-  // Handle Book Ticket
+  // Field Feature: Early Proximity Warning (when at most 2 people ahead)
+  useEffect(() => {
+    if (myTicket && livePeopleAhead <= 2 && livePeopleAhead > 0 && !earlyProximityAlertTriggered && !isMyTurnCalled && !isMyTurnInside) {
+      playQueueChime();
+      sendBrowserNotification(
+        `⚠️ تنبيه عاجل: اقترب دورك (#${myTicket.ticketNumber})`,
+        `بقي أمامك ${livePeopleAhead === 1 ? 'شخص واحد فقط' : 'شخصان فقط'}. يرجى التوجه إلى القاعة الآن لتفادي فوات دورك.`
+      );
+      setEarlyProximityAlertTriggered(true);
+    }
+  }, [livePeopleAhead, myTicket, earlyProximityAlertTriggered, isMyTurnCalled, isMyTurnInside]);
+
+  // Request notifications and screen wake lock
+  const handleEnableAlertsAndWakeLock = async () => {
+    const notif = await requestNotificationPermission();
+    setNotificationsAllowed(notif);
+
+    const wake = await requestScreenWakeLock();
+    setWakeLockActive(wake);
+
+    if (notif || wake) {
+      playQueueChime();
+      sendBrowserNotification(
+        '✓ تم تفعيل التنبيهات وتثبيت الشاشة',
+        `سننبهك برنة وإشعار عند اقتراب دورك رقم #${myTicket?.ticketNumber}`
+      );
+    }
+  };
+
+  // Handle Book Ticket with Mandatory Phone
   const handleBook = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
+
+    const cleanPhone = phone.trim().replace(/\s+/g, '');
+    if (!cleanPhone || cleanPhone.length < 8) {
+      setFormError('رقم الهاتف إجباري (8 أرقام على الأقل) لضمان متابعة دورك واستلام التنبيهات');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const res = await fetch('/api/tickets', {
@@ -190,7 +277,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
         body: JSON.stringify({
           orgSlug: slug,
           customerName: name,
-          customerPhone: phone,
+          customerPhone: cleanPhone,
           ticketType: 'qr',
         }),
       });
@@ -200,6 +287,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
         const ticket = json.data;
         const targetTimestamp = Date.now() + ticket.estimated_wait_mins * 60 * 1000;
         const cached: CachedTicket = {
+          ticketId: ticket.id,
           ticketNumber: ticket.ticket_number,
           orgSlug: slug,
           orgName: queueState?.organization.name || 'المؤسسة',
@@ -207,22 +295,96 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
           estimatedTargetTimestamp: targetTimestamp,
           initialEstimatedClockTime: ticket.estimated_clock_time,
           customerName: name || undefined,
+          customerPhone: cleanPhone,
+          totalEstimatedSeconds: ticket.estimated_wait_mins * 60,
           createdAt: Date.now(),
         };
 
         localStorage.setItem(`smart_queue_ticket_${slug}`, JSON.stringify(cached));
         setMyTicket(cached);
         setAlertTriggered(false);
+        setEarlyProximityAlertTriggered(false);
         setCalledSpoken(false);
+        setFeedbackSubmitted(false);
+        playQueueChime();
+
+        // Automatically attempt to activate WakeLock and notifications
+        handleEnableAlertsAndWakeLock();
+        fetchState();
+      } else {
+        setFormError(json.error || 'حدث خطأ أثناء حجز التذكرة');
+      }
+    } catch {
+      setFormError('تعذر الاتصال بالخادم لحجز التذكرة');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Handle Phone Recovery (Field Problem Solution)
+  const handleRecoverTicket = async () => {
+    const clean = recoveryPhone.trim().replace(/\s+/g, '');
+    if (!clean || clean.length < 8) {
+      setRecoveryError('يرجى إدخال رقم هاتف صحيح (8 أرقام على الأقل)');
+      return;
+    }
+    setIsRecovering(true);
+    setRecoveryError(null);
+    try {
+      const res = await fetch(`/api/tickets?orgSlug=${slug}&phone=${clean}`);
+      const json = await res.json();
+      if (json.success && json.data) {
+        const ticket = json.data;
+        const cached: CachedTicket = {
+          ticketId: ticket.id,
+          ticketNumber: ticket.ticket_number,
+          orgSlug: slug,
+          orgName: queueState?.organization?.name || 'المؤسسة',
+          sectorLabel: queueState?.organization?.sector_label || 'زبون',
+          estimatedTargetTimestamp: Date.now() + (ticket.estimated_wait_mins || 15) * 60 * 1000,
+          initialEstimatedClockTime: ticket.estimated_clock_time || '—',
+          customerName: ticket.customer_name || undefined,
+          customerPhone: ticket.customer_phone,
+          totalEstimatedSeconds: (ticket.estimated_wait_mins || 15) * 60,
+          createdAt: ticket.created_at,
+        };
+        localStorage.setItem(`smart_queue_ticket_${slug}`, JSON.stringify(cached));
+        setMyTicket(cached);
+        setRecoveryPhone('');
+        setShowRecovery(false);
+        setEarlyProximityAlertTriggered(false);
         playQueueChime();
         fetchState();
       } else {
-        alert(json.error || 'حدث خطأ أثناء حجز التذكرة');
+        setRecoveryError(json.error || 'لم يتم العثور على تذكرة نشطة مسجلة بهذا الرقم');
       }
     } catch {
-      alert('تعذر الاتصال بالخادم لحجز التذكرة');
+      setRecoveryError('تعذر الاتصال بالخادم للبحث عن التذكرة');
     } finally {
-      setIsSubmitting(false);
+      setIsRecovering(false);
+    }
+  };
+
+  // Handle 1-Tap Post-Service Feedback
+  const handleFeedback = async (rating: FeedbackRating) => {
+    if (!myTicket?.ticketId) {
+      setFeedbackSubmitted(true);
+      return;
+    }
+    try {
+      await fetch('/api/tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'feedback',
+          ticketId: myTicket.ticketId,
+          rating,
+        }),
+      });
+      setFeedbackSubmitted(true);
+      localStorage.setItem(`smart_queue_feedback_${slug}`, 'true');
+    } catch {
+      setFeedbackSubmitted(true);
     }
   };
 
@@ -247,9 +409,12 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   const handleLeaveQueue = () => {
     if (confirm('هل أنت متأكد من مغادرة الطابور وإلغاء متابعة التذكرة؟')) {
       localStorage.removeItem(`smart_queue_ticket_${slug}`);
+      localStorage.removeItem(`smart_queue_feedback_${slug}`);
       setMyTicket(null);
       setRemainingSeconds(null);
       setCalledSpoken(false);
+      setEarlyProximityAlertTriggered(false);
+      releaseScreenWakeLock();
     }
   };
 
@@ -260,9 +425,16 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // SVG Circular Gauge Calculations
+  const radius = 38;
+  const circumference = 2 * Math.PI * radius; // ~238.76
+  const totalSeconds = myTicket?.totalEstimatedSeconds || 15 * 60;
+  const fraction = Math.min(1, Math.max(0, (remainingSeconds ?? 0) / totalSeconds));
+  const strokeDashoffset = circumference * (1 - fraction);
+
   if (loading && !myTicket) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-slateNavy-950 text-slateNavy-100">
+      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-slateNavy-950 text-slateNavy-100 min-h-screen">
         <div className="w-10 h-10 border-2 border-slateNavy-400 border-t-transparent rounded-full animate-spin mb-4" />
         <p className="text-slateNavy-400 text-sm font-medium">جاري فحص حالة الطابور...</p>
       </div>
@@ -271,7 +443,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
 
   if (error && !queueState && !myTicket) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-slateNavy-950 text-slateNavy-100">
+      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-slateNavy-950 text-slateNavy-100 min-h-screen">
         <AlertCircle className="w-12 h-12 text-slateNavy-400 mb-3" />
         <h2 className="text-lg font-bold text-slateNavy-100 mb-2">{error}</h2>
         <p className="text-slateNavy-400 text-xs mb-6">يرجى التأكد من مسح رمز QR الصحيح للمؤسسة</p>
@@ -283,16 +455,21 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   }
 
   return (
-    <main className="flex-1 max-w-md mx-auto w-full p-4 flex flex-col justify-between bg-slateNavy-950 text-slateNavy-100" dir="rtl">
+    <main className="flex-1 max-w-md mx-auto w-full p-4 flex flex-col justify-between bg-slateNavy-950 text-slateNavy-100 min-h-screen" dir="rtl">
       {/* Top Header & Offline Status */}
-      <header className="mb-4">
+      <header className="mb-3">
         <div className="flex items-center justify-between pb-3 border-b border-slateNavy-800">
           <div>
-            <h1 className="text-sm font-bold text-slateNavy-100">
-              {org?.name || myTicket?.orgName}
-            </h1>
-            <p className="text-[11px] text-slateNavy-400">
-              خدمة {sectorLabel} الذكية • {staffTitle}
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-sm font-bold text-slateNavy-100">
+                {org?.name || myTicket?.orgName}
+              </h1>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slateNavy-900 border border-slateNavy-800 text-slateNavy-300">
+                {sectorLabel}
+              </span>
+            </div>
+            <p className="text-[11px] text-slateNavy-400 mt-0.5">
+              خدمة ذكية • {staffTitle}
             </p>
           </div>
 
@@ -321,17 +498,17 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
 
       {/* Screen 1: Active Ticket Card */}
       {myTicket ? (
-        <div className="space-y-4 my-auto">
+        <div className="space-y-3.5 my-auto">
           {/* Main Card */}
           <div className={`relative bg-slateNavy-900 border rounded-3xl p-6 shadow-2xl transition-all ${
             isMyTurnCalled 
-              ? 'border-slateNavy-100 ring-4 ring-slateNavy-700/50' 
+              ? 'border-emerald-400 ring-4 ring-emerald-500/30' 
               : isMyTurnInside 
               ? 'border-slateNavy-400 ring-2 ring-slateNavy-700/30'
               : 'border-slateNavy-800'
           }`}>
             {/* Top Bar of Card */}
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-2">
               <span className="text-[11px] font-semibold px-2.5 py-1 bg-slateNavy-800 text-slateNavy-100 rounded-lg border border-slateNavy-700">
                 تذكرتك الرقمية
               </span>
@@ -355,20 +532,20 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
             </div>
 
             {/* Giant Number */}
-            <div className="text-center py-2">
-              <p className="text-xs font-medium text-slateNavy-400 mb-1">رقم دورك في القائمة</p>
+            <div className="text-center py-1">
+              <p className="text-xs font-medium text-slateNavy-400 mb-0.5">رقم دورك في القائمة</p>
               <div className="text-6xl font-black text-slateNavy-100 tracking-tight">
                 #{myTicket.ticketNumber}
               </div>
               {myTicket.customerName && (
-                <p className="text-sm font-semibold text-slateNavy-400 mt-1">
+                <p className="text-sm font-semibold text-slateNavy-300 mt-1">
                   مرحباً، {myTicket.customerName}
                 </p>
               )}
             </div>
 
             {/* Perforated separator */}
-            <div className="relative my-4">
+            <div className="relative my-3">
               <div className="border-t border-dashed border-slateNavy-800" />
               <div className="absolute -left-9 top-1/2 -translate-y-1/2 w-6 h-6 bg-slateNavy-950 rounded-full border-r border-slateNavy-800" />
               <div className="absolute -right-9 top-1/2 -translate-y-1/2 w-6 h-6 bg-slateNavy-950 rounded-full border-l border-slateNavy-800" />
@@ -376,10 +553,10 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
 
             {/* PRESENCE STATE 1: CALLED (استدعاء للدخول) */}
             {isMyTurnCalled ? (
-              <div className="bg-slateNavy-800 border-2 border-slateNavy-100 rounded-2xl p-4 text-center animate-pulse space-y-1.5">
-                <DoorOpen className="w-10 h-10 text-slateNavy-100 mx-auto" />
-                <h3 className="text-lg font-black text-slateNavy-100">تم استدعاؤك الآن! تفضل بالدخول</h3>
-                <p className="text-xs text-slateNavy-400">{staffTitle} بانتظار دخولك إلى القاعة</p>
+              <div className="bg-slateNavy-800 border-2 border-emerald-400 rounded-2xl p-4 text-center animate-pulse space-y-1.5">
+                <DoorOpen className="w-10 h-10 text-emerald-400 mx-auto" />
+                <h3 className="text-lg font-black text-emerald-300">تم استدعاؤك الآن! تفضل بالدخول</h3>
+                <p className="text-xs text-slateNavy-300">{staffTitle} بانتظار دخولك إلى القاعة</p>
               </div>
             ) : isMyTurnInside ? (
               /* PRESENCE STATE 2: INSIDE (بالداخل حالياً) */
@@ -414,32 +591,146 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
               </div>
             )}
 
-            {/* Estimated Clock Time & Offline Timer */}
-            {!isCompletedForMe && !isMyTurnInside && (
+            {/* Circular Countdown Progress Ring & Clock Estimation */}
+            {!isCompletedForMe && !isMyTurnInside && !isMyTurnCalled && (
               <div className="mt-4 bg-slateNavy-950 border border-slateNavy-800 rounded-2xl p-3.5 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-slateNavy-800 text-slateNavy-100 flex items-center justify-center">
-                    <Clock className="w-4 h-4" />
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-slateNavy-800 text-slateNavy-100 flex items-center justify-center">
+                    <Clock className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-[10px] text-slateNavy-400">ساعة الدخول التقريبية</p>
+                    <p className="text-[10px] text-slateNavy-400">ساعة الدخول المقدرة</p>
                     <p className="text-base font-black text-slateNavy-100">
                       {myTicket.initialEstimatedClockTime}
                     </p>
                   </div>
                 </div>
 
+                {/* SVG Countdown Ring */}
                 {remainingSeconds !== null && (
-                  <div className="text-left">
-                    <p className="text-[10px] text-slateNavy-400">الوقت المتبقي</p>
-                    <p className="text-sm font-bold font-mono text-slateNavy-100">
-                      {formatCountdown(remainingSeconds)}
-                    </p>
+                  <div className="relative w-20 h-20 flex items-center justify-center">
+                    <svg className="w-20 h-20 -rotate-90 transform" viewBox="0 0 100 100">
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r={radius}
+                        className="text-slateNavy-800"
+                        strokeWidth="8"
+                        stroke="currentColor"
+                        fill="transparent"
+                      />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r={radius}
+                        className="text-slateNavy-300 transition-all duration-1000 ease-linear"
+                        strokeWidth="8"
+                        strokeDasharray={circumference}
+                        strokeDashoffset={strokeDashoffset}
+                        strokeLinecap="round"
+                        stroke="currentColor"
+                        fill="transparent"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                      <span className="text-xs font-black font-mono text-white">
+                        {formatCountdown(remainingSeconds)}
+                      </span>
+                      <span className="text-[8px] text-slateNavy-400">متبقي</span>
+                    </div>
                   </div>
                 )}
               </div>
             )}
           </div>
+
+          {/* FIELD ALERT: Early Proximity Warning (when livePeopleAhead <= 2) */}
+          {livePeopleAhead <= 2 && livePeopleAhead > 0 && !isMyTurnCalled && !isMyTurnInside && (
+            <div className="bg-amber-950/40 border-2 border-amber-500/80 rounded-2xl p-4 text-amber-200 animate-pulse flex items-start gap-3 shadow-lg shadow-amber-900/20">
+              <AlertTriangle className="w-6 h-6 text-amber-400 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="font-bold text-sm text-white">
+                  ⚠️ تنبيه: توجه إلى القاعة الآن!
+                </h4>
+                <p className="text-xs text-amber-200/90 mt-1 leading-relaxed">
+                  بقي أمامك {livePeopleAhead === 1 ? 'شخص واحد فقط' : 'شخصان فقط'}. بعض الأدوار قد تمر أسرع من المتوقع، نوصيك بالتواجد بالصالة فوراً لتجنب فوات دورك.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Screen Wake Lock & Notification Toggle Widget */}
+          {!isCompletedForMe && (
+            <div className="flex items-center justify-between p-3 bg-slateNavy-900 border border-slateNavy-800 rounded-2xl">
+              <div className="flex items-center gap-2.5">
+                <Bell className={`w-4 h-4 ${notificationsAllowed ? 'text-emerald-400' : 'text-slateNavy-400'}`} />
+                <div>
+                  <p className="text-xs font-bold text-slateNavy-100">
+                    {notificationsAllowed && wakeLockActive
+                      ? 'التنبيهات وتثبيت الشاشة نشطة'
+                      : 'تنبيهات عند إغلاق الشاشة'}
+                  </p>
+                  <p className="text-[10px] text-slateNavy-400">
+                    {notificationsAllowed
+                      ? 'ستصلك إشعارات ورنة حتى لو وضعت الهاتف في جيبك'
+                      : 'فعّل الإشعارات لمنع قفل الشاشة وفوات الدور'}
+                  </p>
+                </div>
+              </div>
+              {!notificationsAllowed && (
+                <button
+                  onClick={handleEnableAlertsAndWakeLock}
+                  className="px-3 py-1.5 bg-slateNavy-800 hover:bg-slateNavy-700 border border-slateNavy-700 text-slateNavy-100 text-[11px] font-bold rounded-xl transition"
+                >
+                  تفعيل الآن
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* 1-Tap Post-Service Feedback Rating (When Completed) */}
+          {isCompletedForMe && (
+            <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-2xl p-4 text-center space-y-3">
+              {feedbackSubmitted ? (
+                <div className="py-2 space-y-1">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
+                  <h3 className="text-sm font-bold text-slateNavy-100">شكراً جزيلاً لتقييمك!</h3>
+                  <p className="text-xs text-slateNavy-400">ملاحظتك تساعدنا على تحسين سرعة وجودة الخدمة دائماً.</p>
+                </div>
+              ) : (
+                <>
+                  <p className="text-xs text-slateNavy-300 font-semibold">
+                    كيف كانت تجربتك اليوم في خدمة {sectorLabel}؟
+                  </p>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      onClick={() => handleFeedback('great')}
+                      className="p-3 bg-slateNavy-950 hover:bg-slateNavy-800 border border-slateNavy-800 rounded-xl flex flex-col items-center gap-1 transition active:scale-95"
+                    >
+                      <span className="text-2xl">😄</span>
+                      <span className="text-xs font-bold text-slateNavy-100">ممتازة</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleFeedback('okay')}
+                      className="p-3 bg-slateNavy-950 hover:bg-slateNavy-800 border border-slateNavy-800 rounded-xl flex flex-col items-center gap-1 transition active:scale-95"
+                    >
+                      <span className="text-2xl">😐</span>
+                      <span className="text-xs font-bold text-slateNavy-100">عادية</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleFeedback('bad')}
+                      className="p-3 bg-slateNavy-950 hover:bg-slateNavy-800 border border-slateNavy-800 rounded-xl flex flex-col items-center gap-1 transition active:scale-95"
+                    >
+                      <span className="text-2xl">🙁</span>
+                      <span className="text-xs font-bold text-slateNavy-100">تحتاج تحسين</span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
 
           {/* Reassurance Banner */}
           <div className="p-3.5 bg-slateNavy-900 border border-slateNavy-800 rounded-2xl flex items-start gap-3">
@@ -495,14 +786,66 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
             </div>
           </div>
 
-          {/* Form */}
+          {/* Phone Lookup / Recovery Widget */}
+          <div className="bg-slateNavy-900 border border-slateNavy-800 rounded-2xl p-3.5">
+            <button
+              type="button"
+              onClick={() => setShowRecovery(!showRecovery)}
+              className="w-full flex items-center justify-between text-xs font-bold text-slateNavy-300 hover:text-slateNavy-100 transition"
+            >
+              <span className="flex items-center gap-1.5">
+                <Search className="w-3.5 h-3.5 text-slateNavy-400" />
+                <span>أغلقت الصفحة بالخطأ؟ استرجع تذكرتك برقم الهاتف</span>
+              </span>
+              <span className="text-[11px] text-slateNavy-400 underline">
+                {showRecovery ? 'إلغاء' : 'استرجاع'}
+              </span>
+            </button>
+
+            {showRecovery && (
+              <div className="mt-3 pt-3 border-t border-slateNavy-800 space-y-2">
+                <p className="text-[11px] text-slateNavy-400">
+                  أدخل رقم هاتفك الذي حجزت به لاسترجاع تذكرتك النشطة فوراً:
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="tel"
+                    value={recoveryPhone}
+                    onChange={(e) => setRecoveryPhone(e.target.value)}
+                    placeholder="05 / 06 / 07..."
+                    className="flex-1 bg-slateNavy-950 border border-slateNavy-800 rounded-xl px-3 py-2 text-xs text-slateNavy-100 focus:outline-none focus:border-slateNavy-400 text-left dir-ltr"
+                  />
+                  <button
+                    type="button"
+                    disabled={isRecovering}
+                    onClick={handleRecoverTicket}
+                    className="px-4 py-2 bg-slateNavy-800 hover:bg-slateNavy-700 text-slateNavy-100 rounded-xl text-xs font-bold transition disabled:opacity-50"
+                  >
+                    {isRecovering ? 'جاري...' : 'استرجاع'}
+                  </button>
+                </div>
+                {recoveryError && (
+                  <p className="text-[11px] text-rose-400">{recoveryError}</p>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Booking Form with Mandatory Phone */}
           <form onSubmit={handleBook} className="bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-5 shadow-xl space-y-4">
             <div className="text-center">
               <h2 className="text-lg font-bold text-slateNavy-100">احجز دورك الرقمي</h2>
               <p className="text-xs text-slateNavy-400 mt-0.5">
-                احجز تذكرتك وغادر القاعة، وسننبهك صوتياً عند حلول دورك
+                احجز تذكرتك وغادر القاعة، وسننبهك صوتياً قبل حلول دورك
               </p>
             </div>
+
+            {formError && (
+              <div className="p-3 bg-rose-950/40 border border-rose-800 rounded-xl text-rose-300 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                <span>{formError}</span>
+              </div>
+            )}
 
             <div className="space-y-3">
               <div>
@@ -522,19 +865,24 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slateNavy-400 mb-1">
-                  رقم الهاتف (اختياري لتلقي التنبيهات)
+                <label className="block text-xs font-semibold text-slateNavy-300 mb-1">
+                  رقم الهاتف (إجباري لمتابعة دورك واستلام التنبيهات) <span className="text-amber-400">*</span>
                 </label>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-slateNavy-700 absolute right-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="tel"
+                    required
+                    minLength={8}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="05 / 06 / 07..."
                     className="w-full bg-slateNavy-950 border border-slateNavy-800 rounded-xl pr-9 pl-3 py-2.5 text-sm text-slateNavy-100 placeholder-slateNavy-700 focus:outline-none focus:border-slateNavy-400 text-left dir-ltr transition"
                   />
                 </div>
+                <p className="text-[10px] text-slateNavy-500 mt-1">
+                  يُستخدم لاسترجاع تذكرتك إذا أُغلقت الصفحة وتنبيهك باقتراب دورك
+                </p>
               </div>
             </div>
 
@@ -557,7 +905,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
       )}
 
       {/* Footer */}
-      <footer className="text-center py-2 text-[11px] text-slateNavy-700 border-t border-slateNavy-900 mt-4">
+      <footer className="text-center py-2 text-[11px] text-slateNavy-700 border-t border-slateNavy-900 mt-3">
         نظام الطابور الذكي العام • لا مزيد من التزاحم في قاعات الانتظار
       </footer>
     </main>
