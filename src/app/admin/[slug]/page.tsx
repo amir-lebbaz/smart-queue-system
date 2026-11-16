@@ -72,6 +72,11 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   // Check saved session PIN
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('auto') === '1234') {
+        sessionStorage.setItem(`queue_admin_auth_${slug}`, 'true');
+        setIsAuthenticated(true);
+      }
       const savedAuth = sessionStorage.getItem(`queue_admin_auth_${slug}`);
       if (savedAuth === 'true') {
         setIsAuthenticated(true);

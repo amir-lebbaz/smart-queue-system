@@ -50,22 +50,31 @@ const WHATSAPP_BASE = `https://wa.me/${WHATSAPP_INTL}`;
 
 const screenshots = [
   {
+    id: 'desktop-admin',
+    title: '🖥️ شاشة كمبيوتر المتحكم',
+    tag: 'لوحة التحكم العريضة للحواسيب والمكاتب',
+    image: '/shots/admin-dashboard-desktop.png',
+    description: 'لوحة تحكم احترافية متكاملة مصممة خصيصاً لشاشات الحواسيب المكتبية واللابتوب: إدارة الطابور لحظياً، استدعاء المراجعين، تأكيد الدخول والخروج، وإجراء رنة هاتفية سريعة بضغطة زر واحدة بدون كابلات.',
+    badge: 'متاحة في كل الباقات',
+    highlights: ['عرض عريض 16:9 للحواسيب', 'إدارة فورية بدون كابلات', 'تسجيل حضور سريع للمراجعين', 'تأجيل ذكي للمتأخرين (Hold)'],
+  },
+  {
+    id: 'mobile-admin',
+    title: '📱 ريموت الهاتف للمسير',
+    tag: 'لوحة تحكم المسير المحمولة',
+    image: '/shots/admin-dashboard-mobile.png',
+    description: 'ريموت خفيف وسريع يعمل مباشرة من متصفح أي هاتف ذكي، يتيح للطبيب أو الحلاق استدعاء المراجعين والتحكم في القاعة وهو يتنقل بحرية دون الحاجة لكمبيوتر.',
+    badge: 'متاحة في كل الباقات',
+    highlights: ['يعمل من أي هاتف (iPhone/Android)', 'محمي برمز PIN سري', 'استدعاء وتأجيل بلمسة واحدة', 'رنة هاتفية سريعة بنقرة'],
+  },
+  {
     id: 'customer',
-    title: '📱 هاتف المراجع',
+    title: '🎫 تذكرة هاتف المراجع',
     tag: 'شاشة الزبون التفاعلية',
     image: '/shots/customer-mobile-ticket.png',
     description: 'تذكرة رقمية متطورة على هاتف المراجع، تحسب وقت الدخول بالدقيقة وتنبّهه صوتياً عند اقتراب دوره (قبل شخصين) ليحضر للصالة مرتاحاً.',
     badge: 'متاحة في كل الباقات',
     highlights: ['بدون تحميل أي تطبيق', 'عد تنازلي لحظي بالدقيقة', 'تنبيه اهتزاز وصوت للحضور', 'تقييم فوري للخدمة عند الخروج'],
-  },
-  {
-    id: 'admin',
-    title: '💻 ريموت الطبيب والمسير',
-    tag: 'لوحة التحكم الفائقة',
-    image: '/shots/admin-dashboard-desktop.png',
-    description: 'ريموت متطور يعمل من الهاتف أو الكمبيوتر: استدعاء المراجع، تأكيد دخوله، خروجه التلقائي، تأجيل المتأخر بضغطة زر، ورنة هاتفية سريعة.',
-    badge: 'متاحة في كل الباقات',
-    highlights: ['محمي برمز PIN خاص', 'تأجيل ذكي للمتأخر (Hold)', 'رنة هاتفية سريعة (Bip)', 'تسجيل تذكرة حضورية في ثوانٍ'],
   },
   {
     id: 'tv',
@@ -128,7 +137,7 @@ const faqs = [
 ];
 
 export default function PromotionalLandingPage() {
-  const [activeShot, setActiveShot] = useState('customer');
+  const [activeShot, setActiveShot] = useState('desktop-admin');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [isYearly, setIsYearly] = useState<boolean>(true);
   const [dailyVisitors, setDailyVisitors] = useState<number>(40);
