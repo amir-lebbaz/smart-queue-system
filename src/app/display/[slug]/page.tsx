@@ -14,7 +14,8 @@ import {
   UserCheck, 
   PauseCircle,
   QrCode,
-  ArrowRight
+  ArrowRight,
+  Tv
 } from 'lucide-react';
 import { QueueState } from '@/lib/types';
 import { playQueueChime } from '@/lib/audio';
