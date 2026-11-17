@@ -510,7 +510,13 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   }
 
   return (
-    <main className="flex-1 max-w-md mx-auto w-full p-4 pb-24 flex flex-col justify-between bg-slateNavy-950 text-slateNavy-100" dir="rtl">
+    <main className="flex-1 max-w-md mx-auto w-full p-4 pb-24 flex flex-col justify-between bg-[#08131F] text-[#E8EFF3] min-h-screen relative font-sans" dir="rtl">
+      {/* Background Ambient Glow in Arctic Harbor Theme */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        <div className="absolute inset-0 arctic-grid-pattern opacity-15" />
+        <div className="absolute top-10 -right-20 w-72 h-72 rounded-full bg-[#16314A]/60 blur-[90px]" />
+        <div className="absolute bottom-20 -left-20 w-72 h-72 rounded-full bg-[#2E4F6B]/40 blur-[90px]" />
+      </div>
       {/* Top Header */}
       <header className="mb-3">
         <div className="flex items-center justify-between pb-3 border-b border-slateNavy-800">
@@ -770,7 +776,11 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
             {queueState.heldTickets.map((t) => (
               <div 
                 key={t.id} 
-                className="bg-slateNavy-950 border border-slateNavy-800 rounded-xl p-2.5 flex items-center justify-between gap-2"
+                className={`bg-slateNavy-950 border rounded-xl p-2.5 flex items-center justify-between gap-2 transition ${
+                  t.is_present 
+                    ? 'border-emerald-400/80 bg-emerald-950/20 shadow-[0_0_15px_-3px_rgba(16,185,129,0.3)]' 
+                    : 'border-slateNavy-800'
+                }`}
               >
                 <div>
                   <div className="flex items-center gap-2">
@@ -778,6 +788,12 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
                     <span className="text-xs font-semibold text-slateNavy-400">
                       {t.customer_name || sectorLabel}
                     </span>
+                    {t.is_present && (
+                      <span className="inline-flex items-center gap-1 text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 px-2 py-0.5 rounded-full font-bold animate-pulse">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                        حاضر في القاعة!
+                      </span>
+                    )}
                   </div>
                   {t.customer_phone && (
                     <span className="text-[10px] text-slateNavy-400">{t.customer_phone}</span>
@@ -797,9 +813,13 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
 
                   <button
                     onClick={() => handleRecallHeld(t.id)}
-                    className="py-1 px-2.5 bg-slateNavy-800 hover:bg-slateNavy-700 text-slateNavy-100 border border-slateNavy-700 font-bold text-xs rounded-lg transition"
+                    className={`py-1.5 px-3 border font-black text-xs rounded-xl transition flex items-center gap-1 ${
+                      t.is_present
+                        ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 border-emerald-400 shadow-lg'
+                        : 'bg-slateNavy-800 hover:bg-slateNavy-700 text-slateNavy-100 border-slateNavy-700'
+                    }`}
                   >
-                    حضر الآن (استدعاء)
+                    <span>استدعاء الآن</span>
                   </button>
                 </div>
               </div>

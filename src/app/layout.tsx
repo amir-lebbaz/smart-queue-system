@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-emerald-500 selection:text-white">
+      <body className="min-h-screen bg-[#08131F] text-[#E8EFF3] flex flex-col selection:bg-[#2E4F6B] selection:text-[#E8EFF3] font-sans antialiased">
         <ServiceWorkerRegister />
         {children}
       </body>

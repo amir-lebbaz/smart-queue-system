@@ -581,6 +581,31 @@ export async function submitTicketFeedback(
   return Number(res.changes) > 0;
 }
 
+export async function checkinTicket(orgSlug: string, ticketNumber: number): Promise<boolean> {
+  if (isCloudEnabled) {
+    try {
+      await supaFetch(
+        `queue_tickets?org_slug=eq.${encodeURIComponent(orgSlug)}&ticket_number=eq.${ticketNumber}`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify({ is_present: true }),
+        }
+      );
+      return true;
+    } catch (e) {
+      console.warn('Cloud checkinTicket error', e);
+    }
+  }
+
+  const db = getSqliteDb();
+  try {
+    db.prepare('UPDATE tickets SET is_present = 1 WHERE org_slug = ? AND ticket_number = ?').run(orgSlug, ticketNumber);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function callNextTicket(orgSlug: string): Promise<{ currentTicket: Ticket | null; organization: Organization }> {
   const org = await getOrganization(orgSlug);
   if (!org) throw new Error('المؤسسة غير موجودة');

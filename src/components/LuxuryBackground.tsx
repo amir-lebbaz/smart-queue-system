@@ -57,11 +57,11 @@ export default function LuxuryBackground() {
 
     // Particle pool with Arctic Harbor palette
     const colors = [
-      'rgba(232, 239, 243, 0.85)', // #E8EFF3
-      'rgba(169, 189, 201, 0.75)', // #A9BDC9
-      'rgba(95, 127, 152, 0.65)',  // #5F7F98
-      'rgba(46, 79, 107, 0.85)',   // #2E4F6B
-      'rgba(56, 189, 248, 0.85)',  // cyan-400
+      'rgba(232, 239, 243, 0.95)', // #E8EFF3 bright white
+      'rgba(169, 189, 201, 0.88)', // #A9BDC9 crisp horizon
+      'rgba(95, 127, 152, 0.8)',   // #5F7F98 misty blue
+      'rgba(56, 189, 248, 0.95)',  // cyan-400 vivid tech glow
+      'rgba(125, 211, 252, 0.9)',  // cyan-300
     ];
 
     interface Particle {
@@ -72,26 +72,24 @@ export default function LuxuryBackground() {
       radius: number;
       baseRadius: number;
       color: string;
-      glowColor: string;
       pulseSpeed: number;
       pulseAngle: number;
     }
 
-    const particleCount = Math.min(Math.floor((width * height) / 18000), 75);
+    const particleCount = Math.min(Math.floor((width * height) / 14000), 85);
     const particles: Particle[] = [];
 
-    for (let i = 0; i < particleCount; i++) {
-      const radius = Math.random() * 2.2 + 1.2;
+    for (let i = 0; i < Math.max(particleCount, 50); i++) {
+      const radius = Math.random() * 2.5 + 1.5;
       const color = colors[Math.floor(Math.random() * colors.length)];
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.75,
-        vy: (Math.random() - 0.5) * 0.75,
+        vx: (Math.random() - 0.5) * 0.9,
+        vy: (Math.random() - 0.5) * 0.9,
         radius,
         baseRadius: radius,
         color,
-        glowColor: color.replace(')', ', 0.4)').replace('rgb', 'rgba'),
         pulseSpeed: 0.02 + Math.random() * 0.03,
         pulseAngle: Math.random() * Math.PI * 2,
       });
@@ -173,7 +171,7 @@ export default function LuxuryBackground() {
       }
 
       // Draw constellation connecting lines
-      const maxDistance = 135;
+      const maxDistance = 160;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const p1 = particles[i];
@@ -183,12 +181,12 @@ export default function LuxuryBackground() {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < maxDistance) {
-            const alpha = (1 - dist / maxDistance) * 0.28;
+            const alpha = (1 - dist / maxDistance) * 0.42;
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(95, 127, 152, ${alpha})`;
-            ctx.lineWidth = 0.9;
+            ctx.strokeStyle = `rgba(169, 189, 201, ${alpha})`;
+            ctx.lineWidth = 1.1;
             ctx.stroke();
           }
         }
@@ -211,26 +209,26 @@ export default function LuxuryBackground() {
     <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10 bg-[#08131F]">
       {/* 1. VISIBLE FLOWING AURORA LIQUID RIBBONS (Distinctly moving gradients) */}
       <div
-        className="absolute -top-[25%] -left-[20%] w-[140%] h-[90%] opacity-40 blur-[90px] mix-blend-screen animate-aurora-sweep pointer-events-none"
+        className="absolute -top-[25%] -left-[20%] w-[140%] h-[90%] opacity-55 blur-[65px] mix-blend-screen animate-aurora-sweep pointer-events-none"
         style={{
           background:
-            'radial-gradient(circle at 40% 40%, rgba(46, 79, 107, 0.75) 0%, rgba(22, 49, 74, 0.5) 35%, rgba(8, 19, 31, 0) 70%), conic-gradient(from 180deg at 50% 50%, rgba(56, 189, 248, 0.2) 0deg, rgba(95, 127, 152, 0.35) 120deg, rgba(22, 49, 74, 0.6) 240deg, rgba(56, 189, 248, 0.2) 360deg)',
+            'radial-gradient(circle at 40% 40%, rgba(46, 79, 107, 0.85) 0%, rgba(22, 49, 74, 0.6) 35%, rgba(8, 19, 31, 0) 70%), conic-gradient(from 180deg at 50% 50%, rgba(56, 189, 248, 0.35) 0deg, rgba(95, 127, 152, 0.5) 120deg, rgba(22, 49, 74, 0.7) 240deg, rgba(56, 189, 248, 0.35) 360deg)',
         }}
       />
 
       <div
-        className="absolute top-[35%] -right-[25%] w-[120%] h-[95%] opacity-35 blur-[100px] mix-blend-screen animate-aurora-reverse pointer-events-none"
+        className="absolute top-[35%] -right-[25%] w-[120%] h-[95%] opacity-48 blur-[70px] mix-blend-screen animate-aurora-reverse pointer-events-none"
         style={{
           background:
-            'radial-gradient(circle at 60% 50%, rgba(95, 127, 152, 0.65) 0%, rgba(46, 79, 107, 0.45) 40%, rgba(8, 19, 31, 0) 75%), conic-gradient(from 0deg at 50% 50%, rgba(46, 79, 107, 0.4) 0deg, rgba(56, 189, 248, 0.25) 140deg, rgba(22, 49, 74, 0.5) 280deg, rgba(46, 79, 107, 0.4) 360deg)',
+            'radial-gradient(circle at 60% 50%, rgba(95, 127, 152, 0.75) 0%, rgba(46, 79, 107, 0.55) 40%, rgba(8, 19, 31, 0) 75%), conic-gradient(from 0deg at 50% 50%, rgba(46, 79, 107, 0.5) 0deg, rgba(56, 189, 248, 0.35) 140deg, rgba(22, 49, 74, 0.6) 280deg, rgba(46, 79, 107, 0.5) 360deg)',
         }}
       />
 
       <div
-        className="absolute -bottom-[20%] left-[10%] w-[110%] h-[75%] opacity-30 blur-[95px] mix-blend-screen animate-aurora-pulse pointer-events-none"
+        className="absolute -bottom-[20%] left-[10%] w-[110%] h-[75%] opacity-42 blur-[65px] mix-blend-screen animate-aurora-pulse pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse at center, rgba(56, 189, 248, 0.25) 0%, rgba(46, 79, 107, 0.4) 45%, rgba(8, 19, 31, 0) 70%)',
+            'radial-gradient(ellipse at center, rgba(56, 189, 248, 0.35) 0%, rgba(46, 79, 107, 0.5) 45%, rgba(8, 19, 31, 0) 70%)',
         }}
       />
 
@@ -242,10 +240,10 @@ export default function LuxuryBackground() {
       />
 
       {/* 3. HIGH-TECH MOVING PERSPECTIVE SCANLINE */}
-      <div className="absolute inset-0 bg-repeat opacity-[0.14] arctic-grid-pattern pointer-events-none" />
+      <div className="absolute inset-0 bg-repeat opacity-[0.16] arctic-grid-pattern pointer-events-none" />
 
       {/* 4. SWEEPING LASER BEAM (Moves vertically down every 12 seconds) */}
-      <div className="absolute inset-x-0 h-40 bg-gradient-to-b from-transparent via-cyan-400/10 to-transparent animate-laser-scan pointer-events-none" />
+      <div className="absolute inset-x-0 h-52 bg-gradient-to-b from-transparent via-cyan-400/20 to-transparent animate-laser-scan pointer-events-none" />
 
       {/* 5. FLOATING GEOMETRIC LUXURY ACCENTS (Slowly rotating crosses & radar rings) */}
       <div className="absolute top-28 left-[8%] w-24 h-24 rounded-full border border-[#2E4F6B]/40 animate-spin-ultra-slow pointer-events-none flex items-center justify-center">

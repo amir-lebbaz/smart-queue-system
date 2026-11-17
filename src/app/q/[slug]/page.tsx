@@ -87,6 +87,8 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
 
   // Feedback state
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [hasCheckedIn, setHasCheckedIn] = useState(false);
+  const [isCheckingIn, setIsCheckingIn] = useState(false);
 
   // Load cached ticket on mount
   useEffect(() => {
@@ -190,35 +192,37 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   const activeCurrent = queueState?.currentTicket;
 
   // Determine ticket real presence status
+  const isHeldForMe = Boolean(
+    myTicket && (
+      queueState?.myTicketStatus === 'held' ||
+      queueState?.heldTickets?.some(t => t.ticket_number === myTicket.ticketNumber)
+    )
+  );
+
+  const isCancelledForMe = Boolean(
+    myTicket && queueState?.myTicketStatus === 'cancelled'
+  );
+
   let isMyTurnCalled = false;
   let isMyTurnInside = false;
   let isCompletedForMe = false;
   let livePeopleAhead = 0;
 
-  if (myTicket) {
+  if (myTicket && !isHeldForMe && !isCancelledForMe) {
     if (queueState?.myTicketStatus === 'completed') {
       isCompletedForMe = true;
-    } else if (activeCurrent) {
-      if (activeCurrent.ticket_number === myTicket.ticketNumber) {
-        if (activeCurrent.status === 'called') {
-          isMyTurnCalled = true;
-        } else if (activeCurrent.status === 'serving') {
-          isMyTurnInside = true;
-        }
-      } else if (activeCurrent.ticket_number > myTicket.ticketNumber) {
-        isCompletedForMe = true;
-      } else {
-        livePeopleAhead = myTicket.ticketNumber - activeCurrent.ticket_number;
+    } else if (activeCurrent && activeCurrent.ticket_number === myTicket.ticketNumber) {
+      if (activeCurrent.status === 'called') {
+        isMyTurnCalled = true;
+      } else if (activeCurrent.status === 'serving') {
+        isMyTurnInside = true;
       }
-    } else if (org) {
-      const isInWaiting = queueState?.waitingTickets?.some(t => t.ticket_number === myTicket.ticketNumber);
-      const isInHeld = queueState?.heldTickets?.some(t => t.ticket_number === myTicket.ticketNumber);
-      if (!isInWaiting && !isInHeld && org.last_issued_number >= myTicket.ticketNumber && queueState?.totalWaiting !== undefined) {
-        isCompletedForMe = true;
-      } else if (org.current_ticket_number > myTicket.ticketNumber) {
-        isCompletedForMe = true;
-      } else if (org.current_ticket_number > 0) {
-        livePeopleAhead = Math.max(0, myTicket.ticketNumber - org.current_ticket_number);
+    } else {
+      // If not currently called or serving, check waiting position in queue
+      const waitingList = queueState?.waitingTickets || [];
+      const myIdx = waitingList.findIndex(t => t.ticket_number === myTicket.ticketNumber);
+      if (myIdx >= 0) {
+        livePeopleAhead = myIdx + 1;
       }
     }
   }
@@ -447,6 +451,33 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
     }
   };
 
+  // Customer check-in when held
+  const handleCheckin = async () => {
+    if (!myTicket) return;
+    setIsCheckingIn(true);
+    try {
+      const res = await fetch('/api/tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'checkin',
+          orgSlug: slug,
+          ticketNumber: myTicket.ticketNumber,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setHasCheckedIn(true);
+        playQueueChime();
+        fetchState();
+      }
+    } catch {
+      // ignore
+    } finally {
+      setIsCheckingIn(false);
+    }
+  };
+
   // Format countdown mm:ss
   const formatCountdown = (totalSec: number) => {
     const mins = Math.floor(totalSec / 60);
@@ -484,7 +515,13 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   }
 
   return (
-    <main className="flex-1 max-w-md mx-auto w-full p-4 flex flex-col justify-between bg-slateNavy-950 text-slateNavy-100 min-h-screen" dir="rtl">
+    <main className="flex-1 max-w-md mx-auto w-full p-4 flex flex-col justify-between bg-[#08131F] text-[#E8EFF3] min-h-screen relative font-sans" dir="rtl">
+      {/* Background Ambient Glow in Arctic Harbor Theme */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        <div className="absolute inset-0 arctic-grid-pattern opacity-15" />
+        <div className="absolute top-10 -right-20 w-72 h-72 rounded-full bg-[#16314A]/60 blur-[90px]" />
+        <div className="absolute bottom-20 -left-20 w-72 h-72 rounded-full bg-[#2E4F6B]/40 blur-[90px]" />
+      </div>
       {/* Top Header & Offline Status */}
       <header className="mb-3">
         <div className="flex items-center justify-between pb-3 border-b border-slateNavy-800">
@@ -525,8 +562,101 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
         )}
       </header>
 
-      {/* CASE 1: SERVICE COMPLETED & CUSTOMER EXITED AUTOMATICALLY (شاشة الخروج التلقائي والتقييم فقط) */}
-      {isCompletedForMe && myTicket ? (
+      {/* CASE 1: HELD TICKET (التوقيف المؤقت - لم يحضر عند النداء) */}
+      {isHeldForMe && myTicket ? (
+        <div className="space-y-4 my-auto">
+          <div className="bg-[#16314A] border-2 border-amber-400/80 rounded-3xl p-6 text-center shadow-[0_0_40px_-10px_rgba(251,191,36,0.3)] space-y-5">
+            <div className="w-16 h-16 rounded-3xl bg-amber-500/10 border-2 border-amber-400 text-amber-400 flex items-center justify-center mx-auto shadow-lg shadow-amber-950/40">
+              <Clock className="w-9 h-9 animate-pulse" />
+            </div>
+
+            <div className="space-y-2">
+              <span className="text-[11px] font-black px-3.5 py-1 bg-amber-500/20 border border-amber-500/40 text-amber-300 rounded-full inline-block">
+                تأجيل مؤقت ⏸️
+              </span>
+              <h2 className="text-xl font-black text-[#E8EFF3]">دورك في وضع الانتظار المؤقت</h2>
+              <p className="text-xs text-[#A9BDC9] leading-relaxed max-w-xs mx-auto">
+                تم استدعاء رقمك <strong>#{myTicket.ticketNumber}</strong> سابقاً ولم تكن متواجداً في القاعة، فقام {staffTitle} بتعليق دورك مؤقتاً لإعطاء الفرصة للمراجعين الحاضرين.
+              </p>
+            </div>
+
+            {/* Ticket Details Box */}
+            <div className="p-3.5 bg-[#08131F]/90 border border-[#2E4F6B] rounded-2xl flex items-center justify-around">
+              <div>
+                <p className="text-[10px] text-[#A9BDC9]">رقم تذكرتك</p>
+                <p className="text-3xl font-black text-[#E8EFF3]">#{myTicket.ticketNumber}</p>
+              </div>
+              <div className="h-9 border-r border-[#2E4F6B]" />
+              <div>
+                <p className="text-[10px] text-[#A9BDC9]">الحالة الحالية</p>
+                <p className="text-xs font-bold text-amber-400 flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                  معلق ومحفوظ
+                </p>
+              </div>
+            </div>
+
+            {/* Guidance Note */}
+            <div className="p-3 bg-[#08131F]/60 border border-amber-500/30 rounded-2xl text-[11px] text-[#A9BDC9] text-right space-y-1">
+              <p className="font-bold text-amber-300 flex items-center gap-1">
+                <span>💡</span> مكانك محفوظ ولا تحتاج لحجز تذكرة جديدة!
+              </p>
+              <p>
+                عند وصولك لقاعة الانتظار، اضغط على زر <strong>(أنا حاضر في القاعة)</strong> أدناه لتنبيه {staffTitle}، أو توجه فوراً للاستقبال ليتم استدعاؤك كأولوية قادمة.
+              </p>
+            </div>
+
+            {/* Interactive Check-in Button */}
+            {hasCheckedIn ? (
+              <div className="py-3.5 px-4 bg-emerald-950/60 border border-emerald-500/60 rounded-2xl text-center space-y-1">
+                <p className="text-xs font-black text-emerald-300 flex items-center justify-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  تم إشعار {staffTitle} بوجودك في القاعة!
+                </p>
+                <p className="text-[11px] text-[#A9BDC9]">خليك منتبهاً لرنين الهاتف وشاشة الصالة لاستدعائك قريباً جداً.</p>
+              </div>
+            ) : (
+              <button
+                onClick={handleCheckin}
+                disabled={isCheckingIn}
+                className="w-full py-4 px-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-black rounded-2xl text-xs transition transform active:scale-95 shadow-xl shadow-emerald-950/60 flex items-center justify-center gap-2"
+              >
+                <UserCheck className="w-4 h-4" />
+                <span>{isCheckingIn ? 'جاري الإشعار...' : '🙋‍♂️ أنا حاضر الآن في القاعة'}</span>
+              </button>
+            )}
+          </div>
+
+          {/* Reset / Leave option */}
+          <button
+            onClick={handleLeaveQueue}
+            className="w-full py-3 px-4 bg-[#16314A]/60 hover:bg-[#16314A] border border-[#2E4F6B] text-[#A9BDC9] hover:text-[#E8EFF3] rounded-2xl text-xs font-semibold transition"
+          >
+            مغادرة الطابور وإلغاء هذه التذكرة
+          </button>
+        </div>
+      ) : isCancelledForMe && myTicket ? (
+        /* CASE 2: CANCELLED TICKET */
+        <div className="space-y-4 my-auto">
+          <div className="bg-[#16314A] border border-rose-500/40 rounded-3xl p-6 text-center shadow-xl space-y-4">
+            <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center mx-auto">
+              <AlertTriangle className="w-7 h-7" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-black text-[#E8EFF3]">تم إلغاء التذكرة</h3>
+              <p className="text-xs text-[#A9BDC9] leading-relaxed">
+                تم إلغاء التذكرة رقم #{myTicket.ticketNumber} أو إعادة ضبط طابور اليوم من قِبل {staffTitle}.
+              </p>
+            </div>
+            <button
+              onClick={handleResetForNewBooking}
+              className="w-full py-3.5 px-4 bg-[#2E4F6B] hover:bg-[#3D6282] text-[#E8EFF3] font-bold rounded-2xl text-xs transition"
+            >
+              حجز تذكرة جديدة
+            </button>
+          </div>
+        </div>
+      ) : isCompletedForMe && myTicket ? (
         <div className="space-y-4 my-auto">
           {/* Main Completion Card */}
           <div className="bg-slateNavy-900 border-2 border-emerald-500/60 rounded-3xl p-6 text-center shadow-2xl space-y-4">

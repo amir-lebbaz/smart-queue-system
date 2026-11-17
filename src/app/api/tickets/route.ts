@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { issueTicket, getTicket, cancelTicket, findActiveTicketByPhone, submitTicketFeedback } from '@/lib/db';
+import { issueTicket, getTicket, cancelTicket, findActiveTicketByPhone, submitTicketFeedback, checkinTicket } from '@/lib/db';
 
 export async function GET(req: Request) {
   try {
@@ -51,6 +51,16 @@ export async function POST(req: Request) {
         },
         rating
       );
+      return NextResponse.json({ success: ok });
+    }
+
+    // Customer Check-in from Hold
+    if (body.action === 'checkin') {
+      const { orgSlug, ticketNumber } = body;
+      if (!orgSlug || !ticketNumber) {
+        return NextResponse.json({ success: false, error: 'بيانات غير مكتملة' }, { status: 400 });
+      }
+      const ok = await checkinTicket(orgSlug, Number(ticketNumber));
       return NextResponse.json({ success: ok });
     }
 

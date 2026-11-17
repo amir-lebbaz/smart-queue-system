@@ -413,9 +413,14 @@ export default function TvDisplayPage({ params }: { params: Promise<{ slug: stri
                   {heldTickets.map((ht) => (
                     <span 
                       key={ht.id}
-                      className="px-2.5 py-1 rounded-xl bg-slateNavy-950 border border-amber-500/30 text-amber-300 font-mono text-xs font-black"
+                      className={`px-2.5 py-1 rounded-xl border font-mono text-xs font-black inline-flex items-center gap-1 ${
+                        ht.is_present
+                          ? 'bg-emerald-950 border-emerald-500/60 text-emerald-300 shadow-sm shadow-emerald-500/20'
+                          : 'bg-slateNavy-950 border-amber-500/30 text-amber-300'
+                      }`}
                     >
-                      #{ht.ticket_number}
+                      <span>#{ht.ticket_number}</span>
+                      {ht.is_present && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />}
                     </span>
                   ))}
                 </div>
