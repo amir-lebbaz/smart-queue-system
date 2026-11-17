@@ -443,43 +443,22 @@ export async function issueTicket(
 
   if (isCloudEnabled) {
     try {
-      // Calculate people ahead currently in waiting
-      const waiting = await supaFetch<{ id: number }[]>(`queue_tickets?org_slug=eq.${encodeURIComponent(orgSlug)}&status=eq.waiting&select=id`);
-      const peopleAhead = waiting ? waiting.length : 0;
-      const estWaitMins = Math.max(0, peopleAhead * org.avg_service_mins);
-
-      const now = new Date();
-      const target = new Date(now.getTime() + estWaitMins * 60 * 1000);
-      const estClockTime = target.toLocaleTimeString('ar-DZ', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      });
-
-      const inserted = await supaFetch<Ticket[]>('queue_tickets', {
+      const ticket = await supaFetch<Ticket>('rpc/issue_next_ticket', {
         method: 'POST',
-        headers: { 'Prefer': 'return=representation' },
         body: JSON.stringify({
-          org_slug: orgSlug,
-          ticket_number: nextNumber,
-          customer_name: customerName ? customerName.trim() : null,
-          customer_phone: cleanPhone,
-          ticket_type: ticketType,
-          status: 'waiting',
-          estimated_wait_mins: estWaitMins,
-          estimated_clock_time: estClockTime,
-          created_at: Date.now(),
+          p_org_slug: orgSlug,
+          p_customer_phone: cleanPhone,
+          p_customer_name: customerName ? customerName.trim() : null,
+          p_ticket_type: ticketType,
         }),
       });
-
-      await supaFetch(`queue_organizations?slug=eq.${encodeURIComponent(orgSlug)}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ last_issued_number: nextNumber }),
-      });
-
-      return inserted[0];
-    } catch (e) {
-      console.warn('Cloud issueTicket error, falling back to SQLite', e);
+      if (ticket) return ticket;
+    } catch (e: unknown) {
+      console.warn('Atomic RPC issueTicket error, falling back', e);
+      const msg = e instanceof Error ? e.message : String(e);
+      if (msg.includes('المؤسسة غير موجودة') || msg.includes('تم إيقاف استقبال')) {
+        throw e;
+      }
     }
   }
 
@@ -622,43 +601,13 @@ export async function callNextTicket(orgSlug: string): Promise<{ currentTicket: 
 
   if (isCloudEnabled) {
     try {
-      // 1. Move any currently called or serving tickets to completed
-      await supaFetch(`queue_tickets?org_slug=eq.${encodeURIComponent(orgSlug)}&status=in.(called,serving)`, {
-        method: 'PATCH',
-        body: JSON.stringify({ status: 'completed' }),
+      const res = await supaFetch<{ currentTicket: Ticket | null; organization: Organization }>('rpc/call_next_ticket', {
+        method: 'POST',
+        body: JSON.stringify({ p_org_slug: orgSlug }),
       });
-
-      // 2. Find next waiting ticket
-      const nextList = await supaFetch<Ticket[]>(
-        `queue_tickets?org_slug=eq.${encodeURIComponent(orgSlug)}&status=eq.waiting&order=ticket_number.asc&limit=1`
-      );
-
-      let activeTicket: Ticket | null = null;
-      let currentNumber = 0;
-
-      if (nextList && nextList.length > 0) {
-        const nextId = nextList[0].id;
-        const patched = await supaFetch<Ticket[]>(`queue_tickets?id=eq.${nextId}`, {
-          method: 'PATCH',
-          headers: { 'Prefer': 'return=representation' },
-          body: JSON.stringify({ status: 'called' }),
-        });
-        activeTicket = patched[0];
-        currentNumber = activeTicket.ticket_number;
-      }
-
-      const updatedOrgs = await supaFetch<Organization[]>(`queue_organizations?slug=eq.${encodeURIComponent(orgSlug)}`, {
-        method: 'PATCH',
-        headers: { 'Prefer': 'return=representation' },
-        body: JSON.stringify({
-          current_ticket_number: currentNumber,
-          last_call_timestamp: Date.now(),
-        }),
-      });
-
-      return { currentTicket: activeTicket, organization: updatedOrgs[0] };
+      if (res && res.organization) return res;
     } catch (e) {
-      console.warn('Cloud callNextTicket error', e);
+      console.warn('Atomic RPC callNextTicket error, falling back', e);
     }
   }
 
@@ -928,6 +877,22 @@ export async function getQueueState(
   if (!organization) return null;
 
   if (isCloudEnabled) {
+    try {
+      const summary = await supaFetch<QueueState>('rpc/get_queue_summary', {
+        method: 'POST',
+        body: JSON.stringify({
+          p_org_slug: orgSlug,
+          p_ticket_id: ticketId || null,
+          p_ticket_number: ticketNumber || null,
+        }),
+      });
+      if (summary && summary.organization) {
+        return summary;
+      }
+    } catch (e) {
+      console.warn('Atomic RPC getQueueState error, falling back to manual cloud query', e);
+    }
+
     try {
       // 1. Serving ticket or Called ticket
       const serving = await supaFetch<Ticket[]>(
