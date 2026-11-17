@@ -62,6 +62,10 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [newAvgMins, setNewAvgMins] = useState<number>(15);
   const [newPin, setNewPin] = useState('');
+  const [dailyMaxTickets, setDailyMaxTickets] = useState<number>(0);
+  const [autoScheduleEnabled, setAutoScheduleEnabled] = useState<boolean>(false);
+  const [workStartTime, setWorkStartTime] = useState<string>('08:00');
+  const [workEndTime, setWorkEndTime] = useState<string>('17:00');
   const [isExporting, setIsExporting] = useState(false);
 
   const [showStatsModal, setShowStatsModal] = useState(false);
@@ -113,6 +117,10 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
       if (data.success) {
         setQueueState(data.data);
         setNewAvgMins(data.data.organization.avg_service_mins);
+        setDailyMaxTickets(data.data.organization.daily_max_tickets || 0);
+        setAutoScheduleEnabled(Boolean(data.data.organization.auto_schedule_enabled));
+        setWorkStartTime(data.data.organization.work_start_time || '08:00');
+        setWorkEndTime(data.data.organization.work_end_time || '17:00');
         setError(null);
       }
     } catch {
@@ -392,8 +400,19 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   // Action: Update Settings (Speed & PIN)
   const handleSaveSettings = async () => {
     try {
-      const payload: { avg_service_mins: number; pin_code?: string } = {
+      const payload: {
+        avg_service_mins: number;
+        pin_code?: string;
+        daily_max_tickets: number;
+        auto_schedule_enabled: number;
+        work_start_time: string;
+        work_end_time: string;
+      } = {
         avg_service_mins: Number(newAvgMins),
+        daily_max_tickets: Number(dailyMaxTickets) || 0,
+        auto_schedule_enabled: autoScheduleEnabled ? 1 : 0,
+        work_start_time: workStartTime,
+        work_end_time: workEndTime,
       };
 
       if (newPin.trim()) {
@@ -1220,6 +1239,78 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
                 <p className="text-[10px] text-slateNavy-400 mt-1">
                   يستخدم لحساب وقت الانتظار التقديري لكل زبون فور حجزه.
                 </p>
+              </div>
+
+              {/* Feature 1: Daily Capacity / Quota Limit */}
+              <div className="pt-3 border-t border-slateNavy-800">
+                <label className="block text-xs text-slateNavy-300 font-semibold mb-1 flex items-center justify-between">
+                  <span>سقف التذاكر اليومي (Daily Quota)</span>
+                  <span className="text-[10px] text-slateNavy-400">
+                    {dailyMaxTickets === 0 ? 'غير محدود' : `${dailyMaxTickets} تذكرة`}
+                  </span>
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  max={500}
+                  value={dailyMaxTickets}
+                  onChange={(e) => setDailyMaxTickets(Number(e.target.value))}
+                  className="w-full bg-slateNavy-950 border border-slateNavy-800 rounded-xl px-3 py-2 text-sm text-slateNavy-100 text-center font-bold focus:outline-none focus:border-slateNavy-400"
+                />
+                <p className="text-[10px] text-slateNavy-400 mt-1">
+                  اكتب 0 لحجوزات غير محدودة، أو حدد رقماً ليقفل الحجز عن بعد تلقائياً عند بلوغه.
+                </p>
+              </div>
+
+              {/* Feature 2: Operating Hours & Auto Schedule */}
+              <div className="pt-3 border-t border-slateNavy-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs text-slateNavy-300 font-semibold flex items-center gap-1.5 cursor-pointer">
+                    <Clock className="w-3.5 h-3.5 text-slateNavy-400" />
+                    <span>جدول ساعات العمل الآلي</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setAutoScheduleEnabled(!autoScheduleEnabled)}
+                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                      autoScheduleEnabled ? 'bg-emerald-500' : 'bg-slateNavy-800'
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                        autoScheduleEnabled ? 'translate-x-4' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {autoScheduleEnabled && (
+                  <div className="p-2.5 bg-slateNavy-950 border border-slateNavy-800 rounded-xl space-y-2">
+                    <div className="grid grid-cols-2 gap-2 text-right">
+                      <div>
+                        <label className="block text-[10px] text-slateNavy-400 mb-0.5">وقت بدء الدوام</label>
+                        <input
+                          type="time"
+                          value={workStartTime}
+                          onChange={(e) => setWorkStartTime(e.target.value)}
+                          className="w-full bg-slateNavy-900 border border-slateNavy-800 rounded-lg px-2 py-1 text-xs text-slateNavy-100 focus:outline-none text-center font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] text-slateNavy-400 mb-0.5">وقت نهاية الدوام</label>
+                        <input
+                          type="time"
+                          value={workEndTime}
+                          onChange={(e) => setWorkEndTime(e.target.value)}
+                          className="w-full bg-slateNavy-900 border border-slateNavy-800 rounded-lg px-2 py-1 text-xs text-slateNavy-100 focus:outline-none text-center font-mono"
+                        />
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-slateNavy-400 leading-relaxed">
+                      يقفل الحجز تلقائياً خارج هذه الساعات (الدوام من {workStartTime} إلى {workEndTime}) وفي أيام العطلة.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="pt-3 border-t border-slateNavy-800">

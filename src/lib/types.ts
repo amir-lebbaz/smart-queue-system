@@ -21,7 +21,27 @@ export interface Organization {
   subscription_expires_at?: string | number | null;
   contact_phone?: string | null;
   notes?: string | null;
+  work_start_time?: string;
+  work_end_time?: string;
+  work_days?: string;
+  auto_schedule_enabled?: number;
+  daily_max_tickets?: number;
+  last_reset_date?: string | null;
   created_at?: number | null;
+}
+
+export interface ScheduleInfo {
+  isOpen: boolean;
+  isDayOff: boolean;
+  isBeforeWork: boolean;
+  isAfterWork: boolean;
+  isQuotaExceeded: boolean;
+  workStartTime: string;
+  workEndTime: string;
+  workDays: string;
+  autoScheduleEnabled: boolean;
+  dailyMaxTickets: number;
+  totalIssuedToday: number;
 }
 
 export interface Ticket {
@@ -64,6 +84,7 @@ export interface QueueState {
   totalWaiting: number;
   stats?: DailyStats;
   myTicketStatus?: TicketStatus | null;
+  scheduleInfo?: ScheduleInfo;
 }
 
 export interface GlobalSystemStats {

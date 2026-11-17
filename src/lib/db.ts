@@ -91,6 +91,22 @@ function initSqliteDatabase(db: DatabaseSync): void {
     // Column already exists
   }
 
+  const orgColumns = [
+    "ALTER TABLE organizations ADD COLUMN work_start_time TEXT DEFAULT '08:00';",
+    "ALTER TABLE organizations ADD COLUMN work_end_time TEXT DEFAULT '17:00';",
+    "ALTER TABLE organizations ADD COLUMN work_days TEXT DEFAULT '0,1,2,3,4,6';",
+    "ALTER TABLE organizations ADD COLUMN auto_schedule_enabled INTEGER DEFAULT 0;",
+    "ALTER TABLE organizations ADD COLUMN daily_max_tickets INTEGER DEFAULT 0;",
+    "ALTER TABLE organizations ADD COLUMN last_reset_date TEXT DEFAULT NULL;",
+  ];
+  for (const colSql of orgColumns) {
+    try {
+      db.exec(colSql);
+    } catch {
+      // Column already exists
+    }
+  }
+
   const count = db.prepare('SELECT COUNT(*) as count FROM organizations').get() as { count: number };
   if (count.count === 0) {
     db.prepare(`
@@ -233,6 +249,12 @@ export async function updateOrganizationSettings(
     contact_phone?: string | null;
     notes?: string | null;
     is_active?: number;
+    daily_max_tickets?: number;
+    auto_schedule_enabled?: number;
+    work_start_time?: string;
+    work_end_time?: string;
+    work_days?: string;
+    last_reset_date?: string | null;
   }
 ): Promise<Organization | null> {
   const patchData: Record<string, string | number | null> = {};
@@ -247,6 +269,12 @@ export async function updateOrganizationSettings(
   if (typeof updates.contact_phone !== 'undefined') patchData.contact_phone = updates.contact_phone ? updates.contact_phone.trim() : null;
   if (typeof updates.notes !== 'undefined') patchData.notes = updates.notes ? updates.notes.trim() : null;
   if (typeof updates.is_active === 'number') patchData.is_active = updates.is_active;
+  if (typeof updates.daily_max_tickets === 'number') patchData.daily_max_tickets = updates.daily_max_tickets;
+  if (typeof updates.auto_schedule_enabled === 'number') patchData.auto_schedule_enabled = updates.auto_schedule_enabled;
+  if (updates.work_start_time) patchData.work_start_time = updates.work_start_time.trim();
+  if (updates.work_end_time) patchData.work_end_time = updates.work_end_time.trim();
+  if (updates.work_days) patchData.work_days = updates.work_days.trim();
+  if (typeof updates.last_reset_date !== 'undefined') patchData.last_reset_date = updates.last_reset_date;
 
   if (Object.keys(patchData).length === 0) return getOrganization(slug);
 
@@ -275,6 +303,24 @@ export async function updateOrganizationSettings(
   }
   if (typeof patchData.is_active === 'number') {
     db.prepare('UPDATE organizations SET is_active = ? WHERE slug = ?').run(patchData.is_active, slug);
+  }
+  if (typeof patchData.daily_max_tickets === 'number') {
+    db.prepare('UPDATE organizations SET daily_max_tickets = ? WHERE slug = ?').run(patchData.daily_max_tickets, slug);
+  }
+  if (typeof patchData.auto_schedule_enabled === 'number') {
+    db.prepare('UPDATE organizations SET auto_schedule_enabled = ? WHERE slug = ?').run(patchData.auto_schedule_enabled, slug);
+  }
+  if (patchData.work_start_time) {
+    db.prepare('UPDATE organizations SET work_start_time = ? WHERE slug = ?').run(patchData.work_start_time, slug);
+  }
+  if (patchData.work_end_time) {
+    db.prepare('UPDATE organizations SET work_end_time = ? WHERE slug = ?').run(patchData.work_end_time, slug);
+  }
+  if (patchData.work_days) {
+    db.prepare('UPDATE organizations SET work_days = ? WHERE slug = ?').run(patchData.work_days, slug);
+  }
+  if (typeof patchData.last_reset_date !== 'undefined') {
+    db.prepare('UPDATE organizations SET last_reset_date = ? WHERE slug = ?').run(patchData.last_reset_date, slug);
   }
   return getOrganization(slug);
 }
@@ -466,6 +512,24 @@ export async function issueTicket(
         const match = msg.match(/COOLDOWN_ACTIVE:(\d+)/);
         const mins = match ? match[1] : '90';
         throw new Error(`لقد أتممت خدمتك مؤخراً. لتفادي التكرار وضمان عدالة الأدوار، يرجى الانتظار ${mins} دقيقة لإعادة الحجز، أو مراجعة موظف الاستقبال مباشرة.`);
+      }
+      if (msg.includes('QUOTA_EXCEEDED:')) {
+        const match = msg.match(/QUOTA_EXCEEDED:(\d+)/);
+        const max = match ? match[1] : '';
+        throw new Error(`اكتمل العدد الأقصى المسموح به لحجوزات اليوم (${max} تذكرة). نعتذر منك، ونلقاك في يوم العمل القادم.`);
+      }
+      if (msg.includes('SCHEDULE_DAY_OFF')) {
+        throw new Error('العيادة في عطلة اليوم. يرجى الحجز خلال أيام العمل الرسمية.');
+      }
+      if (msg.includes('SCHEDULE_BEFORE_WORK:')) {
+        const match = msg.match(/SCHEDULE_BEFORE_WORK:(\S+)/);
+        const time = match ? match[1] : '';
+        throw new Error(`العيادة مغلقة حالياً. يبدأ استقبال الحجوزات عند الساعة ${time}.`);
+      }
+      if (msg.includes('SCHEDULE_AFTER_WORK:')) {
+        const match = msg.match(/SCHEDULE_AFTER_WORK:(\S+)/);
+        const time = match ? match[1] : '';
+        throw new Error(`انتهت ساعات استقبال الحجوزات لليوم (الدوام حتى ${time}). نلقاكم غداً إن شاء الله.`);
       }
       if (msg.includes('المؤسسة غير موجودة') || msg.includes('تم إيقاف استقبال')) {
         throw e;

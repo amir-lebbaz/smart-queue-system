@@ -91,6 +91,11 @@ export async function PATCH(
       contact_phone: body.contact_phone,
       notes: body.notes,
       is_active: typeof body.is_active === 'number' ? body.is_active : undefined,
+      daily_max_tickets: typeof body.daily_max_tickets === 'number' ? body.daily_max_tickets : undefined,
+      auto_schedule_enabled: typeof body.auto_schedule_enabled === 'number' ? body.auto_schedule_enabled : undefined,
+      work_start_time: body.work_start_time,
+      work_end_time: body.work_end_time,
+      work_days: body.work_days,
     });
 
     return NextResponse.json({ success: true, data: org });

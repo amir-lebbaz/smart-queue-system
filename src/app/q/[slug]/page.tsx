@@ -1138,6 +1138,43 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
               </div>
             )}
 
+            {/* Case: Outside Working Hours / Day Off / Quota Full */}
+            {queueState?.scheduleInfo?.isQuotaExceeded && (
+              <div className="p-3.5 bg-rose-950/80 border-2 border-rose-500/80 rounded-2xl text-rose-200 text-xs font-bold text-center leading-relaxed space-y-1">
+                <p className="text-sm font-black text-rose-100">⚠️ اكتمل عدد مقاعد اليوم</p>
+                <p className="text-[11px] text-rose-300 font-normal">
+                  وصلت العيادة للحد الأقصى المسموح به اليوم ({queueState.scheduleInfo.dailyMaxTickets} تذكرة). نعتذر منك ونلقاك في يوم العمل القادم.
+                </p>
+              </div>
+            )}
+
+            {queueState?.scheduleInfo?.isDayOff && (
+              <div className="p-3.5 bg-sky-950/80 border-2 border-sky-500/80 rounded-2xl text-sky-200 text-xs font-bold text-center leading-relaxed space-y-1">
+                <p className="text-sm font-black text-sky-100">📅 العيادة في عطلة اليوم</p>
+                <p className="text-[11px] text-sky-300 font-normal">
+                  يرجى الحجز خلال أيام العمل الرسمية. يفتح الحجز تلقائياً في يوم العمل القادم.
+                </p>
+              </div>
+            )}
+
+            {queueState?.scheduleInfo?.isBeforeWork && (
+              <div className="p-3.5 bg-amber-950/80 border-2 border-amber-500/80 rounded-2xl text-amber-200 text-xs font-bold text-center leading-relaxed space-y-1">
+                <p className="text-sm font-black text-amber-100">🕒 لم يبدأ دوام اليوم بعد</p>
+                <p className="text-[11px] text-amber-300 font-normal">
+                  أوقات استقبال الحجوزات تبدأ عند الساعة {queueState.scheduleInfo.workStartTime}. يرجى الانتظار حتى بدء الدوام.
+                </p>
+              </div>
+            )}
+
+            {queueState?.scheduleInfo?.isAfterWork && (
+              <div className="p-3.5 bg-slateNavy-950 border-2 border-slateNavy-700 rounded-2xl text-slateNavy-200 text-xs font-bold text-center leading-relaxed space-y-1">
+                <p className="text-sm font-black text-white">🔒 انتهت ساعات العمل لليوم</p>
+                <p className="text-[11px] text-slateNavy-400 font-normal">
+                  دوام العيادة حتى الساعة {queueState.scheduleInfo.workEndTime}. يفتح الحجز مجدداً في يوم العمل القادم عند الساعة {queueState.scheduleInfo.workStartTime}.
+                </p>
+              </div>
+            )}
+
             {formError && (
               <div className="p-3 bg-rose-950/40 border border-rose-800 rounded-xl text-rose-300 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
@@ -1184,14 +1221,28 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting || org?.is_active === 0}
-              className="w-full py-4 px-6 bg-slateNavy-100 hover:bg-white text-slateNavy-950 font-black rounded-2xl flex items-center justify-center gap-2 transition transform active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <span>{org?.is_active === 0 ? 'الحجز متوقف مؤقتاً' : isSubmitting ? 'جاري الحجز...' : 'احجز دورك الآن وغادر القاعة مطمئناً'}</span>
-              <ArrowRight className="w-4 h-4 rotate-180" />
-            </button>
+            {(() => {
+              const sched = queueState?.scheduleInfo;
+              const isClosedBySchedule = sched && (!sched.isOpen && org?.is_active === 1);
+              const isLocked = org?.is_active === 0 || isClosedBySchedule;
+              let lockText = 'احجز دورك الآن وغادر القاعة مطمئناً';
+              if (org?.is_active === 0) lockText = 'الحجز متوقف مؤقتاً';
+              else if (sched?.isQuotaExceeded) lockText = 'اكتملت تذاكر اليوم';
+              else if (sched?.isDayOff) lockText = 'العيادة في عطلة اليوم';
+              else if (sched?.isBeforeWork) lockText = `يفتح الحجز الساعة ${sched.workStartTime}`;
+              else if (sched?.isAfterWork) lockText = 'انتهت ساعات العمل لليوم';
+
+              return (
+                <button
+                  type="submit"
+                  disabled={isSubmitting || isLocked}
+                  className="w-full py-4 px-6 bg-slateNavy-100 hover:bg-white text-slateNavy-950 font-black rounded-2xl flex items-center justify-center gap-2 transition transform active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <span>{isSubmitting ? 'جاري الحجز...' : lockText}</span>
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                </button>
+              );
+            })()}
           </form>
 
           <div className="text-center px-4">
