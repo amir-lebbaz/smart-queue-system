@@ -201,6 +201,17 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
     }
   }
 
+  // Dynamic live estimated arrival clock time (using Algeria timezone)
+  const liveWaitMins = Math.max(1, livePeopleAhead * (org?.avg_service_mins || 15));
+  const liveEstimatedClockTime = (livePeopleAhead > 0 && !isMyTurnCalled && !isMyTurnInside)
+    ? new Date(Date.now() + liveWaitMins * 60 * 1000).toLocaleTimeString('ar-DZ', {
+        timeZone: 'Africa/Algiers',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      })
+    : myTicket?.initialEstimatedClockTime || 'دورك القادم';
+
   // Adaptive Smart Polling (Cuts 80% traffic, protects battery, refreshes instantly on screen wake)
   useEffect(() => {
     fetchState();
@@ -260,6 +271,16 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
 
     return () => clearInterval(timer);
   }, [myTicket, alertTriggered]);
+
+  // Synchronize target timestamp with live queue progression
+  useEffect(() => {
+    if (myTicket && livePeopleAhead > 0 && !isMyTurnCalled && !isMyTurnInside) {
+      const calculatedTarget = Date.now() + livePeopleAhead * (org?.avg_service_mins || 15) * 60 * 1000;
+      myTicket.estimatedTargetTimestamp = calculatedTarget;
+      const leftSecs = Math.max(0, Math.floor((calculatedTarget - Date.now()) / 1000));
+      setRemainingSeconds(leftSecs);
+    }
+  }, [livePeopleAhead, org?.avg_service_mins, isMyTurnCalled, isMyTurnInside, myTicket]);
 
   // Voice announcement when customer is called
   useEffect(() => {
@@ -921,7 +942,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
                   <div>
                     <p className="text-[10px] text-slateNavy-400">ساعة الدخول المقدرة</p>
                     <p className="text-base font-black text-slateNavy-100">
-                      {myTicket.initialEstimatedClockTime}
+                      {liveEstimatedClockTime}
                     </p>
                   </div>
                 </div>
