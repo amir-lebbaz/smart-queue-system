@@ -80,7 +80,7 @@ export async function POST(req: Request) {
   } catch (error: unknown) {
     console.error('Failed to issue ticket:', error);
     const msg = error instanceof Error ? error.message : 'فشل إصدار التذكرة';
-    return NextResponse.json({ success: false, error: msg }, { status: 500 });
+    return NextResponse.json({ success: false, error: msg }, { status: 400 });
   }
 }
 

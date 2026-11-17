@@ -36,7 +36,9 @@ export interface Ticket {
   estimated_clock_time: string; // formatted 'HH:MM'
   feedback_rating?: FeedbackRating | null;
   feedback_created_at?: number | null;
+  completed_at?: number | null;
   is_present?: boolean | number | null;
+  is_existing_active?: boolean;
   created_at: number;
 }
 

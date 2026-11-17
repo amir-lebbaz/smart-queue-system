@@ -160,6 +160,47 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
     }
   };
 
+  const org = queueState?.organization;
+  const sectorLabel = org?.sector_label || 'زبون';
+  const staffTitle = org?.staff_title || 'المسير';
+  const activeCurrent = queueState?.currentTicket;
+
+  // Determine ticket real presence status
+  const isHeldForMe = Boolean(
+    myTicket && (
+      queueState?.myTicketStatus === 'held' ||
+      queueState?.heldTickets?.some(t => t.ticket_number === myTicket.ticketNumber)
+    )
+  );
+
+  const isCancelledForMe = Boolean(
+    myTicket && queueState?.myTicketStatus === 'cancelled'
+  );
+
+  let isMyTurnCalled = false;
+  let isMyTurnInside = false;
+  let isCompletedForMe = false;
+  let livePeopleAhead = 0;
+
+  if (myTicket && !isHeldForMe && !isCancelledForMe) {
+    if (queueState?.myTicketStatus === 'completed') {
+      isCompletedForMe = true;
+    } else if (activeCurrent && activeCurrent.ticket_number === myTicket.ticketNumber) {
+      if (activeCurrent.status === 'called') {
+        isMyTurnCalled = true;
+      } else if (activeCurrent.status === 'serving') {
+        isMyTurnInside = true;
+      }
+    } else {
+      // If not currently called or serving, check waiting position in queue
+      const waitingList = queueState?.waitingTickets || [];
+      const myIdx = waitingList.findIndex(t => t.ticket_number === myTicket.ticketNumber);
+      if (myIdx >= 0) {
+        livePeopleAhead = myIdx + 1;
+      }
+    }
+  }
+
   // Adaptive Smart Polling (Cuts 80% traffic, protects battery, refreshes instantly on screen wake)
   useEffect(() => {
     fetchState();
@@ -219,47 +260,6 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
 
     return () => clearInterval(timer);
   }, [myTicket, alertTriggered]);
-
-  const org = queueState?.organization;
-  const sectorLabel = org?.sector_label || 'زبون';
-  const staffTitle = org?.staff_title || 'المسير';
-  const activeCurrent = queueState?.currentTicket;
-
-  // Determine ticket real presence status
-  const isHeldForMe = Boolean(
-    myTicket && (
-      queueState?.myTicketStatus === 'held' ||
-      queueState?.heldTickets?.some(t => t.ticket_number === myTicket.ticketNumber)
-    )
-  );
-
-  const isCancelledForMe = Boolean(
-    myTicket && queueState?.myTicketStatus === 'cancelled'
-  );
-
-  let isMyTurnCalled = false;
-  let isMyTurnInside = false;
-  let isCompletedForMe = false;
-  let livePeopleAhead = 0;
-
-  if (myTicket && !isHeldForMe && !isCancelledForMe) {
-    if (queueState?.myTicketStatus === 'completed') {
-      isCompletedForMe = true;
-    } else if (activeCurrent && activeCurrent.ticket_number === myTicket.ticketNumber) {
-      if (activeCurrent.status === 'called') {
-        isMyTurnCalled = true;
-      } else if (activeCurrent.status === 'serving') {
-        isMyTurnInside = true;
-      }
-    } else {
-      // If not currently called or serving, check waiting position in queue
-      const waitingList = queueState?.waitingTickets || [];
-      const myIdx = waitingList.findIndex(t => t.ticket_number === myTicket.ticketNumber);
-      if (myIdx >= 0) {
-        livePeopleAhead = myIdx + 1;
-      }
-    }
-  }
 
   // Voice announcement when customer is called
   useEffect(() => {
@@ -374,6 +374,13 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
         setCompletionNotified(false);
         setFeedbackSubmitted(false);
         playQueueChime();
+
+        if (ticket.is_existing_active) {
+          sendBrowserNotification(
+            `استرجاع تذكرتك النشطة (#${ticket.ticket_number})`,
+            'لديك حجز نشط مسجل بهذا الرقم بالفعل. تم نقلك لتذكرتك الحالية لمتابعة دورك.'
+          );
+        }
 
         // Automatically attempt to activate WakeLock and notifications
         handleEnableAlertsAndWakeLock();
@@ -782,13 +789,38 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
             </div>
           </div>
 
+          {/* Smart Status regarding re-booking and empty hall */}
+          {(queueState?.totalWaiting || 0) === 0 ? (
+            <div className="p-3.5 bg-emerald-950/70 border border-emerald-500/50 rounded-2xl flex items-center gap-2.5 text-right shadow-md">
+              <Sparkles className="w-5 h-5 text-emerald-400 shrink-0" />
+              <p className="text-[11px] text-emerald-200 leading-relaxed">
+                <strong className="text-white">العيادة شاغرة حالياً (0 في الانتظار):</strong> يمكنك حجز خدمة إضافية والدخول فوراً بدون أي فترة تهدئة!
+              </p>
+            </div>
+          ) : (
+            <div className="p-3 bg-slateNavy-900 border border-slateNavy-800 rounded-2xl flex items-center gap-2.5 text-right">
+              <Clock className="w-4 h-4 text-sky-400 shrink-0" />
+              <p className="text-[11px] text-slateNavy-400 leading-relaxed">
+                يوجد حالياً <strong className="text-slateNavy-200">{queueState?.totalWaiting} في الانتظار</strong>. تُطبق فترة التهدئة لحماية أدوار المنتظرين (أو تفضل بإبلاغ موظف الاستقبال).
+              </p>
+            </div>
+          )}
+
           {/* Clean Action: Book a new ticket if customer needs another turn */}
           <button
             onClick={handleResetForNewBooking}
-            className="w-full py-3.5 px-4 bg-slateNavy-900 hover:bg-slateNavy-800 border border-slateNavy-800 hover:border-slateNavy-700 text-slateNavy-300 hover:text-white rounded-2xl text-xs font-bold transition flex items-center justify-center gap-2"
+            className={`w-full py-3.5 px-4 rounded-2xl text-xs font-bold transition flex items-center justify-center gap-2 ${
+              (queueState?.totalWaiting || 0) === 0
+                ? 'bg-emerald-500 hover:bg-emerald-400 text-slateNavy-950 font-black shadow-lg shadow-emerald-950/40'
+                : 'bg-slateNavy-900 hover:bg-slateNavy-800 border border-slateNavy-800 hover:border-slateNavy-700 text-slateNavy-300 hover:text-white'
+            }`}
           >
-            <RotateCcw className="w-4 h-4 text-slateNavy-400" />
-            <span>حجز دور جديد في الطابور</span>
+            <RotateCcw className="w-4 h-4" />
+            <span>
+              {(queueState?.totalWaiting || 0) === 0
+                ? 'العيادة شاغرة — حجز دور جديد فوراً'
+                : 'حجز دور جديد في الطابور'}
+            </span>
           </button>
         </div>
       ) : myTicket ? (
@@ -1080,6 +1112,24 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
               <p className="text-xs text-slateNavy-400 mt-0.5">
                 احجز تذكرتك وغادر القاعة، وسننبهك صوتياً قبل حلول دورك
               </p>
+            </div>
+
+            {/* Regulatory Transparency Notice (Fair-Usage & Cooldown Rule) */}
+            <div className="p-3.5 bg-[#16314A]/90 border border-[#2E4F6B] rounded-2xl flex items-start gap-3 text-right shadow-sm">
+              <div className="w-8 h-8 rounded-xl bg-[#2E4F6B]/60 text-sky-300 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                <ShieldCheck className="w-4 h-4 text-sky-300" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <h4 className="text-xs font-black text-[#E8EFF3]">ملاحظة تنظيمية هامة:</h4>
+                  <span className="text-[10px] px-2 py-0.5 bg-sky-950 text-sky-300 border border-sky-600/40 rounded-full font-bold">
+                    حجز واحد فقط لكل هاتف
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#A9BDC9] leading-relaxed">
+                  لكل هاتف حجز نشط واحد فقط. بعد إتمام الفحص سيتوجب عليك الانتظار <strong className="text-white">90 دقيقة</strong> لإعادة الحجز حرصاً على إتاحة الفرصة للجميع (إلا إذا كانت العيادة خالية تماماً، أو بالتنسيق المباشر مع موظف الاستقبال).
+                </p>
+              </div>
             </div>
 
             {org?.is_active === 0 && (

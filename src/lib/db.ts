@@ -85,6 +85,12 @@ function initSqliteDatabase(db: DatabaseSync): void {
     // Column already exists
   }
 
+  try {
+    db.exec('ALTER TABLE tickets ADD COLUMN completed_at INTEGER;');
+  } catch {
+    // Column already exists
+  }
+
   const count = db.prepare('SELECT COUNT(*) as count FROM organizations').get() as { count: number };
   if (count.count === 0) {
     db.prepare(`
@@ -456,6 +462,11 @@ export async function issueTicket(
     } catch (e: unknown) {
       console.warn('Atomic RPC issueTicket error, falling back', e);
       const msg = e instanceof Error ? e.message : String(e);
+      if (msg.includes('COOLDOWN_ACTIVE:')) {
+        const match = msg.match(/COOLDOWN_ACTIVE:(\d+)/);
+        const mins = match ? match[1] : '90';
+        throw new Error(`لقد أتممت خدمتك مؤخراً. لتفادي التكرار وضمان عدالة الأدوار، يرجى الانتظار ${mins} دقيقة لإعادة الحجز، أو مراجعة موظف الاستقبال مباشرة.`);
+      }
       if (msg.includes('المؤسسة غير موجودة') || msg.includes('تم إيقاف استقبال')) {
         throw e;
       }
@@ -464,6 +475,41 @@ export async function issueTicket(
 
   // SQLite fallback
   const db = getSqliteDb();
+
+  // Fair use & duplicate check for public QR web bookings
+  if (ticketType === 'qr') {
+    const existingActive = db.prepare(`
+      SELECT * FROM tickets 
+      WHERE org_slug = ? AND customer_phone = ? AND status IN ('waiting', 'called', 'serving', 'held') 
+      ORDER BY id DESC LIMIT 1
+    `).get(orgSlug, cleanPhone) as unknown as Ticket | undefined;
+
+    if (existingActive) {
+      return {
+        ...existingActive,
+        is_existing_active: true,
+      };
+    }
+
+    const waitingRow = db.prepare("SELECT COUNT(*) as count FROM tickets WHERE org_slug = ? AND status = 'waiting'").get(orgSlug) as { count: number };
+    const waitingCountVal = waitingRow ? waitingRow.count : 0;
+
+    if (waitingCountVal > 0) {
+      const ninetyMinsAgo = Date.now() - 90 * 60 * 1000;
+      const recentCompleted = db.prepare(`
+        SELECT * FROM tickets 
+        WHERE org_slug = ? AND customer_phone = ? AND status = 'completed' AND COALESCE(completed_at, created_at) > ? 
+        ORDER BY id DESC LIMIT 1
+      `).get(orgSlug, cleanPhone, ninetyMinsAgo) as unknown as (Ticket & { completed_at?: number }) | undefined;
+
+      if (recentCompleted) {
+        const completedTimestamp = recentCompleted.completed_at || recentCompleted.created_at;
+        const leftMins = Math.max(1, Math.ceil(((completedTimestamp + 90 * 60 * 1000) - Date.now()) / 60000));
+        throw new Error(`لقد أتممت خدمتك مؤخراً. لتفادي التكرار وضمان عدالة الأدوار، يرجى الانتظار ${leftMins} دقيقة لإعادة الحجز، أو مراجعة موظف الاستقبال مباشرة.`);
+      }
+    }
+  }
+
   const waitingCount = db.prepare("SELECT COUNT(*) as count FROM tickets WHERE org_slug = ? AND status = 'waiting'").get(orgSlug) as { count: number };
   const peopleAhead = waitingCount ? waitingCount.count : 0;
   const estWaitMins = Math.max(0, peopleAhead * org.avg_service_mins);
@@ -687,12 +733,12 @@ export async function completeCurrentTicket(orgSlug: string, ticketId?: number):
       if (ticketId) {
         await supaFetch(`queue_tickets?id=eq.${ticketId}`, {
           method: 'PATCH',
-          body: JSON.stringify({ status: 'completed' }),
+          body: JSON.stringify({ status: 'completed', completed_at: now }),
         });
       } else {
         await supaFetch(`queue_tickets?org_slug=eq.${encodeURIComponent(orgSlug)}&status=in.(called,serving)`, {
           method: 'PATCH',
-          body: JSON.stringify({ status: 'completed' }),
+          body: JSON.stringify({ status: 'completed', completed_at: now }),
         });
       }
 
@@ -710,9 +756,9 @@ export async function completeCurrentTicket(orgSlug: string, ticketId?: number):
 
   const db = getSqliteDb();
   if (ticketId) {
-    db.prepare("UPDATE tickets SET status = 'completed' WHERE id = ?").run(ticketId);
+    db.prepare("UPDATE tickets SET status = 'completed', completed_at = ? WHERE id = ?").run(now, ticketId);
   } else {
-    db.prepare("UPDATE tickets SET status = 'completed' WHERE org_slug = ? AND status IN ('called', 'serving')").run(orgSlug);
+    db.prepare("UPDATE tickets SET status = 'completed', completed_at = ? WHERE org_slug = ? AND status IN ('called', 'serving')").run(now, orgSlug);
   }
   db.prepare('UPDATE organizations SET current_ticket_number = 0, avg_service_mins = ? WHERE slug = ?').run(newAvg, orgSlug);
   return { organization: (await getOrganization(orgSlug))! };
