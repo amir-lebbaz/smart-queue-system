@@ -518,7 +518,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
     if (confirm('هل أنت متأكد من مغادرة الطابور وإلغاء هذه التذكرة؟')) {
       if (myTicket?.ticketId) {
         try {
-          await fetch(`/api/tickets?ticketId=${myTicket.ticketId}&orgSlug=${slug}`, {
+          await fetch(`/api/tickets?ticketId=${myTicket.ticketId}&orgSlug=${slug}&phone=${encodeURIComponent(myTicket.customerPhone || '')}`, {
             method: 'DELETE',
           });
         } catch (e) {

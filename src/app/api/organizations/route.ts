@@ -1,10 +1,19 @@
 import { NextResponse } from 'next/server';
 import { getAllOrganizations, createOrganization, getGlobalSystemStats } from '@/lib/db';
+import { verifySuperAdminAuth } from '@/lib/security';
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     if (searchParams.get('stats') === 'true') {
+      const isSuperAdmin = verifySuperAdminAuth(req);
+      if (!isSuperAdmin) {
+        return NextResponse.json({ 
+          success: false, 
+          error: 'غير مصرح: استعراض إحصائيات وأرباح المنصة يتطلب رمز المدير العام' 
+        }, { status: 401 });
+      }
+
       const stats = await getGlobalSystemStats();
       return NextResponse.json({ success: true, data: stats });
     }
@@ -19,6 +28,14 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    const isSuperAdmin = verifySuperAdminAuth(req);
+    if (!isSuperAdmin) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'غير مصرح: إنشاء مؤسسة جديدة يتطلب رمز المدير العام' 
+      }, { status: 401 });
+    }
+
     const body = await req.json();
     const { 
       slug, 
@@ -39,12 +56,12 @@ export async function POST(req: Request) {
     }
 
     const org = await createOrganization({
-      slug,
-      name,
+      slug: slug.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-'),
+      name: name.trim().substring(0, 80),
       sector_label: sector_label || 'زبون',
       staff_title: staff_title || 'المسير',
       pin_code: pin_code || '1234',
-      avg_service_mins: Number(avg_service_mins) || 15,
+      avg_service_mins: Math.max(1, Math.min(180, Number(avg_service_mins) || 15)),
       plan: plan || 'pro',
       billing_cycle: billing_cycle || 'monthly',
       contact_phone,

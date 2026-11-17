@@ -618,6 +618,27 @@ export async function getTicket(orgSlug: string, ticketNumber: number): Promise<
   return ticket || null;
 }
 
+export async function getTicketById(ticketId: number, orgSlug?: string): Promise<Ticket | null> {
+  if (isCloudEnabled) {
+    try {
+      const query = orgSlug 
+        ? `queue_tickets?id=eq.${ticketId}&org_slug=eq.${encodeURIComponent(orgSlug)}&limit=1`
+        : `queue_tickets?id=eq.${ticketId}&limit=1`;
+      const rows = await supaFetch<Ticket[]>(query);
+      return rows && rows.length > 0 ? rows[0] : null;
+    } catch (e) {
+      console.warn('Cloud getTicketById error', e);
+    }
+  }
+  const db = getSqliteDb();
+  if (orgSlug) {
+    const ticket = db.prepare('SELECT * FROM tickets WHERE id = ? AND org_slug = ?').get(ticketId, orgSlug) as unknown as Ticket | undefined;
+    return ticket || null;
+  }
+  const ticket = db.prepare('SELECT * FROM tickets WHERE id = ?').get(ticketId) as unknown as Ticket | undefined;
+  return ticket || null;
+}
+
 export async function findActiveTicketByPhone(orgSlug: string, phone: string): Promise<Ticket | null> {
   const cleanPhone = phone.trim().replace(/\s+/g, '');
   if (!cleanPhone) return null;
@@ -662,6 +683,20 @@ export async function submitTicketFeedback(
   }
 
   if (!id) return false;
+
+  // Security & State verification: Only completed tickets can be rated, and only once
+  const ticket = await getTicketById(id);
+  if (!ticket) {
+    throw new Error('التذكرة غير موجودة');
+  }
+
+  if (ticket.status !== 'completed') {
+    throw new Error('لا يمكن تقييم الخدمة إلا بعد اكتمال الموعد');
+  }
+
+  if (ticket.feedback_rating) {
+    throw new Error('تم تقييم هذه الزيارة مسبقاً، شكراً لمشاركتك');
+  }
 
   if (isCloudEnabled) {
     try {

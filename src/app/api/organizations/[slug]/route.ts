@@ -8,6 +8,7 @@ import {
   deleteOrganization,
   getOrganization
 } from '@/lib/db';
+import { verifyStaffAuth, verifySuperAdminAuth } from '@/lib/security';
 
 export async function GET(
   req: Request,
@@ -19,6 +20,14 @@ export async function GET(
     const exportParam = searchParams.get('export');
 
     if (exportParam === 'true') {
+      const isStaff = await verifyStaffAuth(req, slug);
+      if (!isStaff) {
+        return NextResponse.json({ 
+          success: false, 
+          error: 'غير مصرح: تصدير سجل الزبائن يتطلب رمز الدخول الإداري' 
+        }, { status: 401 });
+      }
+
       const tickets = await getOrganizationTickets(slug);
       return NextResponse.json({ success: true, data: tickets });
     }
@@ -51,6 +60,14 @@ export async function PATCH(
 ) {
   try {
     const { slug } = await params;
+    const isStaff = await verifyStaffAuth(req, slug);
+    if (!isStaff) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'غير مصرح: تعديل إعدادات المؤسسة يتطلب رمز الدخول الإداري' 
+      }, { status: 401 });
+    }
+
     const body = await req.json();
 
     if (body.action === 'toggle_active') {
@@ -78,20 +95,28 @@ export async function PATCH(
       return NextResponse.json({ success: true, data: org });
     }
 
-    // Full or partial updates
+    // Full or partial updates with sanitization / validation
+    const avgServiceMins = typeof body.avg_service_mins === 'number' 
+      ? Math.max(1, Math.min(180, body.avg_service_mins)) 
+      : undefined;
+
+    const dailyMax = typeof body.daily_max_tickets === 'number'
+      ? Math.max(0, body.daily_max_tickets)
+      : undefined;
+
     const org = await updateOrganizationSettings(slug, {
-      name: body.name,
-      sector_label: body.sector_label,
-      staff_title: body.staff_title,
-      pin_code: body.pin_code,
-      avg_service_mins: typeof body.avg_service_mins === 'number' ? body.avg_service_mins : undefined,
+      name: body.name ? body.name.trim().substring(0, 80) : undefined,
+      sector_label: body.sector_label ? body.sector_label.trim().substring(0, 40) : undefined,
+      staff_title: body.staff_title ? body.staff_title.trim().substring(0, 40) : undefined,
+      pin_code: body.pin_code ? body.pin_code.trim().substring(0, 20) : undefined,
+      avg_service_mins: avgServiceMins,
       plan: body.plan,
       billing_cycle: body.billing_cycle,
       subscription_expires_at: typeof body.subscription_expires_at === 'number' ? body.subscription_expires_at : undefined,
       contact_phone: body.contact_phone,
       notes: body.notes,
       is_active: typeof body.is_active === 'number' ? body.is_active : undefined,
-      daily_max_tickets: typeof body.daily_max_tickets === 'number' ? body.daily_max_tickets : undefined,
+      daily_max_tickets: dailyMax,
       auto_schedule_enabled: typeof body.auto_schedule_enabled === 'number' ? body.auto_schedule_enabled : undefined,
       work_start_time: body.work_start_time,
       work_end_time: body.work_end_time,
@@ -110,6 +135,14 @@ export async function DELETE(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const isSuperAdmin = verifySuperAdminAuth(req);
+    if (!isSuperAdmin) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'غير مصرح: حذف المؤسسة نهائياً يتطلب الرمز السري للمدير العام' 
+      }, { status: 401 });
+    }
+
     const { slug } = await params;
     const ok = await deleteOrganization(slug);
     return NextResponse.json({ success: ok });

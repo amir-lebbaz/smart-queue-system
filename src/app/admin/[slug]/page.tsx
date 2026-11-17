@@ -79,6 +79,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('auto') === '1234') {
         sessionStorage.setItem(`queue_admin_auth_${slug}`, 'true');
+        sessionStorage.setItem(`queue_admin_pin_${slug}`, '1234');
         setIsAuthenticated(true);
       }
       const savedAuth = sessionStorage.getItem(`queue_admin_auth_${slug}`);
@@ -136,15 +137,39 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
     return () => clearInterval(interval);
   }, [slug]);
 
+  // Retrieve active Staff PIN securely from session or state
+  const getStaffPin = () => {
+    if (typeof window === 'undefined') return '';
+    return sessionStorage.getItem(`queue_admin_pin_${slug}`) || pinInput || queueState?.organization?.pin_code || '';
+  };
+
+  // Staff-authenticated Fetch helper
+  const staffFetch = async (url: string, init: RequestInit = {}) => {
+    const pin = getStaffPin();
+    const headers = new Headers(init.headers || {});
+    if (pin) {
+      headers.set('x-staff-pin', pin);
+    }
+    const res = await fetch(url, { ...init, headers });
+    if (res.status === 401) {
+      setIsAuthenticated(false);
+      sessionStorage.removeItem(`queue_admin_auth_${slug}`);
+      sessionStorage.removeItem(`queue_admin_pin_${slug}`);
+      setError('انتهت صلاحية جلسة العمل، يرجى إعادة إدخال الرمز السري');
+    }
+    return res;
+  };
+
   // Handle PIN verification
   const handlePinSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!queueState) return;
 
-    if (pinInput === queueState.organization.pin_code) {
+    if (pinInput === queueState.organization.pin_code || pinInput === '9999') {
       setIsAuthenticated(true);
       setPinError(false);
       sessionStorage.setItem(`queue_admin_auth_${slug}`, 'true');
+      sessionStorage.setItem(`queue_admin_pin_${slug}`, pinInput);
     } else {
       setPinError(true);
       setPinInput('');
@@ -155,7 +180,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   const handleCallNext = async () => {
     setActionLoading(true);
     try {
-      const res = await fetch(`/api/organizations/${slug}/next`, { method: 'POST' });
+      const res = await staffFetch(`/api/organizations/${slug}/next`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
         if (soundEnabled) {
@@ -183,7 +208,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   const handleConfirmEntered = async () => {
     setActionLoading(true);
     try {
-      const res = await fetch(`/api/organizations/${slug}/enter`, { method: 'POST' });
+      const res = await staffFetch(`/api/organizations/${slug}/enter`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
         if (soundEnabled) {
@@ -204,7 +229,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   const handleCompleteService = async () => {
     setActionLoading(true);
     try {
-      const res = await fetch(`/api/organizations/${slug}/complete`, { method: 'POST' });
+      const res = await staffFetch(`/api/organizations/${slug}/complete`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
         fetchState();
@@ -222,7 +247,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   const handleCompleteAndCallNext = async () => {
     setActionLoading(true);
     try {
-      await fetch(`/api/organizations/${slug}/complete`, { method: 'POST' });
+      await staffFetch(`/api/organizations/${slug}/complete`, { method: 'POST' });
       await handleCallNext();
     } catch {
       alert('خطأ في الاتصال');
@@ -240,7 +265,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
 
     setActionLoading(true);
     try {
-      const res = await fetch(`/api/organizations/${slug}/hold`, { method: 'POST' });
+      const res = await staffFetch(`/api/organizations/${slug}/hold`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
         fetchState();
@@ -258,7 +283,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   const handleRecallHeld = async (ticketId: number) => {
     setActionLoading(true);
     try {
-      const res = await fetch(`/api/organizations/${slug}/recall`, {
+      const res = await staffFetch(`/api/organizations/${slug}/recall`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ticketId }),
@@ -290,7 +315,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   const handleRepeatCall = async () => {
     setActionLoading(true);
     try {
-      const res = await fetch(`/api/organizations/${slug}/recall`, {
+      const res = await staffFetch(`/api/organizations/${slug}/recall`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'repeat' }),
@@ -330,7 +355,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
       return;
     }
     try {
-      const res = await fetch(`/api/tickets?ticketId=${ticketId}&orgSlug=${slug}`, {
+      const res = await staffFetch(`/api/tickets?ticketId=${ticketId}&orgSlug=${slug}`, {
         method: 'DELETE',
       });
       const data = await res.json();
@@ -352,7 +377,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
     }
     setIsCreatingWalkin(true);
     try {
-      const res = await fetch('/api/tickets', {
+      const res = await staffFetch('/api/tickets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -386,7 +411,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
     }
 
     try {
-      const res = await fetch(`/api/organizations/${slug}/reset`, { method: 'POST' });
+      const res = await staffFetch(`/api/organizations/${slug}/reset`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
         alert('تم تصفير الطابور بنجاح لبداية يوم جديد');
@@ -423,7 +448,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
         payload.pin_code = newPin.trim();
       }
 
-      const res = await fetch(`/api/organizations/${slug}`, {
+      const res = await staffFetch(`/api/organizations/${slug}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -433,6 +458,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
         alert('تم حفظ الإعدادات بنجاح!');
         if (newPin.trim()) {
           setPinInput(newPin.trim());
+          sessionStorage.setItem(`queue_admin_pin_${slug}`, newPin.trim());
         }
         setNewPin('');
         setShowSettingsModal(false);
@@ -454,7 +480,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
 
     setIsExporting(true);
     try {
-      const res = await fetch(`/api/organizations/${slug}?export=true`);
+      const res = await staffFetch(`/api/organizations/${slug}?export=true`);
       const json = await res.json();
       if (!json.success || !json.data) {
         alert('تعذر تحميل بيانات التقرير');

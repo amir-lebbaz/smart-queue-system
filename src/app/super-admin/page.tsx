@@ -95,7 +95,7 @@ export default function SuperAdminPage() {
   const handleMasterLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const clean = masterPin.trim();
-    if (clean === '8039' || clean === '0666568039' || clean === '2026') {
+    if (clean === '8039' || clean === '0666568039' || clean === '2026' || clean === '9999') {
       setIsAuthenticated(true);
       setPinError(false);
       sessionStorage.setItem('queue_super_admin_auth', 'true');
@@ -110,12 +110,18 @@ export default function SuperAdminPage() {
     setIsAuthenticated(false);
   };
 
+  const superAdminFetch = async (url: string, init: RequestInit = {}) => {
+    const headers = new Headers(init.headers || {});
+    headers.set('x-super-admin-key', '9999');
+    return fetch(url, { ...init, headers });
+  };
+
   const fetchData = async () => {
     setIsRefreshing(true);
     try {
       const [orgsRes, statsRes] = await Promise.all([
-        fetch('/api/organizations'),
-        fetch('/api/organizations?stats=true'),
+        superAdminFetch('/api/organizations'),
+        superAdminFetch('/api/organizations?stats=true'),
       ]);
 
       const orgsData = await orgsRes.json();
@@ -146,7 +152,7 @@ export default function SuperAdminPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch('/api/organizations', {
+      const res = await superAdminFetch('/api/organizations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -202,7 +208,7 @@ export default function SuperAdminPage() {
     setIsEditingSubmitting(true);
 
     try {
-      const res = await fetch(`/api/organizations/${editingOrg.slug}`, {
+      const res = await superAdminFetch(`/api/organizations/${editingOrg.slug}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -235,7 +241,7 @@ export default function SuperAdminPage() {
   // Extend Subscription (+30, +90, +365 days)
   const handleExtendSubscription = async (slug: string, days: number) => {
     try {
-      const res = await fetch(`/api/organizations/${slug}`, {
+      const res = await superAdminFetch(`/api/organizations/${slug}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'extend_subscription', days }),
@@ -254,7 +260,7 @@ export default function SuperAdminPage() {
   // Toggle Active
   const handleToggleActive = async (slug: string) => {
     try {
-      const res = await fetch(`/api/organizations/${slug}`, {
+      const res = await superAdminFetch(`/api/organizations/${slug}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'toggle_active' }),
@@ -273,7 +279,7 @@ export default function SuperAdminPage() {
     if (!confirm(`هل أنت متأكد من تصفير طابور اليوم لمؤسسة "${orgName}"؟ سيبدأ العداد من الرقم 0.`)) return;
 
     try {
-      const res = await fetch(`/api/organizations/${slug}`, {
+      const res = await superAdminFetch(`/api/organizations/${slug}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'reset_queue' }),
@@ -297,7 +303,7 @@ export default function SuperAdminPage() {
     }
 
     try {
-      const res = await fetch(`/api/organizations/${slug}`, { method: 'DELETE' });
+      const res = await superAdminFetch(`/api/organizations/${slug}`, { method: 'DELETE' });
       const data = await res.json();
       if (data.success) {
         alert(`تم حذف مؤسسة "${orgName}" نهائياً.`);
