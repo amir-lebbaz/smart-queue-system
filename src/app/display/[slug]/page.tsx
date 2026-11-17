@@ -33,6 +33,7 @@ export default function TvDisplayPage({ params }: { params: Promise<{ slug: stri
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [lastAnnouncedNumber, setLastAnnouncedNumber] = useState<number | null>(null);
+  const [lastAnnouncedCallTime, setLastAnnouncedCallTime] = useState<number | null>(null);
 
   // Digital clock
   const [currentTime, setCurrentTime] = useState<string>('');
@@ -113,19 +114,27 @@ export default function TvDisplayPage({ params }: { params: Promise<{ slug: stri
     return () => clearInterval(interval);
   }, [slug]);
 
-  // Handle Audio announcement when called ticket changes
+  // Handle Audio announcement when called ticket changes or is re-called / repeated
   useEffect(() => {
     const current = queueState?.currentTicket;
-    if (current && current.status === 'called' && current.ticket_number !== lastAnnouncedNumber) {
-      setLastAnnouncedNumber(current.ticket_number);
+    const callTime = queueState?.organization?.last_call_timestamp ? Number(queueState.organization.last_call_timestamp) : null;
 
-      if (soundEnabled) {
-        playQueueChime();
-        const staffTitle = queueState?.organization?.staff_title || 'المسير';
-        speakArabicAnnouncement(`الرقم ${current.ticket_number}، تفضل بالدخول عند ${staffTitle} الآن`);
+    if (current && current.status === 'called') {
+      const isNewTicket = current.ticket_number !== lastAnnouncedNumber;
+      const isNewCallEvent = Boolean(callTime && callTime !== lastAnnouncedCallTime);
+
+      if (isNewTicket || isNewCallEvent) {
+        setLastAnnouncedNumber(current.ticket_number);
+        if (callTime) setLastAnnouncedCallTime(callTime);
+
+        if (soundEnabled) {
+          playQueueChime();
+          const staffTitle = queueState?.organization?.staff_title || 'المسير';
+          speakArabicAnnouncement(`الرقم ${current.ticket_number}، تفضل بالدخول عند ${staffTitle} الآن`);
+        }
       }
     }
-  }, [queueState?.currentTicket, lastAnnouncedNumber, soundEnabled, queueState?.organization?.staff_title]);
+  }, [queueState?.currentTicket, queueState?.organization?.last_call_timestamp, lastAnnouncedNumber, lastAnnouncedCallTime, soundEnabled, queueState?.organization?.staff_title]);
 
   // Fullscreen toggle
   const toggleFullscreen = () => {
@@ -429,6 +438,20 @@ export default function TvDisplayPage({ params }: { params: Promise<{ slug: stri
           </div>
         </aside>
       </main>
+
+      {/* Audio Enablement Floating Prompt for Smart TVs */}
+      {!soundEnabled && (
+        <div 
+          onClick={() => {
+            playQueueChime();
+            setSoundEnabled(true);
+          }}
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#08131F]/95 border-2 border-emerald-400 text-emerald-300 px-6 py-3 rounded-full text-xs font-black shadow-2xl flex items-center gap-2.5 animate-bounce cursor-pointer z-50 hover:bg-emerald-950/60 transition"
+        >
+          <Volume2 className="w-4 h-4 text-emerald-400 animate-pulse" />
+          <span>انقر هنا لتشغيل جرس التنبيه والنداء الصوتي للتلفاز 🔊</span>
+        </div>
+      )}
     </div>
   );
 }

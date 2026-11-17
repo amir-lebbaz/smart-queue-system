@@ -278,6 +278,44 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
     }
   };
 
+  // Action: Repeat call / sound chime
+  const handleRepeatCall = async () => {
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/organizations/${slug}/recall`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'repeat' }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (soundEnabled) {
+          playQueueChime();
+          if (queueState?.currentTicket) {
+            announceTicketCall(
+              queueState.currentTicket.ticket_number,
+              queueState.organization.staff_title || 'المسير',
+              queueState.organization.sector_label || 'زبون'
+            );
+          }
+        }
+        fetchState();
+      }
+    } catch {
+      alert('خطأ في الاتصال');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Action: Call a specific ticket directly from waiting list (Urgent / Out of order)
+  const handleDirectCall = async (ticketId: number, num: number) => {
+    if (!confirm(`هل تريد استدعاء التذكرة رقم #${num} مباشرة الآن؟`)) {
+      return;
+    }
+    await handleRecallHeld(ticketId);
+  };
+
   // Action: Cancel a waiting ticket
   const handleCancelTicket = async (ticketId: number, num: number) => {
     if (!confirm(`هل أنت متأكد من إلغاء وحذف التذكرة رقم #${num} من الطابور؟`)) {
@@ -519,6 +557,12 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
       </div>
       {/* Top Header */}
       <header className="mb-3">
+        {org?.is_active === 0 && (
+          <div className="mb-3 p-3 bg-rose-950/80 border-2 border-rose-500/80 rounded-2xl text-rose-200 text-xs font-bold flex items-center gap-2 shadow-lg animate-pulse">
+            <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0" />
+            <span>⚠️ الحساب معطل حالياً من قِبل الإدارة أو انتهى الاشتراك. تم إيقاف استقبال التذاكر الجديدة من الزبائن.</span>
+          </div>
+        )}
         <div className="flex items-center justify-between pb-3 border-b border-slateNavy-800">
           <div>
             <div className="flex items-center gap-2">
@@ -642,25 +686,37 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
                 مستدعى • بانتظار دخوله
               </span>
 
-              {/* Action for phone */}
-              {currentTicket.customer_phone && (
-                <div className="flex items-center gap-1">
-                  <a
-                    href={`tel:${currentTicket.customer_phone}`}
-                    title="رنة سريعة Bip"
-                    className="p-1.5 bg-slateNavy-800 text-slateNavy-100 hover:bg-slateNavy-700 border border-slateNavy-700 rounded-lg text-xs"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                  </a>
-                  <a
-                    href={`sms:${currentTicket.customer_phone}?body=تم استدعاء دورك رقم ${currentTicket.ticket_number} لدى ${org?.name}. ننتظر دخولك الآن.`}
-                    title="إرسال SMS"
-                    className="p-1.5 bg-slateNavy-800 text-slateNavy-100 hover:bg-slateNavy-700 border border-slateNavy-700 rounded-lg text-xs"
-                  >
-                    <MessageSquare className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              )}
+              {/* Actions for called ticket */}
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={handleRepeatCall}
+                  disabled={actionLoading}
+                  title="إعادة نداء ورنين الشاشة"
+                  className="p-1.5 px-2 bg-sky-950/80 hover:bg-sky-900 border border-sky-600/70 text-sky-200 rounded-lg text-xs font-bold flex items-center gap-1 transition"
+                >
+                  <Volume2 className="w-3.5 h-3.5 text-sky-400" />
+                  <span className="text-[10px]">إعادة النداء</span>
+                </button>
+
+                {currentTicket.customer_phone && (
+                  <>
+                    <a
+                      href={`tel:${currentTicket.customer_phone}`}
+                      title="رنة سريعة Bip"
+                      className="p-1.5 bg-slateNavy-800 text-slateNavy-100 hover:bg-slateNavy-700 border border-slateNavy-700 rounded-lg text-xs"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                    </a>
+                    <a
+                      href={`sms:${currentTicket.customer_phone}?body=تم استدعاء دورك رقم ${currentTicket.ticket_number} لدى ${org?.name}. ننتظر دخولك الآن.`}
+                      title="إرسال SMS"
+                      className="p-1.5 bg-slateNavy-800 text-slateNavy-100 hover:bg-slateNavy-700 border border-slateNavy-700 rounded-lg text-xs"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5" />
+                    </a>
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Giant Number & Name */}
@@ -870,6 +926,14 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
                 </div>
 
                 <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => handleDirectCall(t.id, t.ticket_number)}
+                    title="استدعاء هذا المراجع مباشرة الآن (حالة مستعجلة)"
+                    className="py-1 px-2.5 bg-slateNavy-800 hover:bg-slateNavy-700 text-slateNavy-200 hover:text-white border border-slateNavy-700 text-[11px] font-bold rounded-lg transition"
+                  >
+                    استدعاء
+                  </button>
+
                   {t.customer_phone ? (
                     <div className="flex items-center gap-1">
                       <a

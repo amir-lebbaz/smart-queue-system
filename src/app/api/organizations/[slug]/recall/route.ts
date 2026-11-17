@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { recallHeldTicket } from '@/lib/db';
+import { recallHeldTicket, repeatCall } from '@/lib/db';
 
 export async function POST(
   req: Request,
@@ -8,7 +8,12 @@ export async function POST(
   try {
     const { slug } = await params;
     const body = await req.json();
-    const { ticketId } = body;
+    const { ticketId, action } = body;
+
+    if (action === 'repeat') {
+      const org = await repeatCall(slug);
+      return NextResponse.json({ success: true, data: { organization: org } });
+    }
 
     if (!ticketId) {
       return NextResponse.json({ success: false, error: 'ticketId is required' }, { status: 400 });

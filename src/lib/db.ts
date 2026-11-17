@@ -72,11 +72,18 @@ function initSqliteDatabase(db: DatabaseSync): void {
       status TEXT NOT NULL DEFAULT 'waiting',
       estimated_wait_mins INTEGER NOT NULL,
       estimated_clock_time TEXT NOT NULL,
+      is_present INTEGER DEFAULT 0,
       feedback_rating TEXT,
       feedback_created_at INTEGER,
       created_at INTEGER NOT NULL
     );
   `);
+
+  try {
+    db.exec('ALTER TABLE tickets ADD COLUMN is_present INTEGER DEFAULT 0;');
+  } catch {
+    // Column already exists
+  }
 
   const count = db.prepare('SELECT COUNT(*) as count FROM organizations').get() as { count: number };
   if (count.count === 0) {
@@ -428,6 +435,9 @@ export async function issueTicket(
 
   const org = await getOrganization(orgSlug);
   if (!org) throw new Error('المؤسسة غير موجودة');
+  if (org.is_active === 0) {
+    throw new Error('تم إيقاف استقبال الحجوزات مؤقتاً لهذه المؤسسة، يرجى مراجعة إدارة المؤسسة');
+  }
 
   const nextNumber = (org.last_issued_number || 0) + 1;
 
@@ -771,7 +781,7 @@ export async function holdCurrentTicket(orgSlug: string): Promise<{ heldTicket: 
         const patched = await supaFetch<Ticket[]>(`queue_tickets?id=eq.${active[0].id}`, {
           method: 'PATCH',
           headers: { 'Prefer': 'return=representation' },
-          body: JSON.stringify({ status: 'held' }),
+          body: JSON.stringify({ status: 'held', is_present: false }),
         });
         heldTicket = patched[0];
       }
@@ -792,7 +802,7 @@ export async function holdCurrentTicket(orgSlug: string): Promise<{ heldTicket: 
   const activeTicket = db.prepare("SELECT * FROM tickets WHERE org_slug = ? AND status IN ('called', 'serving') LIMIT 1").get(orgSlug) as unknown as Ticket | undefined;
   let heldTicket: Ticket | null = null;
   if (activeTicket) {
-    db.prepare("UPDATE tickets SET status = 'held' WHERE id = ?").run(activeTicket.id);
+    db.prepare("UPDATE tickets SET status = 'held', is_present = 0 WHERE id = ?").run(activeTicket.id);
     heldTicket = db.prepare('SELECT * FROM tickets WHERE id = ?').get(activeTicket.id) as unknown as Ticket;
   }
   db.prepare('UPDATE organizations SET current_ticket_number = 0 WHERE slug = ?').run(orgSlug);
@@ -800,6 +810,7 @@ export async function holdCurrentTicket(orgSlug: string): Promise<{ heldTicket: 
 }
 
 export async function recallHeldTicket(orgSlug: string, ticketId: number): Promise<{ currentTicket: Ticket | null; organization: Organization }> {
+  const callTime = Date.now();
   if (isCloudEnabled) {
     try {
       await supaFetch(`queue_tickets?org_slug=eq.${encodeURIComponent(orgSlug)}&status=in.(called,serving)`, {
@@ -819,7 +830,10 @@ export async function recallHeldTicket(orgSlug: string, ticketId: number): Promi
       const updatedOrgs = await supaFetch<Organization[]>(`queue_organizations?slug=eq.${encodeURIComponent(orgSlug)}`, {
         method: 'PATCH',
         headers: { 'Prefer': 'return=representation' },
-        body: JSON.stringify({ current_ticket_number: currentNumber }),
+        body: JSON.stringify({ 
+          current_ticket_number: currentNumber,
+          last_call_timestamp: callTime,
+        }),
       });
 
       return { currentTicket: recalled, organization: updatedOrgs[0] };
@@ -833,9 +847,28 @@ export async function recallHeldTicket(orgSlug: string, ticketId: number): Promi
   db.prepare("UPDATE tickets SET status = 'called' WHERE id = ? AND org_slug = ?").run(ticketId, orgSlug);
   const recalled = db.prepare('SELECT * FROM tickets WHERE id = ?').get(ticketId) as unknown as Ticket | undefined;
   if (recalled) {
-    db.prepare('UPDATE organizations SET current_ticket_number = ? WHERE slug = ?').run(recalled.ticket_number, orgSlug);
+    db.prepare('UPDATE organizations SET current_ticket_number = ?, last_call_timestamp = ? WHERE slug = ?').run(recalled.ticket_number, callTime, orgSlug);
   }
   return { currentTicket: recalled || null, organization: (await getOrganization(orgSlug))! };
+}
+
+export async function repeatCall(orgSlug: string): Promise<Organization | null> {
+  const now = Date.now();
+  if (isCloudEnabled) {
+    try {
+      const updated = await supaFetch<Organization[]>(`queue_organizations?slug=eq.${encodeURIComponent(orgSlug)}`, {
+        method: 'PATCH',
+        headers: { 'Prefer': 'return=representation' },
+        body: JSON.stringify({ last_call_timestamp: now }),
+      });
+      return updated && updated.length > 0 ? updated[0] : null;
+    } catch (e) {
+      console.warn('Cloud repeatCall error', e);
+    }
+  }
+  const db = getSqliteDb();
+  db.prepare('UPDATE organizations SET last_call_timestamp = ? WHERE slug = ?').run(now, orgSlug);
+  return getOrganization(orgSlug);
 }
 
 export async function cancelTicket(ticketId: number, orgSlug: string): Promise<boolean> {
@@ -886,7 +919,11 @@ export async function resetDailyQueue(orgSlug: string): Promise<Organization> {
   return (await getOrganization(orgSlug))!;
 }
 
-export async function getQueueState(orgSlug: string, ticketNumber?: number): Promise<QueueState | null> {
+export async function getQueueState(
+  orgSlug: string, 
+  ticketNumber?: number,
+  ticketId?: number
+): Promise<QueueState | null> {
   const organization = await getOrganization(orgSlug);
   if (!organization) return null;
 
@@ -938,9 +975,16 @@ export async function getQueueState(orgSlug: string, ticketNumber?: number): Pro
         else if (t.feedback_rating === 'bad') ratings.bad++;
       }
 
-      // 5. Customer ticket status if queried
+      // 5. Customer ticket status if queried (ticketId takes absolute priority)
       let myTicketStatus: TicketStatus | null = null;
-      if (ticketNumber) {
+      if (ticketId) {
+        const myT = await supaFetch<Ticket[]>(
+          `queue_tickets?id=eq.${ticketId}&limit=1`
+        );
+        if (myT && myT.length > 0) {
+          myTicketStatus = myT[0].status;
+        }
+      } else if (ticketNumber) {
         const myT = await supaFetch<Ticket[]>(
           `queue_tickets?org_slug=eq.${encodeURIComponent(orgSlug)}&ticket_number=eq.${ticketNumber}&order=id.desc&limit=1`
         );
@@ -987,7 +1031,10 @@ export async function getQueueState(orgSlug: string, ticketNumber?: number): Pro
   const completedCountRow = db.prepare("SELECT COUNT(*) as count FROM tickets WHERE org_slug = ? AND status = 'completed'").get(orgSlug) as { count: number } | undefined;
 
   let myTicketStatus: TicketStatus | null = null;
-  if (ticketNumber) {
+  if (ticketId) {
+    const t = db.prepare('SELECT status FROM tickets WHERE id = ?').get(ticketId) as { status: TicketStatus } | undefined;
+    if (t) myTicketStatus = t.status;
+  } else if (ticketNumber) {
     const t = db.prepare('SELECT status FROM tickets WHERE org_slug = ? AND ticket_number = ? ORDER BY id DESC LIMIT 1').get(orgSlug, ticketNumber) as { status: TicketStatus } | undefined;
     if (t) myTicketStatus = t.status;
   }

@@ -24,15 +24,20 @@ export async function GET(
     }
 
     const ticketParam = searchParams.get('ticketNumber') || searchParams.get('myTicket');
-    const queueState = await getQueueState(slug, ticketParam ? Number(ticketParam) : undefined);
+    const ticketIdParam = searchParams.get('ticketId');
+    const queueState = await getQueueState(
+      slug, 
+      ticketParam ? Number(ticketParam) : undefined,
+      ticketIdParam ? Number(ticketIdParam) : undefined
+    );
 
     if (!queueState) {
       return NextResponse.json({ success: false, error: 'Organization not found' }, { status: 404 });
     }
 
     const response = NextResponse.json({ success: true, data: queueState });
-    // Edge Cache Header: 2 seconds cache, 4 seconds stale-while-revalidate to handle massive concurrency
-    response.headers.set('Cache-Control', 'public, s-maxage=2, stale-while-revalidate=4');
+    // Zero CDN cache for instant real-time synchronization between TV, Remote, and Phones
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
     return response;
   } catch (error) {
     console.error('Failed to get queue state:', error);

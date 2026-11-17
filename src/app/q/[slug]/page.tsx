@@ -98,7 +98,13 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
       if (stored) {
         try {
           const parsed = JSON.parse(stored) as CachedTicket;
-          setMyTicket(parsed);
+          // Auto-clean tickets older than 20 hours (from yesterday/previous sessions)
+          if (parsed.createdAt && Date.now() - parsed.createdAt > 20 * 60 * 60 * 1000) {
+            localStorage.removeItem(`smart_queue_ticket_${slug}`);
+            localStorage.removeItem(`smart_queue_feedback_${slug}`);
+          } else {
+            setMyTicket(parsed);
+          }
         } catch (e) {
           console.error('Failed to parse cached ticket', e);
         }
@@ -130,7 +136,9 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   // Fetch queue state from server
   const fetchState = async () => {
     try {
-      const ticketParam = myTicket?.ticketNumber ? `?ticketNumber=${myTicket.ticketNumber}` : '';
+      const ticketParam = myTicket?.ticketNumber 
+        ? `?ticketNumber=${myTicket.ticketNumber}&ticketId=${myTicket.ticketId || ''}` 
+        : '';
       const res = await fetch(`/api/organizations/${slug}${ticketParam}`);
       if (!res.ok) {
         if (res.status === 404) {
@@ -239,6 +247,13 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
       setCalledSpoken(true);
     }
   }, [isMyTurnCalled, calledSpoken, myTicket, staffTitle]);
+
+  // Reset calledSpoken when not called (e.g. held or waiting) so future recalls ring again
+  useEffect(() => {
+    if (!isMyTurnCalled && calledSpoken) {
+      setCalledSpoken(false);
+    }
+  }, [isMyTurnCalled, calledSpoken]);
 
   // Field Feature: Early Proximity Warning (when at most 2 people ahead)
   useEffect(() => {
@@ -445,8 +460,17 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   };
 
   // Leave queue manually while still in progress
-  const handleLeaveQueue = () => {
-    if (confirm('هل أنت متأكد من مغادرة الطابور وإلغاء متابعة التذكرة؟')) {
+  const handleLeaveQueue = async () => {
+    if (confirm('هل أنت متأكد من مغادرة الطابور وإلغاء هذه التذكرة؟')) {
+      if (myTicket?.ticketId) {
+        try {
+          await fetch(`/api/tickets?ticketId=${myTicket.ticketId}&orgSlug=${slug}`, {
+            method: 'DELETE',
+          });
+        } catch (e) {
+          console.error('Failed to cancel ticket on server:', e);
+        }
+      }
       handleResetForNewBooking();
     }
   };
@@ -1032,6 +1056,12 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
               </p>
             </div>
 
+            {org?.is_active === 0 && (
+              <div className="p-3.5 bg-amber-950/80 border-2 border-amber-500/80 rounded-2xl text-amber-200 text-xs font-bold text-center leading-relaxed">
+                ⚠️ تم إيقاف استقبال حجز التذاكر مؤقتاً لهذه المؤسسة من قِبل الإدارة. يرجى مراجعة موظف الاستقبال في الصالة.
+              </div>
+            )}
+
             {formError && (
               <div className="p-3 bg-rose-950/40 border border-rose-800 rounded-xl text-rose-300 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
@@ -1080,10 +1110,10 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
 
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="w-full py-4 px-6 bg-slateNavy-100 hover:bg-white text-slateNavy-950 font-black rounded-2xl flex items-center justify-center gap-2 transition transform active:scale-[0.98] disabled:opacity-50"
+              disabled={isSubmitting || org?.is_active === 0}
+              className="w-full py-4 px-6 bg-slateNavy-100 hover:bg-white text-slateNavy-950 font-black rounded-2xl flex items-center justify-center gap-2 transition transform active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              <span>{isSubmitting ? 'جاري الحجز...' : 'احجز دورك الآن وغادر القاعة مطمئناً'}</span>
+              <span>{org?.is_active === 0 ? 'الحجز متوقف مؤقتاً' : isSubmitting ? 'جاري الحجز...' : 'احجز دورك الآن وغادر القاعة مطمئناً'}</span>
               <ArrowRight className="w-4 h-4 rotate-180" />
             </button>
           </form>
