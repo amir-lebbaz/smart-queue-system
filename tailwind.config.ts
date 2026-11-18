@@ -12,35 +12,36 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         // Exact "Arctic Harbor" palette:
-        // #08131F (Deepest midnight canvas)
-        // #16314A (Marine container background)
-        // #2E4F6B (Sea slate borders & accents)
-        // #5F7F98 (Misty steel blue subtitles & icons)
-        // #A9BDC9 (Crisp horizon blue body text)
-        // #E8EFF3 (Glacial white-blue headings & prominent text)
+        // Restored Signature Master Palette from User Specification:
+        // #06141B (Deepest midnight canvas)
+        // #11212D (Marine container background)
+        // #253745 (Sea slate borders & accents)
+        // #4A5C6A (Misty steel blue subtitles & icons)
+        // #9BA8AB (Crisp horizon blue body text)
+        // #CCD0CF (Glacial white-blue headings & prominent text)
         arctic: {
-          950: 'rgb(var(--canvas-bg-rgb) / <alpha-value>)',
-          900: 'rgb(var(--surface-bg-rgb) / <alpha-value>)',
-          850: 'rgb(var(--surface-elevated-rgb) / <alpha-value>)',
-          800: 'rgb(var(--border-color-rgb) / <alpha-value>)',
-          700: 'rgb(var(--accent-mid-rgb) / <alpha-value>)',
-          600: 'rgb(var(--text-muted-rgb) / <alpha-value>)',
-          400: 'rgb(var(--text-secondary-rgb) / <alpha-value>)',
-          100: 'rgb(var(--text-primary-rgb) / <alpha-value>)',
+          950: '#06141B',
+          900: '#11212D',
+          850: '#1a2d3d',
+          800: '#253745',
+          700: '#4A5C6A',
+          600: '#4A5C6A',
+          400: '#9BA8AB',
+          100: '#CCD0CF',
         },
         slateNavy: {
-          950: 'rgb(var(--canvas-bg-rgb) / <alpha-value>)',
-          900: 'rgb(var(--surface-bg-rgb) / <alpha-value>)',
-          850: 'rgb(var(--surface-elevated-rgb) / <alpha-value>)',
-          800: 'rgb(var(--border-color-rgb) / <alpha-value>)',
-          750: 'rgb(var(--accent-mid-rgb) / <alpha-value>)',
-          700: 'rgb(var(--accent-mid-rgb) / <alpha-value>)',
-          600: 'rgb(var(--text-muted-rgb) / <alpha-value>)',
-          500: 'rgb(var(--text-muted-rgb) / <alpha-value>)',
-          400: 'rgb(var(--text-secondary-rgb) / <alpha-value>)',
-          300: 'rgb(var(--text-secondary-rgb) / <alpha-value>)',
-          200: 'rgb(var(--text-primary-rgb) / <alpha-value>)',
-          100: 'rgb(var(--text-primary-rgb) / <alpha-value>)',
+          950: '#06141B',
+          900: '#11212D',
+          850: '#1a2d3d',
+          800: '#253745',
+          750: '#344755',
+          700: '#4A5C6A',
+          600: '#4A5C6A',
+          500: '#718491',
+          400: '#9BA8AB',
+          300: '#B0BCBE',
+          200: '#CCD0CF',
+          100: '#CCD0CF',
         },
       },
     },

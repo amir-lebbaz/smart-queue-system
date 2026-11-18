@@ -3,75 +3,43 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   Dual Theme Color Architecture:
-   1. Default: Arctic Harbor (الأزرق القطبي العميق)
-   2. Frozen Whisper / 冬色の吐息: Japanese Frosted Winter (الفحم الهادئ والثلج البارد)
+   Master Palette (Restored to exact user specification):
+   1. #06141B (Deepest Midnight Canvas)
+   2. #11212D (Marine Container & Card Base)
+   3. #253745 (Slate Navy Card Border & Active Accent)
+   4. #4A5C6A (Misty Steel Subtitles & Secondary Accents)
+   5. #9BA8AB (Cool Silver Horizon Body Text)
+   6. #CCD0CF (Pristine Pale Snow Headings & Numbers)
    ========================================================================== */
-:root {
-  --background: #050507;
-  --foreground: #F3F4F6;
+:root, [data-theme="arctic"], [data-theme="frozen"], html.theme-frozen {
+  --background: #06141B;
+  --foreground: #CCD0CF;
 
-  /* Theme 1: Deep Obsidian Black & Emerald (#050507 / #0A0B0F / #10B981) */
-  --canvas-bg: #050507;
-  --canvas-bg-rgb: 5 5 7;
+  --canvas-bg: #06141B;
+  --canvas-bg-rgb: 6 20 27;
 
-  --surface-bg: #0A0B0F;
-  --surface-bg-rgb: 10 11 15;
+  --surface-bg: #11212D;
+  --surface-bg-rgb: 17 33 45;
 
-  --surface-elevated: #13141C;
-  --surface-elevated-rgb: 19 20 28;
+  --surface-elevated: #1a2d3d;
+  --surface-elevated-rgb: 26 45 61;
 
-  --border-color: rgba(255, 255, 255, 0.1);
-  --border-color-rgb: 255 255 255;
+  --border-color: #253745;
+  --border-color-rgb: 37 55 69;
 
-  --accent-mid: #10B981;
-  --accent-mid-rgb: 16 185 129;
+  --accent-mid: #4A5C6A;
+  --accent-mid-rgb: 74 92 106;
 
-  --text-muted: #9CA3AF;
-  --text-muted-rgb: 156 163 175;
+  --text-muted: #4A5C6A;
+  --text-muted-rgb: 74 92 106;
 
-  --text-secondary: #D1D5DB;
-  --text-secondary-rgb: 209 213 219;
+  --text-secondary: #9BA8AB;
+  --text-secondary-rgb: 155 168 171;
 
-  --text-primary: #F9FAFB;
-  --text-primary-rgb: 249 250 251;
+  --text-primary: #CCD0CF;
+  --text-primary-rgb: 204 208 207;
 
-  --theme-name: 'obsidian';
-}
-
-[data-theme="frozen"], html.theme-frozen {
-  --background: #1e252b;
-  --foreground: #d5dbe2;
-
-  /* Theme 2: Frozen Whisper (冬色の吐息) - Exact Palette:
-     #313c45 (Charcoal Mist) | #4f6271 (Slate Steel) | #778ca4 (Icy Blue)
-     #b3bfcb (Clouded Steel) | #d5dbe2 (Pale Snow)
-  */
-  --canvas-bg: #1e252b;
-  --canvas-bg-rgb: 30 37 43;
-
-  --surface-bg: #313c45;
-  --surface-bg-rgb: 49 60 69;
-
-  --surface-elevated: #3c4954;
-  --surface-elevated-rgb: 60 73 84;
-
-  --border-color: #4f6271;
-  --border-color-rgb: 79 98 113;
-
-  --accent-mid: #778ca4;
-  --accent-mid-rgb: 119 140 164;
-
-  --text-muted: #778ca4;
-  --text-muted-rgb: 119 140 164;
-
-  --text-secondary: #b3bfcb;
-  --text-secondary-rgb: 179 191 203;
-
-  --text-primary: #d5dbe2;
-  --text-primary-rgb: 213 219 226;
-
-  --theme-name: 'frozen';
+  --theme-name: 'arctic-slate';
 }
 
 /* Suppress synthetic AI laser and harsh glows in Frozen Whisper mode */
@@ -89,55 +57,10 @@ html, body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-ibm-plex), 'IBM Plex Sans Arabic', 'Readex Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Cairo', 'Tajawal', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-}
-
-/* Faded Grid with Mask */
-.faded-grid-pattern {
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 36px 36px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 80%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 80%);
-}
-
-/* Border Beam Effect */
-@keyframes borderBeamRotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.border-beam-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 1.5rem;
-}
-
-.border-beam-card::before {
-  content: '';
-  position: absolute;
-  inset: -150%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 280deg,
-    rgba(16, 185, 129, 0.75) 325deg,
-    rgba(255, 255, 255, 0.95) 350deg,
-    transparent 360deg
-  );
-  animation: borderBeamRotate 9s linear infinite;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.border-beam-card-inner {
-  position: relative;
-  z-index: 1;
-  background: #0A0B0F;
-  border-radius: calc(1.5rem - 1px);
 }
 
 /* Minimalist scrollbars */
