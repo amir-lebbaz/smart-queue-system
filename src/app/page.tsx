@@ -39,6 +39,7 @@ import LuxuryBackground from '@/components/LuxuryBackground';
 import ScrollReveal from '@/components/ScrollReveal';
 import ThemeToggle from '@/components/ThemeToggle';
 import VectorWordmark from '@/components/VectorWordmark';
+import DataPixelArc from '@/components/DataPixelArc';
 
 const WHATSAPP_NUMBER = '0666568039';
 const WHATSAPP_INTL = '213666568039';
@@ -162,8 +163,10 @@ export default function PromotionalLandingPage() {
   return (
     <div className="min-h-screen bg-slateNavy-950 text-slateNavy-100 flex flex-col selection:bg-slateNavy-800 selection:text-slateNavy-100 font-sans relative overflow-x-hidden" dir="rtl">
       
-      {/* 0. DYNAMIC LIVING LUXURY BACKGROUND (GPU Accelerated Canvas & Moving Aurora) */}
-      <LuxuryBackground />
+      {/* 0. DYNAMIC LIVING WEBGL PIXEL ARC BACKGROUND */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        <DataPixelArc />
+      </div>
 
       {/* 1. LUXURY TOP ANNOUNCEMENT / WHATSAPP BAR */}
       <div className="bg-gradient-to-r from-slateNavy-950 via-slateNavy-900 to-slateNavy-950 border-b border-slateNavy-800/50 py-2.5 px-4 text-center text-xs font-semibold text-slateNavy-400 relative z-30">
