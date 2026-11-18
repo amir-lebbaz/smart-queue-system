@@ -35,8 +35,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className={ibmPlexArabic.variable}>
+    <html lang="ar" dir="rtl" className={ibmPlexArabic.variable} suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('smart_queue_theme');
+                  if (saved === 'frozen') {
+                    document.documentElement.setAttribute('data-theme', 'frozen');
+                    document.documentElement.classList.add('theme-frozen');
+                  } else {
+                    document.documentElement.setAttribute('data-theme', 'arctic');
+                    document.documentElement.classList.remove('theme-frozen');
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -44,7 +62,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen font-sans antialiased text-[#CCD0CF] bg-[#06141B] selection:bg-[#253745] selection:text-[#CCD0CF]">
+      <body className="min-h-screen font-sans antialiased text-slateNavy-100 bg-slateNavy-950 selection:bg-slateNavy-800 selection:text-slateNavy-100">
         <ServiceWorkerRegister />
         {children}
       </body>

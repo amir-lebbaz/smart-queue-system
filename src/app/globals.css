@@ -11,7 +11,15 @@
    5. #9BA8AB (Cool Silver Horizon Body Text)
    6. #CCD0CF (Pristine Pale Snow Headings & Numbers)
    ========================================================================== */
-:root, [data-theme="arctic"], [data-theme="frozen"], html.theme-frozen {
+/* ==========================================================================
+   Dual Theme Color Architecture:
+   1. Theme 1 (Default / Original): Midnight Slate (الوضع الأصلي الفاخر)
+      #06141B | #11212D | #253745 | #4A5C6A | #9BA8AB | #CCD0CF
+   2. Theme 2 (New): Landing Page Frozen Whisper (ثيم صفحة الهبوط: شتاء هادئ)
+      #eef1f4 (Canvas) | #ffffff (Surface) | #b3bfcb (Border)
+      #778ca4 (Accent) | #4f6271 (Secondary Text) | #313c45 (Headings)
+   ========================================================================== */
+:root, [data-theme="arctic"] {
   --background: #06141B;
   --foreground: #CCD0CF;
 
@@ -39,7 +47,39 @@
   --text-primary: #CCD0CF;
   --text-primary-rgb: 204 208 207;
 
-  --theme-name: 'arctic-slate';
+  --theme-name: 'arctic';
+}
+
+[data-theme="frozen"], html.theme-frozen {
+  --background: #eef1f4;
+  --foreground: #313c45;
+
+  /* Theme 2: Landing Page Frozen Whisper (شتاء هادئ) */
+  --canvas-bg: #eef1f4;
+  --canvas-bg-rgb: 238 241 244;
+
+  --surface-bg: #ffffff;
+  --surface-bg-rgb: 255 255 255;
+
+  --surface-elevated: #f7f9fb;
+  --surface-elevated-rgb: 247 249 251;
+
+  --border-color: #b3bfcb;
+  --border-color-rgb: 179 191 203;
+
+  --accent-mid: #778ca4;
+  --accent-mid-rgb: 119 140 164;
+
+  --text-muted: #778ca4;
+  --text-muted-rgb: 119 140 164;
+
+  --text-secondary: #4f6271;
+  --text-secondary-rgb: 79 98 113;
+
+  --text-primary: #313c45;
+  --text-primary-rgb: 49 60 69;
+
+  --theme-name: 'frozen';
 }
 
 /* Suppress synthetic AI laser and harsh glows in Frozen Whisper mode */
