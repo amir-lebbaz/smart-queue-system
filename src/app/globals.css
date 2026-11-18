@@ -55,12 +55,15 @@ html, body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Cairo', 'Tajawal', sans-serif;
+  font-family: var(--font-ibm-plex-arabic), 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.65;
   overflow-x: hidden;
+}
+
+.heading-balance {
+  text-wrap: balance;
 }
 
 /* Minimalist scrollbars */

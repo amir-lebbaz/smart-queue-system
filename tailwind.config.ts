@@ -8,17 +8,28 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-ibm-plex-arabic)", "system-ui", "-apple-system", "sans-serif"],
+        ibm: ["var(--font-ibm-plex-arabic)", "system-ui", "-apple-system", "sans-serif"],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        // Exact "Arctic Harbor" palette:
-        // Restored Signature Master Palette from User Specification:
-        // #06141B (Deepest midnight canvas)
-        // #11212D (Marine container background)
-        // #253745 (Sea slate borders & accents)
-        // #4A5C6A (Misty steel blue subtitles & icons)
-        // #9BA8AB (Crisp horizon blue body text)
-        // #CCD0CF (Glacial white-blue headings & prominent text)
+        // Frozen Whisper Editorial Palette (Pale Snow, Clouded Steel, Icy Blue, Slate Mist, Charcoal Mist)
+        frozen: {
+          snowBright: "#f7f9fb",
+          snowLight: "#eef1f4",
+          snow: "#d5dbe2",
+          steel: "#b3bfcb",
+          steelLight: "#c8d2dc",
+          ice: "#778ca4",
+          iceLight: "#8ea2b8",
+          slate: "#4f6271",
+          slateLight: "#5f7587",
+          charcoal: "#313c45",
+          charcoalDark: "#232b32",
+        },
+        // Existing Dashboard Palettes:
         arctic: {
           950: '#06141B',
           900: '#11212D',
