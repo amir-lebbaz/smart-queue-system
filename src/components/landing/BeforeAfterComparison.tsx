@@ -1,47 +1,46 @@
 'use client';
 
 import React, { useState } from 'react';
-import { XCircle, CheckCircle2, SlidersHorizontal, ArrowLeftRight } from 'lucide-react';
+import { XCircle, CheckCircle2 } from 'lucide-react';
 
 export default function BeforeAfterComparison() {
   const [activeMode, setActiveMode] = useState<'after' | 'before'>('after');
-  const [sliderPos, setSliderPos] = useState<number>(50); // for visual split
 
   const painPoints = [
     {
       title: 'اكتظاظ وتوتر دائم في القاعة',
-      traditional: 'عشرات الأشخاص محشورون في غرفة ضيقة، توتر واحتكاك مستمر بين المراجعين على الأولوية.',
-      nextdz: 'قاعة واسعة وهادئة تماماً، الزائر ينتظر في سيارته أو في مقهى قريب ويعود بكرامته في موعده.',
+      traditional: 'عشرات الأشخاص في غرفة ضيقة، توتر واحتكاك مستمر بين المراجعين على الأولوية.',
+      nextdz: 'قاعة واسعة وهادئة تماماً، الزائر ينتظر في سيارته أو في مكان مريح ويعود في موعده بدقة.',
     },
     {
       title: 'مقاطعة السكرتيرة كل دقيقة',
-      traditional: 'سؤال متكرر يدمّر تركيز الموظف: "شحال باقيلي؟"، "وقتاش ندخل؟"، "ياك أنا قبل هذا؟".',
-      nextdz: 'شاشة الهاتف تُظهر للمراجع عدّاً تنازلياً بالدقيقة لعدد المتبقين قبله ووقت الدخول المقدر.',
+      traditional: 'سؤال متكرر يشتت تركيز الموظف: كم بقي من شخص؟ متى يحين دوري؟ هل دوري بعد هذا؟',
+      nextdz: 'شاشة الهاتف تُظهر للمراجع عدّاً تنازلياً دقيقاً لعدد المتبقين قبله ووقت الدخول المقدر.',
     },
     {
       title: 'أجهزة تذاكر باهظة وأعطال مستمرة',
-      traditional: 'شراء كشك تذاكر وشاشات بآلاف الدنانير، انحشار رول الورق، وحاجة مستمرة للصيانة وقطع الغيار.',
-      nextdz: 'صفر أجهزة! ملصق كود QR واحد أنيق يُطبع على ورقة عادية ويوضع على طاولة الاستقبال.',
+      traditional: 'شراء أجهزة كشك تذاكر مكلفة، انحشار رول الورق، وحاجة مستمرة للصيانة وتغيير القطع.',
+      nextdz: 'صفر أجهزة! ملصق كود واحد أنيق يُطبع على ورقة عادية ويوضع على طاولة الاستقبال.',
     },
     {
       title: 'زبائن يملّون ويغادرون دون رجعة',
-      traditional: 'الانتظار الأعمى غير المحسوب يجعل الزبون ييأس بعد نصف ساعة ويغادر غاضباً لطبيب أو صالون آخر.',
-      nextdz: 'حرية كاملة؛ يتحرك الزبون بارتياح ويصله تنبيه صوتي واهتزاز على هاتفه قبل دوره بمراجعين اثنين.',
+      traditional: 'الانتظار غير المحسوب يجعل الزبون يمل ويغادر لعيادة أو صالون آخر يبحث عن راحة أكبر.',
+      nextdz: 'حرية كاملة؛ يتحرك الزبون بارتياح ويصله تنبيه صوتي واهتزاز على هاتفه قبل دوره بدقائق.',
     },
   ];
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-8">
-      {/* Editorial Toggle Selector */}
-      <div className="flex items-center justify-center">
-        <div className="inline-flex items-center p-1.5 rounded-full bg-[#d5dbe2]/70 border border-[#b3bfcb]/60 shadow-inner">
+      {/* Editorial Toggle Selector - Smooth Stacking on 390px Mobile */}
+      <div className="flex items-center justify-center px-2">
+        <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center p-1.5 rounded-2xl sm:rounded-full bg-[#d5dbe2] border border-[#b3bfcb] shadow-inner gap-1.5">
           <button
             type="button"
             onClick={() => setActiveMode('after')}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+            className={`w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
               activeMode === 'after'
                 ? 'bg-[#313c45] text-[#f7f9fb] shadow-[0_4px_16px_rgba(49,60,69,0.18)]'
-                : 'text-[#4f6271] hover:text-[#313c45]'
+                : 'text-[#313c45] hover:text-[#232b32]'
             }`}
           >
             <CheckCircle2 className="w-4 h-4 text-[#b3bfcb]" />
@@ -51,9 +50,9 @@ export default function BeforeAfterComparison() {
           <button
             type="button"
             onClick={() => setActiveMode('before')}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+            className={`w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
               activeMode === 'before'
-                ? 'bg-[#b3bfcb] text-[#313c45] shadow-sm font-bold'
+                ? 'bg-[#b3bfcb] text-[#313c45] shadow-sm'
                 : 'text-[#4f6271] hover:text-[#313c45]'
             }`}
           >
@@ -70,10 +69,10 @@ export default function BeforeAfterComparison() {
           return (
             <div
               key={idx}
-              className={`relative overflow-hidden rounded-2xl p-7 transition-all duration-500 border ${
+              className={`relative overflow-hidden rounded-2xl p-6 sm:p-7 transition-all duration-500 border ${
                 isNextdz
-                  ? 'bg-[#ffffff]/85 border-[#b3bfcb]/80 shadow-[0_4px_24px_rgba(119,140,164,0.08)]'
-                  : 'bg-[#eef1f4]/90 border-[#b3bfcb]/40 opacity-90'
+                  ? 'bg-[#ffffff] border-[#b3bfcb] shadow-[0_4px_24px_rgba(119,140,164,0.08)]'
+                  : 'bg-[#eef1f4] border-[#b3bfcb]/60'
               }`}
             >
               <div className="flex items-start gap-3.5 mb-3">
@@ -81,7 +80,7 @@ export default function BeforeAfterComparison() {
                   className={`mt-1 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
                     isNextdz
                       ? 'bg-[#313c45] text-[#f7f9fb]'
-                      : 'bg-[#b3bfcb] text-[#4f6271]'
+                      : 'bg-[#b3bfcb] text-[#313c45]'
                   }`}
                 >
                   {isNextdz ? (
@@ -95,20 +94,20 @@ export default function BeforeAfterComparison() {
                 </h4>
               </div>
 
-              <p className="text-sm text-[#4f6271] leading-relaxed pr-9">
+              <p className="text-sm font-medium text-[#4f6271] leading-relaxed pr-9">
                 {isNextdz ? item.nextdz : item.traditional}
               </p>
 
               {/* Status pill indicator */}
               <div className="mt-5 pr-9">
                 <span
-                  className={`inline-flex items-center text-xs font-medium px-3 py-1 rounded-full ${
+                  className={`inline-flex items-center text-xs font-bold px-3 py-1 rounded-full ${
                     isNextdz
-                      ? 'bg-[#778ca4]/15 text-[#313c45]'
-                      : 'bg-[#4f6271]/10 text-[#4f6271]'
+                      ? 'bg-[#313c45] text-[#f7f9fb]'
+                      : 'bg-[#b3bfcb] text-[#313c45]'
                   }`}
                 >
-                  {isNextdz ? '✓ تجربة مريحة ومحسوبة' : '✕ استنزاف للمال والأعصاب'}
+                  {isNextdz ? '✓ تجربة مريحة ومحسوبة' : '✕ استنزاف للمال والراحة'}
                 </span>
               </div>
             </div>
@@ -117,12 +116,12 @@ export default function BeforeAfterComparison() {
       </div>
 
       {/* Summary Value Banner */}
-      <div className="rounded-2xl p-6 bg-gradient-to-r from-[#d5dbe2]/60 via-[#eef1f4] to-[#d5dbe2]/60 border border-[#b3bfcb]/70 text-center space-y-2">
-        <p className="text-sm font-semibold text-[#313c45]">
-          الفرق بين العيادة التي تفقد مرضاها والعيادة التي يُثني عليها الجميع هو <span className="underline decoration-[#778ca4] decoration-2">احترام وقت المراجع</span>.
+      <div className="rounded-2xl p-6 bg-[#d5dbe2] border border-[#b3bfcb] text-center space-y-2">
+        <p className="text-sm font-bold text-[#313c45]">
+          الفرق بين المكان الذي يفقد زبائنه والمكان الذي يُثني عليه الجميع هو احترام وقت المراجع.
         </p>
-        <p className="text-xs text-[#4f6271]">
-          لا يتطلب منك الأمر سوى وضع ملصق QR على طاولتك اليوم لتبدأ عيادتك عهداً جديداً من الهدوء.
+        <p className="text-xs font-medium text-[#4f6271]">
+          لا يتطلب منك الأمر سوى وضع ملصق كود على طاولتك لتبدأ قاعتك عهداً جديداً من الهدوء.
         </p>
       </div>
     </div>

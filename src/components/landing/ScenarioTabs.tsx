@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { PauseCircle, PhoneCall, Tv, FileSpreadsheet, Check, ArrowRight, ShieldCheck } from 'lucide-react';
+import { PauseCircle, PhoneCall, Tv, ArrowRight, ShieldCheck } from 'lucide-react';
 
 interface Scenario {
   id: string;
@@ -27,16 +27,16 @@ export default function ScenarioTabs() {
       tabLabel: 'تأجيل ذكي دون تعطيل الدور (Hold)',
       icon: PauseCircle,
       headline: 'الزبون تأخر لدقائق؟ لا تعطل الطابور ولا تظلمه.',
-      problem: 'في الأنظمة التقليدية، إذا ناديت مراجعاً ولم يكن حاضراً، إما أن تضيّع وقتاً في انتظاره، أو تلغي تذكرته فيحدث شجار عند عودته.',
-      solution: 'في NextDZ، بضغطة زر واحدة على زر "تأجيل مؤقت (Hold)"، يمر الطابور للزبون التالي فوراً، ويبقى دور الزبون المتأخر محفوظاً في القائمة ليدخل في أول فرصة مناسبة فور حضوره.',
-      liveEvidence: 'ميزة مستخدمة يومياً ومدمجة مباشرة في لوحة تحكم الطبيب والمسير.',
+      problem: 'في الأنظمة التقليدية، إذا ناديت مراجعاً ولم يكن حاضراً، إما أن تضيّع وقتاً في انتظاره، أو تلغي تذكرته فيحدث خلاف عند عودته.',
+      solution: 'في NextDZ، بلمسة واحدة على زر التأجيل المؤقت، يمر الطابور للزبون التالي فوراً، ويبقى دور الزبون المتأخر محفوظاً في القائمة ليدخل في أول فرصة مناسبة فور حضوره.',
+      liveEvidence: 'ميزة ميدانية مدمجة مباشرة في لوحة تحكم الطبيب والمسير.',
       previewCard: {
         badge: 'حالة الطابور اللحظية',
-        actionText: 'تم تأجيل التذكرة #04 بنجاح ونقل الدور إلى #05',
+        actionText: 'تم تأجيل التذكرة بنجاح ونقل الدور للمراجع التالي',
         details: [
-          'لا يتوقف الطبيب عن العمل ثانية واحدة',
-          'يحفظ الزبون حقه الأدبي دون إحراج السكرتيرة',
-          'تحديث فوري لكل الشاشات في أجزاء من الثانية',
+          'استمرار العمل دون توقف ثانية واحدة',
+          'حفظ حق الزبون الأدبي دون إحراج السكرتيرة',
+          'تحديث فوري لكل الشاشات في لحظتها',
         ],
       },
     },
@@ -44,31 +44,31 @@ export default function ScenarioTabs() {
       id: 'seniors',
       tabLabel: 'دعم كبار السن والهواتف العادية',
       icon: PhoneCall,
-      headline: 'لا يملك هاتفاً ذكياً؟ السكرتيرة تسجله في ثانيتين.',
-      problem: 'بعض الزوار كبار سن، أو لا يحملون هواتف ذكية لمسح كود QR.',
-      solution: 'يمكن للسكرتيرة إدخال اسمه أو رقم هاتفه العادي في ثانية واحدة من لوحة التحكم، وإعطاؤه رقمه شفهياً مع وقت العودة بالدقيقة، أو إرسال رنة هاتفية سريعة (Bip) لتنبيهه بالحضور دون أي تكلفة إضافية.',
-      liveEvidence: 'النظام يضمن شمولية 100% لجميع فئات الزوار دون استثناء أحد.',
+      headline: 'لا يملك هاتفاً ذكياً؟ السكرتيرة تسجله في ثوانٍ.',
+      problem: 'بعض الزوار كبار سن، أو لا يحملون هواتف ذكية لمسح كود الاستقبال.',
+      solution: 'يمكن للسكرتيرة إدخال اسمه أو رقم هاتفه العادي في ثانية واحدة من لوحة التحكم، وإعطاؤه رقمه شفهياً مع وقت العودة بالدقيقة، أو إرسال رنة هاتفية سريعة لتنبيهه بالحضور دون أي تكلفة إضافية.',
+      liveEvidence: 'شمولية كاملة لجميع فئات الزوار دون استثناء أحد.',
       previewCard: {
         badge: 'تسجيل يدوي سريع',
-        actionText: 'إصدار تذكرة فورية للسيد: محمد بن يوسف',
+        actionText: 'إصدار تذكرة فورية حضورية بالاسم أو الهاتف',
         details: [
           'تسجيل سريع برقم الهاتف أو الاسم فقط',
-          'حساب موعد الحضور الدقيق بناءً على سرعة الكشف',
+          'حساب موعد الحضور الدقيق بناءً على سرعة العمل',
           'إمكانية الرنة الهاتفية أو النداء الشفهي',
         ],
       },
     },
     {
       id: 'tv-reports',
-      tabLabel: 'شاشة التلفاز الذكية + تصدير Excel',
+      tabLabel: 'شاشة التلفاز + تقارير السجلات',
       icon: Tv,
-      headline: 'قاعة انتظار سينمائية وسجل يومي للمحاسبة بلمسة زر.',
-      problem: 'الحاجة لشاشة عرض واضحة في الصالة دون مد كابلات HDMI معقدة، والحاجة لمعرفة عدد من تم استقبالهم اليوم.',
-      solution: 'افتح رابط شاشة العرض على أي تلفاز ذكي (Smart TV) لتعرض التذاكر والنداء الصوتي تلقائياً بدون كابلات. وفي نهاية اليوم، صدّر تقرير الدخول إلى ملف Excel بضغطة زر واحدة لتدقيق السجلات وحسابات العيادة.',
-      liveEvidence: 'تعمل على كل أنواع التلفزيونات (LG, Samsung, Android TV) عبر المتصفح مباشرة.',
+      headline: 'قاعة انتظار هادئة وسجل يومي للمحاسبة بلمسة زر.',
+      problem: 'الحاجة لشاشة عرض واضحة في الصالة دون أسلاك أو وصلات معقدة، والحاجة لمعرفة عدد من تم استقبالهم اليوم.',
+      solution: 'افتح رابط شاشة العرض على أي تلفاز متصل بالإنترنت لتعرض التذاكر والنداء الصوتي تلقائياً بدون كابلات. وفي نهاية اليوم، صدّر تقرير الدخول إلى جدول إكسل بضغطة زر واحدة لتدقيق السجلات وحسابات العمل.',
+      liveEvidence: 'تعمل على كل الشاشات الحديثة عبر المتصفح مباشرة.',
       previewCard: {
-        badge: 'ميزات إدارية متقدمة',
-        actionText: 'تصدير سجلات اليوم كاملاً بصيغة جدول Excel',
+        badge: 'ميزات إدارية مدمجة',
+        actionText: 'تصدير سجلات اليوم كاملاً بصيغة جدول منظم',
         details: [
           'رابط شاشة التلفاز يعمل بدون حواسيب أو أسلاك',
           'نداء صوتي تلقائي لطيف عند استدعاء كل مراجع',
@@ -82,7 +82,7 @@ export default function ScenarioTabs() {
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-8">
-      {/* Editorial Scenario Navigation Tabs */}
+      {/* Editorial Scenario Navigation Tabs - Responsive Wrapping on 390px */}
       <div className="flex flex-wrap items-center justify-center gap-2 border-b border-[#b3bfcb]/40 pb-4">
         {scenarios.map((item) => {
           const Icon = item.icon;
@@ -92,13 +92,13 @@ export default function ScenarioTabs() {
               key={item.id}
               type="button"
               onClick={() => setActiveTab(item.id)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 ${
+              className={`flex items-center gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 ${
                 isActive
                   ? 'bg-[#313c45] text-[#f7f9fb] shadow-[0_4px_16px_rgba(49,60,69,0.18)]'
-                  : 'bg-[#ffffff]/60 text-[#4f6271] hover:text-[#313c45] hover:bg-[#ffffff]'
+                  : 'bg-[#ffffff] text-[#313c45] hover:bg-[#eef1f4] border border-[#b3bfcb]/60'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-[#b3bfcb]' : 'text-[#778ca4]'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-[#b3bfcb]' : 'text-[#4f6271]'}`} />
               <span>{item.tabLabel}</span>
             </button>
           );
@@ -106,11 +106,11 @@ export default function ScenarioTabs() {
       </div>
 
       {/* Active Tab Editorial Showcase */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#ffffff]/75 backdrop-blur-sm rounded-3xl p-8 sm:p-10 border border-[#b3bfcb]/60 shadow-[0_4px_30px_rgba(119,140,164,0.06)]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#ffffff] rounded-3xl p-6 sm:p-10 border border-[#b3bfcb]/70 shadow-[0_4px_30px_rgba(119,140,164,0.06)]">
         {/* Text Description Column */}
         <div className="lg:col-span-7 space-y-5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#778ca4]/15 text-[#313c45] text-xs font-semibold">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#4f6271]" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#eef1f4] border border-[#b3bfcb]/50 text-[#313c45] text-xs font-semibold">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#313c45]" />
             <span>{current.liveEvidence}</span>
           </div>
 
@@ -119,12 +119,12 @@ export default function ScenarioTabs() {
           </h3>
 
           <div className="space-y-3 text-sm text-[#4f6271] leading-relaxed">
-            <p className="bg-[#eef1f4]/70 p-3.5 rounded-xl border border-[#b3bfcb]/30">
-              <strong className="text-[#313c45] font-semibold block mb-1">المشكلة الواقعية:</strong>
+            <p className="bg-[#eef1f4] p-3.5 rounded-xl border border-[#b3bfcb]/40 text-[#313c45]">
+              <strong className="text-[#313c45] font-bold block mb-1">المشكلة الواقعية:</strong>
               {current.problem}
             </p>
-            <p>
-              <strong className="text-[#313c45] font-semibold block mb-1">الحل مع NextDZ:</strong>
+            <p className="text-[#313c45]">
+              <strong className="text-[#313c45] font-bold block mb-1">الحل مع NextDZ:</strong>
               {current.solution}
             </p>
           </div>
@@ -136,14 +136,14 @@ export default function ScenarioTabs() {
             <span className="text-xs font-bold text-[#313c45] uppercase tracking-wider">
               {current.previewCard.badge}
             </span>
-            <span className="inline-block w-2 h-2 rounded-full bg-[#778ca4] animate-pulse" />
+            <span className="inline-block w-2 h-2 rounded-full bg-[#4f6271]" />
           </div>
 
-          <div className="p-3.5 rounded-xl bg-[#ffffff] border border-[#b3bfcb]/60 text-xs font-semibold text-[#313c45]">
+          <div className="p-3.5 rounded-xl bg-[#ffffff] border border-[#b3bfcb]/60 text-xs font-bold text-[#313c45]">
             {current.previewCard.actionText}
           </div>
 
-          <ul className="space-y-2.5 text-xs text-[#4f6271]">
+          <ul className="space-y-2.5 text-xs text-[#313c45] font-medium">
             {current.previewCard.details.map((detail, idx) => (
               <li key={idx} className="flex items-center gap-2">
                 <span className="w-4 h-4 rounded-full bg-[#313c45] text-[#f7f9fb] flex items-center justify-center flex-shrink-0 text-[10px]">
@@ -156,10 +156,10 @@ export default function ScenarioTabs() {
 
           <div className="pt-2 border-t border-[#b3bfcb]/40">
             <a
-              href="https://smart-queue-system-zeta.vercel.app/admin/clinic-amal"
+              href="/admin/clinic-amal"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs font-bold text-[#313c45] hover:text-[#778ca4] transition"
+              className="inline-flex items-center gap-2 text-xs font-bold text-[#313c45] hover:text-[#4f6271] transition"
             >
               <span>معاينة لوحة التحكم الحقيقية مباشرة</span>
               <ArrowRight className="w-3.5 h-3.5 rotate-180" />

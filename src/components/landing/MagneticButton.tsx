@@ -25,6 +25,8 @@ export default function MagneticButton({
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Disable magnetic physics on touch devices
+    if (window.matchMedia('(pointer: coarse)').matches) return;
     if (!btnRef.current) return;
     const rect = btnRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -40,20 +42,22 @@ export default function MagneticButton({
 
   // Luxury Editorial Color Schemes
   const baseStyles =
-    'relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full text-sm font-semibold transition-all duration-300 active:scale-[0.98] select-none text-nowrap';
+    'relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full text-sm font-bold transition-all duration-300 active:scale-[0.98] select-none';
 
   const variants = {
-    // Primary: Charcoal Mist (#313c45) with crisp pale text
+    // Primary: Charcoal Mist (#313c45) with crisp pale text (WCAG AAA)
     primary:
-      'bg-[#313c45] text-[#f7f9fb] shadow-[0_4px_20px_rgba(49,60,69,0.18)] hover:bg-[#252f36] hover:shadow-[0_8px_30px_rgba(49,60,69,0.25)] border border-[#313c45]',
-    // Secondary: Icy Blue outline & soft container
+      'bg-[#313c45] text-[#f7f9fb] shadow-[0_4px_20px_rgba(49,60,69,0.18)] hover:bg-[#232b32] hover:shadow-[0_8px_30px_rgba(49,60,69,0.25)] border border-[#313c45]',
+    // Secondary: Icy Blue outline & white container
     secondary:
-      'bg-[#ffffff]/80 backdrop-blur-md text-[#313c45] border border-[#b3bfcb] hover:border-[#778ca4] hover:bg-[#ffffff] shadow-[0_2px_12px_rgba(119,140,164,0.12)]',
+      'bg-[#ffffff] text-[#313c45] border border-[#b3bfcb] hover:border-[#4f6271] hover:bg-[#eef1f4] shadow-sm',
     // Subtle: Slate Mist hover
     subtle:
-      'bg-transparent text-[#4f6271] hover:text-[#313c45] hover:bg-[#b3bfcb]/20 border border-transparent',
+      'bg-transparent text-[#313c45] hover:bg-[#b3bfcb]/20 border border-transparent',
   };
 
+  const isFullWidth = className.includes('w-full');
+  const wrapperClass = isFullWidth ? 'w-full sm:w-auto inline-block' : 'inline-block';
   const combinedStyles = `${baseStyles} ${variants[variant]} ${className}`;
 
   return (
@@ -65,7 +69,7 @@ export default function MagneticButton({
         transform: `translate3d(${offset.x}px, ${offset.y}px, 0)`,
         transition: offset.x === 0 ? 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
       }}
-      className="inline-block"
+      className={wrapperClass}
     >
       {href ? (
         <a href={href} target={target} rel={rel} className={combinedStyles}>
