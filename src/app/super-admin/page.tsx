@@ -641,7 +641,7 @@ export default function SuperAdminPage() {
                 const clientPhone = org.contact_phone ? org.contact_phone.trim().replace(/\s+/g, '') : '';
                 const waLink = clientPhone 
                   ? `https://wa.me/${clientPhone.startsWith('0') ? '213' + clientPhone.slice(1) : clientPhone}?text=${encodeURIComponent(
-                      `مرحباً دكتور ${org.name}،\nنحييكم من منصة طابوري الذكي.\n\nروابط الوصول الخاصة بكم:\n• ريموت المسير (PIN: ${org.pin_code}): ${typeof window !== 'undefined' ? window.location.origin : ''}/admin/${org.slug}\n• شاشة المراجعين: ${typeof window !== 'undefined' ? window.location.origin : ''}/q/${org.slug}\n• شاشة صالة الانتظار للتلفاز: ${typeof window !== 'undefined' ? window.location.origin : ''}/display/${org.slug}\n\nنحن دائماً في خدمتكم!`
+                      `مرحباً دكتور ${org.name}،\nنحييكم من منصة NextDz لإدارة الطوابير الذكية (قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون).\n\nروابط الوصول الخاصة بكم:\n• ريموت المسير (PIN: ${org.pin_code}): ${typeof window !== 'undefined' ? window.location.origin : ''}/admin/${org.slug}\n• شاشة المراجعين: ${typeof window !== 'undefined' ? window.location.origin : ''}/q/${org.slug}\n• شاشة صالة الانتظار للتلفاز: ${typeof window !== 'undefined' ? window.location.origin : ''}/display/${org.slug}\n\nنحن دائماً في خدمتكم!`
                     )}`
                   : null;
 

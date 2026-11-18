@@ -35,11 +35,8 @@ import {
   Headphones,
   CheckCheck
 } from 'lucide-react';
-import LuxuryBackground from '@/components/LuxuryBackground';
 import ScrollReveal from '@/components/ScrollReveal';
 import ThemeToggle from '@/components/ThemeToggle';
-import VectorWordmark from '@/components/VectorWordmark';
-import DataPixelArc from '@/components/DataPixelArc';
 
 const WHATSAPP_NUMBER = '0666568039';
 const WHATSAPP_INTL = '213666568039';
@@ -163,21 +160,33 @@ export default function PromotionalLandingPage() {
   return (
     <div className="min-h-screen bg-slateNavy-950 text-slateNavy-100 flex flex-col selection:bg-slateNavy-800 selection:text-slateNavy-100 font-sans relative overflow-x-hidden" dir="rtl">
       
-      {/* 0. DYNAMIC LIVING WEBGL PIXEL ARC BACKGROUND */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        <DataPixelArc />
+      {/* 0. CLEAN HIGH-PERFORMANCE AMBIENT BACKGROUND */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden bg-slateNavy-950">
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] opacity-35 blur-[120px] pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 0%, rgba(var(--text-muted-rgb), 0.35) 0%, rgba(var(--surface-bg-rgb), 0.2) 45%, transparent 75%)',
+          }}
+        />
+        <div
+          className="absolute -bottom-40 left-1/4 w-[700px] h-[450px] opacity-20 blur-[130px] pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle, rgba(var(--border-color-rgb), 0.4) 0%, transparent 70%)',
+          }}
+        />
+        <div className="absolute inset-0 arctic-grid-pattern opacity-10 pointer-events-none" />
       </div>
 
       {/* 1. LUXURY TOP ANNOUNCEMENT / WHATSAPP BAR */}
       <div className="bg-gradient-to-r from-slateNavy-950 via-slateNavy-900 to-slateNavy-950 border-b border-slateNavy-800/50 py-2.5 px-4 text-center text-xs font-semibold text-slateNavy-400 relative z-30">
         <div className="max-w-6xl mx-auto flex items-center justify-center flex-wrap gap-2 sm:gap-4">
           <span className="inline-flex items-center gap-1.5 text-slateNavy-100">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-            <span>نظام إدارة الطوابير والمواعيد الذكي للعيادات والصالونات والمراكز</span>
+            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+            <span>منصة NextDz لإدارة الطوابير الذكية • قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون</span>
           </span>
           <span className="hidden sm:inline text-slateNavy-800">•</span>
           <a
-            href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاشتراك%20في%20نظام%20طابوري%20الذكي`}
+            href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاشتراك%20في%20نظام%20NextDz`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-slateNavy-100 hover:text-emerald-400 transition font-bold"
@@ -194,15 +203,15 @@ export default function PromotionalLandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-18 py-3 flex items-center justify-between">
           {/* Brand Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-slateNavy-800 via-slateNavy-900 to-slateNavy-950 border border-slateNavy-800 flex items-center justify-center text-slateNavy-100 font-black shadow-xl">
-              <Zap className="w-5 h-5 text-cyan-300" />
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-slateNavy-800 via-slateNavy-900 to-slateNavy-950 border border-slateNavy-800 flex items-center justify-center text-emerald-400 font-black shadow-xl">
+              <Zap className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-lg font-black tracking-tight text-slateNavy-100 flex items-center gap-1.5">
-                طابوري الذكي
-                <span className="text-[10px] bg-cyan-400/10 text-cyan-300 border border-cyan-400/30 px-2 py-0.5 rounded-full font-mono font-bold">SAAS 2.0</span>
+              <span className="text-xl font-black tracking-tight text-slateNavy-100 flex items-center gap-2 font-mono">
+                NextDz
+                <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono font-bold">SAAS</span>
               </span>
-              <p className="text-[11px] text-slateNavy-400 -mt-0.5">منصة إفراغ قاعات الانتظار السحابية</p>
+              <p className="text-[11px] text-slateNavy-400 -mt-0.5 font-medium">قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون</p>
             </div>
           </div>
 
@@ -220,7 +229,7 @@ export default function PromotionalLandingPage() {
             <ThemeToggle variant="segmented" className="hidden sm:inline-flex" />
             <ThemeToggle variant="compact" showLabel={false} className="sm:hidden" />
             <a
-              href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاشتراك%20في%20نظام%20طابوري%20الذكي`}
+              href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاشتراك%20في%20نظام%20NextDz`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-950/60 transition transform active:scale-95 flex items-center gap-2"
@@ -232,39 +241,28 @@ export default function PromotionalLandingPage() {
         </div>
       </header>
 
-      {/* 3. HERO SECTION (High-Converting Arctic Harbor Luxury Aesthetic) */}
+      {/* 3. HERO SECTION */}
       <section className="relative pt-16 pb-24 px-4 sm:px-6 overflow-hidden">
         <ScrollReveal direction="up" className="max-w-4xl mx-auto text-center space-y-7">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slateNavy-900/90 border border-slateNavy-800/80 text-slateNavy-400 text-xs font-bold shadow-xl backdrop-blur-md">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
-            <span className="text-slateNavy-100">أحدث نظام رقمي لإلغاء الاكتظاظ والتزاحم الميداني</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slateNavy-900/90 border border-slateNavy-800/80 text-slateNavy-300 text-xs font-bold shadow-xl backdrop-blur-md">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+            <span className="text-slateNavy-100 font-mono font-black">NextDz</span>
+            <span className="text-slateNavy-600">•</span>
+            <span>المنصة الذكية لإفراغ قاعات الانتظار</span>
           </div>
 
-          {/* Interactive Vector Wordmark */}
-          <div className="w-full max-w-3xl mx-auto h-36 sm:h-48 md:h-56 relative overflow-hidden rounded-3xl border border-slateNavy-800/80 bg-slateNavy-900/40 backdrop-blur-md shadow-2xl">
-            <VectorWordmark
-              text="طابوري الذكي"
-              font={{
-                fontFamily: "'Tajawal', 'Cairo', 'Inter', system-ui, sans-serif",
-                fontWeight: 900,
-                fontSize: "140px",
-              }}
-              style={{ width: "100%", height: "100%" }}
-            />
-          </div>
-
-          {/* Headline */}
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-slateNavy-100 tracking-tight leading-[1.2]">
-            أفرغ صالة الانتظار تماماً.. <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-slateNavy-100 via-slateNavy-400 to-cyan-200">
-              ودع زبائنك يتابعون دورهم أينما كانوا
+          {/* Slogan Headline */}
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-slateNavy-100 tracking-tight leading-[1.25]">
+            قاعة هادئة، سكرتيرة مرتاحة، <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-sky-300 to-slateNavy-100">
+              وزبائن راضون دائماً
             </span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-sm sm:text-lg text-slateNavy-400 max-w-2xl mx-auto leading-relaxed">
-            حوّل هاتف مراجعك إلى تذكرة رقمية حية تحسب ساعة دخوله بالدقيقة وتنبّهه صوتياً قبل دوره ليحضر للصالة مرتاحاً. بدون شراء طابعات ورقية مكلفة، وبدون كابلات أو صيانة.
+            نظام <strong className="text-slateNavy-100 font-bold">NextDz</strong> يحوّل هاتف مراجعك إلى تذكرة رقمية حية تحسب ساعة دخوله بالدقيقة وتنبّهه صوتياً قبل دوره ليحضر للصالة مرتاحاً. بدون شراء طابعات ورقية مكلفة، وبدون كابلات أو صيانة.
           </p>
 
           {/* Action CTAs */}
@@ -778,7 +776,7 @@ export default function PromotionalLandingPage() {
               <ShieldCheck className="w-4 h-4" />
               <span>معايير الجودة والالتزام</span>
             </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-slateNavy-100">لماذا يختار الأطباء والمهنيون طابوري الذكي؟</h2>
+            <h2 className="text-2xl sm:text-4xl font-black text-slateNavy-100">لماذا يختار الأطباء والمهنيون منصة NextDz؟</h2>
             <p className="text-xs sm:text-sm text-slateNavy-400 max-w-xl mx-auto">
               نضمن لك انتقالاً سلساً وفورياً لنظام رقمي فاخر بدون أي تعقيد تقني أو شراء عتاد إضافي.
             </p>
@@ -912,8 +910,9 @@ export default function PromotionalLandingPage() {
 
           {/* Bottom Copyright */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slateNavy-800/50 text-xs text-slateNavy-400">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-slateNavy-100">طابوري الذكي (Smart Queue System)</span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-bold text-slateNavy-100 font-mono">NextDz</span>
+              <span>• قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون</span>
               <span>• جميع الحقوق محفوظة © {new Date().getFullYear()}</span>
             </div>
 
@@ -937,7 +936,7 @@ export default function PromotionalLandingPage() {
 
       {/* 11. FLOATING STICKY WHATSAPP WIDGET (Bottom-Left) */}
       <a
-        href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاستفسار%20عن%20نظام%20طابوري%20الذكي`}
+        href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاستفسار%20عن%20نظام%20NextDz`}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="تواصل معنا عبر واتساب"

@@ -3,13 +3,13 @@ import "./globals.css";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 
 export const metadata: Metadata = {
-  title: "نظام الطابور الذكي العام | إفراغ قاعات الانتظار",
-  description: "نظام طابور ذكي فائق الخفة مخصص للعيادات، صالونات الحلاقة، ومكاتب الإدارة مع دعم كامل للعمل بدون إنترنت وبدون طابعات تذاكر.",
+  title: "NextDz | قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون",
+  description: "NextDz — نظام إدارة الطوابير والمواعيد الذكي للعيادات، المراكز الطبية والصالونات. قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون بدون طابعات تذاكر ورقية.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "الطابور الذكي",
+    title: "NextDz",
   },
 };
 
