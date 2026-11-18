@@ -21,6 +21,7 @@ import KineticHeroReveal from '@/components/landing/KineticHeroReveal';
 import BeforeAfterComparison from '@/components/landing/BeforeAfterComparison';
 import ScenarioTabs from '@/components/landing/ScenarioTabs';
 import MagneticButton from '@/components/landing/MagneticButton';
+import NextDZLogo from '@/components/NextDZLogo';
 
 const PHONE_NUMBER = '0666 56 80 39';
 const WHATSAPP_URL = 'https://wa.me/213666568039?text=مرحباً،%20أريد%20تفعيل%20نظام%20NextDZ%20لقاعة%20الانتظار%20لدي';
@@ -69,14 +70,18 @@ export default function Home() {
       <header className="sticky top-0 z-40 bg-[#f7f9fb]/90 backdrop-blur-md border-b border-[#b3bfcb]/50 transition-all">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between">
           
-          {/* Brand Wordmark */}
-          <a href="#" className="flex items-center gap-2.5 sm:gap-3 group">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#313c45] text-[#f7f9fb] flex items-center justify-center font-bold text-sm sm:text-base shadow-sm group-hover:bg-[#232b32] transition">
-              ND
-            </div>
-            <div className="flex flex-col text-right">
-              <span className="text-base sm:text-lg font-bold tracking-tight text-[#313c45]">NextDZ</span>
-              <span className="text-[10px] text-[#4f6271] -mt-1 font-semibold">تنظيم قاعات الانتظار الذكية</span>
+          {/* Brand Logo & Wordmark */}
+          <a href="#" className="inline-block group" aria-label="NextDZ الصفحة الرئيسية">
+            <div className="flex items-center gap-2.5" dir="ltr">
+              <svg width="40" height="26" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
+                <path d="M4 4H60V14C56.686 14 54 16.686 54 20C54 23.314 56.686 26 60 26V36H4V26C7.314 26 10 23.314 10 20C10 16.686 7.314 14 4 14V4Z" stroke="#313c45" strokeWidth="3.5" strokeLinejoin="round" fill="#eef1f5"/>
+                <path d="M16 12H36L45 20L36 28H16L22 20L16 12Z" fill="#778ca4" fillOpacity="0.35"/>
+                <path d="M18 20H40M40 20L32 12.5M40 20L32 27.5" stroke="#313c45" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span className="text-xl font-bold tracking-tight">
+                <span style={{ color: '#313c45' }}>Next</span>
+                <span style={{ color: '#778ca4' }}>DZ</span>
+              </span>
             </div>
           </a>
 
@@ -127,9 +132,12 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
               
               {/* The Physical Stand (Right in RTL) */}
-              <div className="md:col-span-5 bg-[#eef1f4] rounded-2xl p-6 border border-[#b3bfcb]/70 text-center space-y-4">
+              <div className="md:col-span-5 bg-[#eef1f4] rounded-2xl p-6 border border-[#b3bfcb]/70 text-center space-y-3.5">
                 <div className="inline-block px-3 py-1 rounded-full bg-[#313c45] text-[#f7f9fb] text-[11px] font-bold">
                   ملصق الاستقبال الذكي
+                </div>
+                <div className="flex items-center justify-center pt-1" dir="ltr">
+                  <NextDZLogo width={36} height={23} textSize="text-base" />
                 </div>
                 <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto bg-[#ffffff] rounded-2xl p-3 border border-[#b3bfcb] flex items-center justify-center shadow-sm">
                   <QrCode className="w-full h-full text-[#313c45]" />
@@ -492,8 +500,20 @@ export default function Home() {
 
           {/* Brand Mark and Copyright */}
           <div className="pt-12 sm:pt-16 mt-12 sm:mt-16 border-t border-[#4f6271]/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-[#d5dbe2]">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-sm text-[#f7f9fb]">NextDZ</span>
+            <div className="flex flex-wrap items-center gap-3 justify-center sm:justify-start">
+              <div className="bg-[#eef1f5] px-2.5 py-1 rounded-xl shadow-sm">
+                <div className="flex items-center gap-2" dir="ltr">
+                  <svg width="34" height="22" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
+                    <path d="M4 4H60V14C56.686 14 54 16.686 54 20C54 23.314 56.686 26 60 26V36H4V26C7.314 26 10 23.314 10 20C10 16.686 7.314 14 4 14V4Z" stroke="#313c45" strokeWidth="3.5" strokeLinejoin="round" fill="#eef1f5"/>
+                    <path d="M16 12H36L45 20L36 28H16L22 20L16 12Z" fill="#778ca4" fillOpacity="0.35"/>
+                    <path d="M18 20H40M40 20L32 12.5M40 20L32 27.5" stroke="#313c45" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span className="text-base font-bold tracking-tight">
+                    <span style={{ color: '#313c45' }}>Next</span>
+                    <span style={{ color: '#778ca4' }}>DZ</span>
+                  </span>
+                </div>
+              </div>
               <span>— قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون.</span>
             </div>
 
