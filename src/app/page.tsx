@@ -26,6 +26,18 @@ const PHONE_NUMBER = '0666 56 80 39';
 const WHATSAPP_URL = 'https://wa.me/213666568039?text=مرحباً،%20أريد%20تفعيل%20نظام%20NextDZ%20لقاعة%20الانتظار%20لدي';
 
 export default function Home() {
+  React.useEffect(() => {
+    // Isolate light Frozen Whisper palette strictly to landing page
+    const prevBodyBg = document.body.style.backgroundColor;
+    const prevHtmlBg = document.documentElement.style.backgroundColor;
+    document.body.style.backgroundColor = '#f7f9fb';
+    document.documentElement.style.backgroundColor = '#f7f9fb';
+    return () => {
+      document.body.style.backgroundColor = prevBodyBg;
+      document.documentElement.style.backgroundColor = prevHtmlBg;
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#f7f9fb] text-[#313c45] font-sans antialiased overflow-x-hidden selection:bg-[#b3bfcb]/40 selection:text-[#313c45]">
       

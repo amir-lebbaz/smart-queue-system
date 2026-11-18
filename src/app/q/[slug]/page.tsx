@@ -594,7 +594,8 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   }
 
   return (
-    <main className="flex-1 max-w-md mx-auto w-full p-4 flex flex-col justify-between bg-slateNavy-950 text-slateNavy-100 min-h-screen relative font-sans" dir="rtl">
+    <div className="min-h-screen w-full bg-slateNavy-950 flex flex-col items-center">
+      <main className="flex-1 max-w-md mx-auto w-full p-4 flex flex-col justify-between bg-slateNavy-950 text-slateNavy-100 min-h-screen relative font-sans" dir="rtl">
       {/* Background Ambient Glow in Arctic Harbor Theme */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div className="absolute inset-0 arctic-grid-pattern opacity-15" />
@@ -1281,5 +1282,6 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
         نظام الطابور الذكي العام • لا مزيد من التزاحم في قاعات الانتظار
       </footer>
     </main>
-  );
+  </div>
+);
 }

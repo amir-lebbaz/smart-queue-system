@@ -547,7 +547,8 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   // Render PIN login screen if not authenticated
   if (!isAuthenticated) {
     return (
-      <main className="flex-1 flex flex-col items-center justify-center p-4 max-w-sm mx-auto w-full bg-slateNavy-950 text-slateNavy-100 relative min-h-screen" dir="rtl">
+      <div className="min-h-screen w-full bg-slateNavy-950 flex flex-col items-center justify-center">
+        <main className="flex-1 flex flex-col items-center justify-center p-4 max-w-sm mx-auto w-full bg-slateNavy-950 text-slateNavy-100 relative min-h-screen" dir="rtl">
         <div className="absolute top-4 left-4">
           <ThemeToggle variant="compact" showLabel={false} />
         </div>
@@ -593,11 +594,13 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
           </div>
         </div>
       </main>
-    );
-  }
+    </div>
+  );
+}
 
   return (
-    <main className="flex-1 max-w-md mx-auto w-full p-4 pb-24 flex flex-col justify-between bg-slateNavy-950 text-slateNavy-100 min-h-screen relative font-sans" dir="rtl">
+    <div className="min-h-screen w-full bg-slateNavy-950 flex flex-col items-center">
+      <main className="flex-1 max-w-md mx-auto w-full p-4 pb-24 flex flex-col justify-between bg-slateNavy-950 text-slateNavy-100 min-h-screen relative font-sans" dir="rtl">
       {/* Background Ambient Glow in Arctic Harbor Theme */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div className="absolute inset-0 arctic-grid-pattern opacity-15" />
@@ -1461,5 +1464,6 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
         </div>
       )}
     </main>
-  );
+  </div>
+);
 }

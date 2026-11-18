@@ -26,7 +26,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#313c45",
+  themeColor: "#06141B",
 };
 
 export default function RootLayout({
@@ -44,7 +44,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen font-sans antialiased text-[#313c45] bg-[#f7f9fb] selection:bg-[#778ca4]/25 selection:text-[#313c45]">
+      <body className="min-h-screen font-sans antialiased text-[#CCD0CF] bg-[#06141B] selection:bg-[#253745] selection:text-[#CCD0CF]">
         <ServiceWorkerRegister />
         {children}
       </body>
