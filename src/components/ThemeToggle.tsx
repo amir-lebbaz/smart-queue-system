@@ -104,32 +104,28 @@ export default function ThemeToggle({
         <button
           type="button"
           onClick={() => handleSelectTheme('arctic')}
-          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-medium transition text-xs ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition text-xs ${
             theme === 'arctic'
-              ? 'bg-slateNavy-800 text-slateNavy-100 shadow-sm font-bold'
+              ? 'bg-slateNavy-800 text-slateNavy-100 shadow-sm font-black border border-white/10'
               : 'text-slateNavy-400 hover:text-slateNavy-200'
           }`}
-          title="المظهر القطبي الكلاسيكي (أزرق عميق)"
+          title="الوضع الداكن الفاخر (Obsidian Black)"
         >
-          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14" />
-          </svg>
-          {showLabel && <span>أزرق قطبي</span>}
+          <span className="w-2 h-2 rounded-full bg-emerald-400" />
+          {showLabel && <span>فخامة داكنة</span>}
         </button>
 
         <button
           type="button"
           onClick={() => handleSelectTheme('frozen')}
-          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-medium transition text-xs ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition text-xs ${
             theme === 'frozen'
-              ? 'bg-slateNavy-800 text-slateNavy-100 shadow-sm font-bold'
+              ? 'bg-slateNavy-800 text-slateNavy-100 shadow-sm font-black border border-white/10'
               : 'text-slateNavy-400 hover:text-slateNavy-200'
           }`}
-          title="شتاء هادئ (فحم ياباني وثلج بارد)"
+          title="ثيم الشتاء الهادئ (冬色の吐息 - Charcoal & Icy Snow)"
         >
-          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
-          </svg>
+          <span className="w-2 h-2 rounded-full bg-[#778ca4]" />
           {showLabel && <span>شتاء هادئ</span>}
         </button>
       </div>
@@ -143,25 +139,19 @@ export default function ThemeToggle({
     <button
       type="button"
       onClick={toggleTheme}
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slateNavy-800 bg-slateNavy-900/80 hover:bg-slateNavy-850 hover:border-slateNavy-700 text-slateNavy-200 text-xs font-semibold shadow-sm transition active:scale-95 ${className}`}
-      title={isFrozen ? 'التبديل إلى الأزرق القطبي' : 'التبديل إلى ثيم الشتاء الهادئ (冬色の吐息)'}
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slateNavy-800 bg-slateNavy-900/80 hover:bg-slateNavy-850 hover:border-slateNavy-700 text-slateNavy-200 text-xs font-semibold shadow-sm transition active:scale-95 ${className}`}
+      title={isFrozen ? 'التبديل إلى الوضع الداكن الفاخر' : 'التبديل إلى ثيم الشتاء الهادئ (冬色の吐息)'}
       aria-label="تبديل مظهر الموقع"
     >
       {isFrozen ? (
         <>
           <span className="w-2 h-2 rounded-full bg-[#778ca4] shadow-sm" />
-          <svg className="w-3.5 h-3.5 text-[#b3bfcb]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-          </svg>
-          {showLabel && <span>شتاء هادئ</span>}
+          <span className="font-medium text-[#d5dbe2]">شتاء هادئ</span>
         </>
       ) : (
         <>
-          <span className="w-2 h-2 rounded-full bg-sky-400 shadow-sm" />
-          <svg className="w-3.5 h-3.5 text-sky-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14" />
-          </svg>
-          {showLabel && <span>أزرق قطبي</span>}
+          <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-sm" />
+          <span className="font-medium text-slateNavy-100">فخامة داكنة</span>
         </>
       )}
     </button>

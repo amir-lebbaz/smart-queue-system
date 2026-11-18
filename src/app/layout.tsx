@@ -1,6 +1,14 @@
 import type { Metadata, Viewport } from "next";
+import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+
+const ibmPlexArabic = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-ibm-plex",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "NextDz | قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون",
@@ -48,7 +56,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-slateNavy-950 text-slateNavy-100 flex flex-col selection:bg-slateNavy-800 selection:text-slateNavy-100 font-sans antialiased">
+      <body className={`${ibmPlexArabic.variable} min-h-screen bg-[#050507] text-[#F3F4F6] flex flex-col selection:bg-emerald-500/30 selection:text-emerald-300 font-sans antialiased`}>
         <ServiceWorkerRegister />
         {children}
       </body>

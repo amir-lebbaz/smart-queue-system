@@ -23,6 +23,16 @@ export default function ScrollReveal({
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    // Guarantee no element ever stays stuck on opacity: 0
+    const fallbackTimer = setTimeout(() => {
+      setIsVisible(true);
+    }, 120 + delay);
+
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -31,8 +41,8 @@ export default function ScrollReveal({
         }
       },
       {
-        threshold: 0.12,
-        rootMargin: '0px 0px -40px 0px',
+        threshold: 0.05,
+        rootMargin: '60px',
       }
     );
 
@@ -41,9 +51,10 @@ export default function ScrollReveal({
     }
 
     return () => {
+      clearTimeout(fallbackTimer);
       observer.disconnect();
     };
-  }, []);
+  }, [delay]);
 
   const getTransform = () => {
     if (isVisible) return 'translate-x-0 translate-y-0 opacity-100 scale-100';

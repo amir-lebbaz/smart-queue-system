@@ -8,35 +8,35 @@
    2. Frozen Whisper / 冬色の吐息: Japanese Frosted Winter (الفحم الهادئ والثلج البارد)
    ========================================================================== */
 :root {
-  --background: #08131F;
-  --foreground: #E8EFF3;
+  --background: #050507;
+  --foreground: #F3F4F6;
 
-  /* Theme 1: Arctic Harbor */
-  --canvas-bg: #08131F;
-  --canvas-bg-rgb: 8 19 31;
+  /* Theme 1: Deep Obsidian Black & Emerald (#050507 / #0A0B0F / #10B981) */
+  --canvas-bg: #050507;
+  --canvas-bg-rgb: 5 5 7;
 
-  --surface-bg: #16314A;
-  --surface-bg-rgb: 22 49 74;
+  --surface-bg: #0A0B0F;
+  --surface-bg-rgb: 10 11 15;
 
-  --surface-elevated: #1c3d5a;
-  --surface-elevated-rgb: 28 61 90;
+  --surface-elevated: #13141C;
+  --surface-elevated-rgb: 19 20 28;
 
-  --border-color: #2E4F6B;
-  --border-color-rgb: 46 79 107;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-color-rgb: 255 255 255;
 
-  --accent-mid: #3D6282;
-  --accent-mid-rgb: 61 98 130;
+  --accent-mid: #10B981;
+  --accent-mid-rgb: 16 185 129;
 
-  --text-muted: #5F7F98;
-  --text-muted-rgb: 95 127 152;
+  --text-muted: #9CA3AF;
+  --text-muted-rgb: 156 163 175;
 
-  --text-secondary: #A9BDC9;
-  --text-secondary-rgb: 169 189 201;
+  --text-secondary: #D1D5DB;
+  --text-secondary-rgb: 209 213 219;
 
-  --text-primary: #E8EFF3;
-  --text-primary-rgb: 232 239 243;
+  --text-primary: #F9FAFB;
+  --text-primary-rgb: 249 250 251;
 
-  --theme-name: 'arctic';
+  --theme-name: 'obsidian';
 }
 
 [data-theme="frozen"], html.theme-frozen {
@@ -59,8 +59,8 @@
   --border-color: #4f6271;
   --border-color-rgb: 79 98 113;
 
-  --accent-mid: #607587;
-  --accent-mid-rgb: 96 117 135;
+  --accent-mid: #778ca4;
+  --accent-mid-rgb: 119 140 164;
 
   --text-muted: #778ca4;
   --text-muted-rgb: 119 140 164;
@@ -89,10 +89,55 @@ html, body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Cairo', 'Tajawal', sans-serif;
+  font-family: var(--font-ibm-plex), 'IBM Plex Sans Arabic', 'Readex Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+}
+
+/* Faded Grid with Mask */
+.faded-grid-pattern {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 80%);
+}
+
+/* Border Beam Effect */
+@keyframes borderBeamRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.border-beam-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+}
+
+.border-beam-card::before {
+  content: '';
+  position: absolute;
+  inset: -150%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 280deg,
+    rgba(16, 185, 129, 0.75) 325deg,
+    rgba(255, 255, 255, 0.95) 350deg,
+    transparent 360deg
+  );
+  animation: borderBeamRotate 9s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.border-beam-card-inner {
+  position: relative;
+  z-index: 1;
+  background: #0A0B0F;
+  border-radius: calc(1.5rem - 1px);
 }
 
 /* Minimalist scrollbars */

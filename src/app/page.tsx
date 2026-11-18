@@ -37,6 +37,9 @@ import {
 } from 'lucide-react';
 import ScrollReveal from '@/components/ScrollReveal';
 import ThemeToggle from '@/components/ThemeToggle';
+import InteractiveLiveDemo from '@/components/InteractiveLiveDemo';
+import SpotlightCard from '@/components/SpotlightCard';
+import NumberTicker from '@/components/NumberTicker';
 
 const WHATSAPP_NUMBER = '0666568039';
 const WHATSAPP_INTL = '213666568039';
@@ -56,7 +59,7 @@ const screenshots = [
     title: '🖥️ شاشة كمبيوتر المتحكم',
     tag: 'لوحة التحكم العريضة للحواسيب والمكاتب',
     image: '/shots/admin-dashboard-desktop.png',
-    description: 'لوحة تحكم احترافية متكاملة مصممة خصيصاً لشاشات الحواسيب المكتبية واللابتوب: إدارة الطابور لحظياً، استدعاء المراجعين، تأكيد الدخول والخروج، وإجراء رنة هاتفية سريعة بضغطة زر واحدة بدون كابلات.',
+    description: 'لوحة تحكم احترافية متكاملة مصممة خصيصاً لشاشات الحواسيب المكتبية واللابتوب: إدارة الطابور لحظياً، استدعاء المراجعين، تأكيد الدخول والخروج، وإجراء اتصال بهاتف عادي بضغطة زر واحدة بدون كابلات.',
     badge: 'متاحة في كل الباقات',
     highlights: ['عرض عريض 16:9 للحواسيب', 'إدارة فورية بدون كابلات', 'تسجيل حضور سريع للمراجعين', 'تأجيل ذكي للمتأخرين (Hold)'],
   },
@@ -67,7 +70,7 @@ const screenshots = [
     image: '/shots/admin-dashboard-mobile.png',
     description: 'ريموت خفيف وسريع يعمل مباشرة من متصفح أي هاتف ذكي، يتيح للطبيب أو الحلاق استدعاء المراجعين والتحكم في القاعة وهو يتنقل بحرية دون الحاجة لكمبيوتر.',
     badge: 'متاحة في كل الباقات',
-    highlights: ['يعمل من أي هاتف (iPhone/Android)', 'محمي برمز PIN سري', 'استدعاء وتأجيل بلمسة واحدة', 'رنة هاتفية سريعة بنقرة'],
+    highlights: ['يعمل من أي هاتف (iPhone/Android)', 'محمي برمز PIN سري', 'استدعاء وتأجيل بلمسة واحدة', 'اتصال بهاتف عادي بنقرة واحدة'],
   },
   {
     id: 'customer',
@@ -203,13 +206,17 @@ export default function PromotionalLandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-18 py-3 flex items-center justify-between">
           {/* Brand Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-slateNavy-800 via-slateNavy-900 to-slateNavy-950 border border-slateNavy-800 flex items-center justify-center text-emerald-400 font-black shadow-xl">
-              <Zap className="w-5 h-5" />
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-slateNavy-900 to-slateNavy-950 border border-slateNavy-800 flex items-center justify-center text-emerald-400 shadow-xl">
+              <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6 text-emerald-400">
+                <path d="M6 10C12 10 14 22 26 22" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M6 22C12 22 14 10 26 10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeOpacity="0.3" strokeDasharray="2 3" />
+                <circle cx="26" cy="10" r="2.5" fill="currentColor" />
+                <circle cx="6" cy="22" r="2.5" fill="currentColor" fillOpacity="0.5" />
+              </svg>
             </div>
             <div>
               <span className="text-xl font-black tracking-tight text-slateNavy-100 flex items-center gap-2 font-mono">
                 NextDz
-                <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono font-bold">SAAS</span>
               </span>
               <p className="text-[11px] text-slateNavy-400 -mt-0.5 font-medium">قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون</p>
             </div>
@@ -217,6 +224,7 @@ export default function PromotionalLandingPage() {
 
           {/* Navigation Links */}
           <nav className="hidden lg:flex items-center gap-7 text-xs font-bold text-slateNavy-400">
+            <a href="#live-demo" className="text-emerald-400 hover:text-emerald-300 transition">جرّب مباشرة ⚡</a>
             <a href="#showcase" className="hover:text-slateNavy-100 transition">معرض الشاشات</a>
             <a href="#how-it-works" className="hover:text-slateNavy-100 transition">كيف يعمل</a>
             <a href="#calculator" className="hover:text-slateNavy-100 transition">حاسبة التوفير</a>
@@ -235,54 +243,52 @@ export default function PromotionalLandingPage() {
               className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-950/60 transition transform active:scale-95 flex items-center gap-2"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>واتساب: {WHATSAPP_NUMBER}</span>
+              <span dir="ltr">واتساب: {WHATSAPP_NUMBER}</span>
             </a>
           </div>
         </div>
       </header>
 
       {/* 3. HERO SECTION */}
-      <section className="relative pt-16 pb-24 px-4 sm:px-6 overflow-hidden">
+      <section className="relative pt-16 pb-16 px-4 sm:px-6 overflow-hidden">
         <ScrollReveal direction="up" className="max-w-4xl mx-auto text-center space-y-7">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slateNavy-900/90 border border-slateNavy-800/80 text-slateNavy-300 text-xs font-bold shadow-xl backdrop-blur-md">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
             <span className="text-slateNavy-100 font-mono font-black">NextDz</span>
             <span className="text-slateNavy-600">•</span>
-            <span>المنصة الذكية لإفراغ قاعات الانتظار</span>
+            <span>قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون</span>
           </div>
 
-          {/* Slogan Headline */}
+          {/* Slogan Headline (Result-driven, 3-second clarity) */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-slateNavy-100 tracking-tight leading-[1.25]">
-            قاعة هادئة، سكرتيرة مرتاحة، <br />
+            أفرغ قاعة الانتظار.. <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-sky-300 to-slateNavy-100">
-              وزبائن راضون دائماً
+              دون شراء شاشة واحدة
             </span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-sm sm:text-lg text-slateNavy-400 max-w-2xl mx-auto leading-relaxed">
-            نظام <strong className="text-slateNavy-100 font-bold">NextDz</strong> يحوّل هاتف مراجعك إلى تذكرة رقمية حية تحسب ساعة دخوله بالدقيقة وتنبّهه صوتياً قبل دوره ليحضر للصالة مرتاحاً. بدون شراء طابعات ورقية مكلفة، وبدون كابلات أو صيانة.
+            نظام طوابير ذكي يعمل من هاتفك فقط؛ يحجز للزبون دوره عبر QR أو تذكرة حضورية، وينبّهه قبل دوره ليعود في الوقت المناسب.
           </p>
 
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-3">
             <a
-              href={`${WHATSAPP_BASE}?text=مرحباً،%20أريد%20الاشتراك%20وتفعيل%20حساب%20لعيادتي%20اليوم`}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#live-demo"
               className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white text-sm font-black rounded-2xl shadow-xl shadow-emerald-950/70 transition transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center gap-2.5"
             >
-              <MessageCircle className="w-5 h-5 text-white" />
-              <span>اشترك الآن عبر واتساب ({WHATSAPP_NUMBER})</span>
+              <Zap className="w-5 h-5 text-white" />
+              <span>جرّب النظام مباشرة ⚡</span>
             </a>
 
             <a
-              href="#pricing"
+              href="#calculator"
               className="w-full sm:w-auto px-7 py-4 bg-slateNavy-900/90 hover:bg-slateNavy-800/80 border border-slateNavy-800 hover:border-slateNavy-600 text-slateNavy-100 text-sm font-bold rounded-2xl transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2 shadow-lg"
             >
-              <Crown className="w-4 h-4 text-amber-400" />
-              <span>استكشف الباقات والأسعار</span>
+              <Calculator className="w-4 h-4 text-emerald-400" />
+              <span>احسب توفيرك 💰</span>
             </a>
           </div>
 
@@ -305,6 +311,13 @@ export default function PromotionalLandingPage() {
               <p className="text-[11px] text-slateNavy-400 mt-0.5">وتقييم رضا لحظي</p>
             </div>
           </div>
+        </ScrollReveal>
+      </section>
+
+      {/* 3.5. INTERACTIVE LIVE QUEUE SIMULATOR (Live Tactile Proof) */}
+      <section id="live-demo" className="relative -mt-4 pb-20 px-4 sm:px-6">
+        <ScrollReveal direction="up" className="max-w-5xl mx-auto space-y-4">
+          <InteractiveLiveDemo />
         </ScrollReveal>
       </section>
 
@@ -664,17 +677,17 @@ export default function PromotionalLandingPage() {
               <div className="bg-slateNavy-950/80 p-4 rounded-2xl border border-slateNavy-800/80 text-center space-y-1">
                 <span className="text-[11px] text-slateNavy-400 font-medium">توفير سنوي مباشر في بكرات الورق والصيانة</span>
                 <p className="text-2xl sm:text-3xl font-black text-slateNavy-100 tracking-tight">
-                  {annualPaperSavings.toLocaleString('ar-DZ')} <span className="text-xs text-slateNavy-400 font-normal">دج</span>
+                  <NumberTicker value={annualPaperSavings} suffix=" دج" />
                 </p>
-                <p className="text-[10px] text-cyan-300">تكلفة بكرات الورق وحبر الطابعات المحذوفة</p>
+                <p className="text-[10px] text-emerald-400">تكلفة بكرات الورق وحبر الطابعات الملغاة</p>
               </div>
 
               <div className="bg-slateNavy-950/80 p-4 rounded-2xl border border-slateNavy-800/80 text-center space-y-1">
                 <span className="text-[11px] text-slateNavy-400 font-medium">ساعات انتظار وتوتر يتم إنقاذها سنوياً</span>
                 <p className="text-2xl sm:text-3xl font-black text-slateNavy-100 tracking-tight">
-                  {hoursSavedPerYear.toLocaleString('ar-DZ')} <span className="text-xs text-slateNavy-400 font-normal">ساعة</span>
+                  <NumberTicker value={hoursSavedPerYear} suffix=" ساعة" />
                 </p>
-                <p className="text-[10px] text-cyan-300">إلغاء الجلوس الممل في قاعة الانتظار</p>
+                <p className="text-[10px] text-emerald-400">إلغاء الجلوس الممل في قاعة الانتظار</p>
               </div>
 
               <div className="bg-slateNavy-950/80 p-4 rounded-2xl border border-slateNavy-800/80 text-center space-y-1">
@@ -875,8 +888,8 @@ export default function PromotionalLandingPage() {
       <footer className="bg-slateNavy-950 border-t border-slateNavy-800/60 pt-16 pb-12 px-4 sm:px-6 mt-auto relative">
         <div className="max-w-5xl mx-auto space-y-12">
           {/* Big CTA Box */}
-          <ScrollReveal direction="up" className="bg-gradient-to-br from-[#16314A] via-[#08131F] to-slateNavy-900 border border-slateNavy-800 rounded-3xl p-8 sm:p-12 text-center space-y-5 shadow-[0_0_60px_-15px_rgba(46,79,107,0.4)] relative overflow-hidden">
-            <div className="w-16 h-16 bg-gradient-to-br from-cyan-500/20 to-cyan-500/5 border border-cyan-500/30 rounded-3xl flex items-center justify-center mx-auto text-cyan-300 shadow-inner">
+          <ScrollReveal direction="up" className="bg-gradient-to-br from-slateNavy-900 via-slateNavy-950 to-slateNavy-900 border border-slateNavy-800 rounded-3xl p-8 sm:p-12 text-center space-y-5 shadow-2xl relative overflow-hidden">
+            <div className="w-16 h-16 bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 border border-emerald-500/30 rounded-3xl flex items-center justify-center mx-auto text-emerald-400 shadow-inner">
               <PhoneCall className="w-7 h-7" />
             </div>
 
@@ -895,7 +908,8 @@ export default function PromotionalLandingPage() {
                 className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-black text-sm rounded-2xl shadow-xl transition flex items-center justify-center gap-2"
               >
                 <MessageCircle className="w-4 h-4 text-white" />
-                <span>راسلنا على واتساب: {WHATSAPP_NUMBER}</span>
+                <span>راسلنا على واتساب:</span>
+                <span dir="ltr" className="font-mono text-white font-black">{WHATSAPP_NUMBER}</span>
               </a>
 
               <a
@@ -904,6 +918,7 @@ export default function PromotionalLandingPage() {
               >
                 <Phone className="w-4 h-4 text-slateNavy-400" />
                 <span>اتصال هاتفي مباشر</span>
+                <span dir="ltr" className="font-mono text-emerald-400 font-bold">{WHATSAPP_NUMBER}</span>
               </a>
             </div>
           </ScrollReveal>
@@ -925,9 +940,10 @@ export default function PromotionalLandingPage() {
                 href={`${WHATSAPP_BASE}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-emerald-400 hover:underline font-bold"
+                className="text-emerald-400 hover:underline font-bold flex items-center gap-1"
               >
-                واتساب: {WHATSAPP_NUMBER}
+                <span>واتساب:</span>
+                <span dir="ltr" className="font-mono">{WHATSAPP_NUMBER}</span>
               </a>
             </div>
           </div>
@@ -947,7 +963,11 @@ export default function PromotionalLandingPage() {
           <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
         </span>
         <MessageCircle className="w-5 h-5" />
-        <span className="text-xs font-black tracking-wide hidden sm:inline">اشترك الآن | {WHATSAPP_NUMBER}</span>
+        <span className="text-xs font-black tracking-wide hidden sm:inline flex items-center gap-1">
+          <span>اشترك الآن</span>
+          <span>|</span>
+          <span dir="ltr" className="font-mono">{WHATSAPP_NUMBER}</span>
+        </span>
       </a>
     </div>
   );
