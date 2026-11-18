@@ -38,6 +38,7 @@ import {
 import LuxuryBackground from '@/components/LuxuryBackground';
 import ScrollReveal from '@/components/ScrollReveal';
 import ThemeToggle from '@/components/ThemeToggle';
+import VectorWordmark from '@/components/VectorWordmark';
 
 const WHATSAPP_NUMBER = '0666568039';
 const WHATSAPP_INTL = '213666568039';
@@ -235,6 +236,19 @@ export default function PromotionalLandingPage() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slateNavy-900/90 border border-slateNavy-800/80 text-slateNavy-400 text-xs font-bold shadow-xl backdrop-blur-md">
             <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
             <span className="text-slateNavy-100">أحدث نظام رقمي لإلغاء الاكتظاظ والتزاحم الميداني</span>
+          </div>
+
+          {/* Interactive Vector Wordmark */}
+          <div className="w-full max-w-3xl mx-auto h-36 sm:h-48 md:h-56 relative overflow-hidden rounded-3xl border border-slateNavy-800/80 bg-slateNavy-900/40 backdrop-blur-md shadow-2xl">
+            <VectorWordmark
+              text="طابوري الذكي"
+              font={{
+                fontFamily: "'Tajawal', 'Cairo', 'Inter', system-ui, sans-serif",
+                fontWeight: 900,
+                fontSize: "140px",
+              }}
+              style={{ width: "100%", height: "100%" }}
+            />
           </div>
 
           {/* Headline */}
