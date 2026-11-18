@@ -20,6 +20,7 @@ import {
 import { QueueState } from '@/lib/types';
 import { playQueueChime } from '@/lib/audio';
 import { speakArabicAnnouncement } from '@/lib/speech';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function TvDisplayPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
@@ -229,6 +230,7 @@ export default function TvDisplayPage({ params }: { params: Promise<{ slug: stri
 
           {/* Quick TV Control Buttons */}
           <div className="flex items-center gap-2">
+            <ThemeToggle variant="compact" showLabel={false} />
             <button
               onClick={() => {
                 if (!soundEnabled) {
@@ -446,7 +448,7 @@ export default function TvDisplayPage({ params }: { params: Promise<{ slug: stri
             playQueueChime();
             setSoundEnabled(true);
           }}
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#08131F]/95 border-2 border-emerald-400 text-emerald-300 px-6 py-3 rounded-full text-xs font-black shadow-2xl flex items-center gap-2.5 animate-bounce cursor-pointer z-50 hover:bg-emerald-950/60 transition"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slateNavy-950/95 border-2 border-emerald-400 text-emerald-300 px-6 py-3 rounded-full text-xs font-black shadow-2xl flex items-center gap-2.5 animate-bounce cursor-pointer z-50 hover:bg-emerald-950/60 transition"
         >
           <Volume2 className="w-4 h-4 text-emerald-400 animate-pulse" />
           <span>انقر هنا لتشغيل جرس التنبيه والنداء الصوتي للتلفاز 🔊</span>

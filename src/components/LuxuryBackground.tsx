@@ -206,54 +206,54 @@ export default function LuxuryBackground() {
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10 bg-[#08131F]">
-      {/* 1. VISIBLE FLOWING AURORA LIQUID RIBBONS (Distinctly moving gradients) */}
+    <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10 bg-slateNavy-950 transition-colors duration-300">
+      {/* 1. VISIBLE FLOWING AURORA LIQUID RIBBONS */}
       <div
-        className="absolute -top-[25%] -left-[20%] w-[140%] h-[90%] opacity-55 blur-[65px] mix-blend-screen animate-aurora-sweep pointer-events-none"
+        className="absolute -top-[25%] -left-[20%] w-[140%] h-[90%] opacity-40 blur-[75px] mix-blend-screen animate-aurora-sweep pointer-events-none"
         style={{
           background:
-            'radial-gradient(circle at 40% 40%, rgba(46, 79, 107, 0.85) 0%, rgba(22, 49, 74, 0.6) 35%, rgba(8, 19, 31, 0) 70%), conic-gradient(from 180deg at 50% 50%, rgba(56, 189, 248, 0.35) 0deg, rgba(95, 127, 152, 0.5) 120deg, rgba(22, 49, 74, 0.7) 240deg, rgba(56, 189, 248, 0.35) 360deg)',
+            'radial-gradient(circle at 40% 40%, rgba(var(--border-color-rgb), 0.7) 0%, rgba(var(--surface-bg-rgb), 0.5) 35%, transparent 70%)',
         }}
       />
 
       <div
-        className="absolute top-[35%] -right-[25%] w-[120%] h-[95%] opacity-48 blur-[70px] mix-blend-screen animate-aurora-reverse pointer-events-none"
+        className="absolute top-[35%] -right-[25%] w-[120%] h-[95%] opacity-35 blur-[80px] mix-blend-screen animate-aurora-reverse pointer-events-none"
         style={{
           background:
-            'radial-gradient(circle at 60% 50%, rgba(95, 127, 152, 0.75) 0%, rgba(46, 79, 107, 0.55) 40%, rgba(8, 19, 31, 0) 75%), conic-gradient(from 0deg at 50% 50%, rgba(46, 79, 107, 0.5) 0deg, rgba(56, 189, 248, 0.35) 140deg, rgba(22, 49, 74, 0.6) 280deg, rgba(46, 79, 107, 0.5) 360deg)',
+            'radial-gradient(circle at 60% 50%, rgba(var(--text-muted-rgb), 0.6) 0%, rgba(var(--border-color-rgb), 0.45) 40%, transparent 75%)',
         }}
       />
 
       <div
-        className="absolute -bottom-[20%] left-[10%] w-[110%] h-[75%] opacity-42 blur-[65px] mix-blend-screen animate-aurora-pulse pointer-events-none"
+        className="absolute -bottom-[20%] left-[10%] w-[110%] h-[75%] opacity-30 blur-[70px] mix-blend-screen animate-aurora-pulse pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse at center, rgba(56, 189, 248, 0.35) 0%, rgba(46, 79, 107, 0.5) 45%, rgba(8, 19, 31, 0) 70%)',
+            'radial-gradient(ellipse at center, rgba(var(--text-muted-rgb), 0.4) 0%, rgba(var(--border-color-rgb), 0.4) 45%, transparent 70%)',
         }}
       />
 
       {/* 2. DYNAMIC CANVAS CONSTELLATION & LIVING NODES */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-auto"
+        className="absolute inset-0 w-full h-full pointer-events-auto opacity-70"
         style={{ mixBlendMode: 'screen' }}
       />
 
       {/* 3. HIGH-TECH MOVING PERSPECTIVE SCANLINE */}
-      <div className="absolute inset-0 bg-repeat opacity-[0.16] arctic-grid-pattern pointer-events-none" />
+      <div className="absolute inset-0 bg-repeat opacity-[0.12] arctic-grid-pattern pointer-events-none" />
 
-      {/* 4. SWEEPING LASER BEAM (Moves vertically down every 12 seconds) */}
-      <div className="absolute inset-x-0 h-52 bg-gradient-to-b from-transparent via-cyan-400/20 to-transparent animate-laser-scan pointer-events-none" />
+      {/* 4. SWEEPING LASER BEAM (Visible only in arctic theme) */}
+      <div className="arctic-only-laser absolute inset-x-0 h-52 bg-gradient-to-b from-transparent via-cyan-400/15 to-transparent animate-laser-scan pointer-events-none" />
 
-      {/* 5. FLOATING GEOMETRIC LUXURY ACCENTS (Slowly rotating crosses & radar rings) */}
-      <div className="absolute top-28 left-[8%] w-24 h-24 rounded-full border border-[#2E4F6B]/40 animate-spin-ultra-slow pointer-events-none flex items-center justify-center">
-        <div className="w-16 h-16 rounded-full border border-dashed border-[#5F7F98]/30" />
+      {/* 5. FLOATING GEOMETRIC ACCENTS */}
+      <div className="absolute top-28 left-[8%] w-24 h-24 rounded-full border border-slateNavy-800/40 animate-spin-ultra-slow pointer-events-none flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full border border-dashed border-slateNavy-600/30" />
       </div>
-      <div className="absolute top-[48%] right-[6%] w-32 h-32 rounded-full border border-[#5F7F98]/25 animate-spin-reverse-slow pointer-events-none flex items-center justify-center">
-        <div className="w-20 h-20 rounded-full border border-dotted border-cyan-400/20" />
+      <div className="absolute top-[48%] right-[6%] w-32 h-32 rounded-full border border-slateNavy-600/25 animate-spin-reverse-slow pointer-events-none flex items-center justify-center">
+        <div className="w-20 h-20 rounded-full border border-dotted border-slateNavy-400/20" />
       </div>
 
-      {/* 6. VIGNETTE OVERLAY (Darkens edges to focus on center content) */}
+      {/* 6. VIGNETTE OVERLAY */}
       <div className="absolute inset-0 bg-radial-gradient pointer-events-none" />
     </div>
   );

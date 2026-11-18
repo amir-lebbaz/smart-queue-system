@@ -35,6 +35,7 @@ import {
 import { QueueState, Ticket } from '@/lib/types';
 import { playQueueChime } from '@/lib/audio';
 import { announceTicketCall } from '@/lib/speech';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function StaffRemotePage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
@@ -546,7 +547,10 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   // Render PIN login screen if not authenticated
   if (!isAuthenticated) {
     return (
-      <main className="flex-1 flex flex-col items-center justify-center p-4 max-w-sm mx-auto w-full bg-slateNavy-950 text-slateNavy-100" dir="rtl">
+      <main className="flex-1 flex flex-col items-center justify-center p-4 max-w-sm mx-auto w-full bg-slateNavy-950 text-slateNavy-100 relative min-h-screen" dir="rtl">
+        <div className="absolute top-4 left-4">
+          <ThemeToggle variant="compact" showLabel={false} />
+        </div>
         <div className="w-full bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-6 shadow-2xl text-center">
           <div className="w-14 h-14 bg-slateNavy-800 text-slateNavy-100 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slateNavy-700">
             <Lock className="w-6 h-6" />
@@ -593,12 +597,12 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   }
 
   return (
-    <main className="flex-1 max-w-md mx-auto w-full p-4 pb-24 flex flex-col justify-between bg-[#08131F] text-[#E8EFF3] min-h-screen relative font-sans" dir="rtl">
+    <main className="flex-1 max-w-md mx-auto w-full p-4 pb-24 flex flex-col justify-between bg-slateNavy-950 text-slateNavy-100 min-h-screen relative font-sans" dir="rtl">
       {/* Background Ambient Glow in Arctic Harbor Theme */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div className="absolute inset-0 arctic-grid-pattern opacity-15" />
-        <div className="absolute top-10 -right-20 w-72 h-72 rounded-full bg-[#16314A]/60 blur-[90px]" />
-        <div className="absolute bottom-20 -left-20 w-72 h-72 rounded-full bg-[#2E4F6B]/40 blur-[90px]" />
+        <div className="absolute top-10 -right-20 w-72 h-72 rounded-full bg-slateNavy-900/60 blur-[90px]" />
+        <div className="absolute bottom-20 -left-20 w-72 h-72 rounded-full bg-slateNavy-800/40 blur-[90px]" />
       </div>
       {/* Top Header */}
       <header className="mb-3">
@@ -633,6 +637,9 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
           </div>
 
           <div className="flex items-center gap-1.5">
+            {/* Theme Toggle */}
+            <ThemeToggle variant="compact" showLabel={false} />
+
             {/* Audio & Arabic Voice Toggle */}
             <button
               onClick={() => setSoundEnabled(!soundEnabled)}

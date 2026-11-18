@@ -27,8 +27,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl">
-      <body className="min-h-screen bg-[#08131F] text-[#E8EFF3] flex flex-col selection:bg-[#2E4F6B] selection:text-[#E8EFF3] font-sans antialiased">
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('smart_queue_theme');
+                  if (saved === 'frozen') {
+                    document.documentElement.setAttribute('data-theme', 'frozen');
+                    document.documentElement.classList.add('theme-frozen');
+                  } else {
+                    document.documentElement.setAttribute('data-theme', 'arctic');
+                    document.documentElement.classList.remove('theme-frozen');
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-screen bg-slateNavy-950 text-slateNavy-100 flex flex-col selection:bg-slateNavy-800 selection:text-slateNavy-100 font-sans antialiased">
         <ServiceWorkerRegister />
         {children}
       </body>

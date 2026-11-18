@@ -37,6 +37,7 @@ import {
   Power
 } from 'lucide-react';
 import { Organization, GlobalSystemStats } from '@/lib/types';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function SuperAdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -371,7 +372,10 @@ export default function SuperAdminPage() {
   // Login Screen
   if (!isAuthenticated) {
     return (
-      <main className="min-h-screen bg-slateNavy-950 text-slateNavy-100 flex items-center justify-center p-4 font-sans selection:bg-slateNavy-400 selection:text-slateNavy-950" dir="rtl">
+      <main className="min-h-screen bg-slateNavy-950 text-slateNavy-100 flex items-center justify-center p-4 font-sans selection:bg-slateNavy-400 selection:text-slateNavy-950 relative" dir="rtl">
+        <div className="absolute top-4 left-4">
+          <ThemeToggle variant="compact" showLabel={false} />
+        </div>
         <div className="w-full max-w-sm bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-7 shadow-2xl text-center space-y-5">
           <div className="w-16 h-16 bg-gradient-to-br from-slateNavy-800 via-slateNavy-900 to-slateNavy-950 text-white rounded-3xl flex items-center justify-center mx-auto border border-slateNavy-700 shadow-xl">
             <Lock className="w-7 h-7 text-amber-400" />
@@ -440,6 +444,7 @@ export default function SuperAdminPage() {
           </div>
 
           <div className="flex items-center gap-2.5 flex-wrap">
+            <ThemeToggle variant="compact" showLabel={false} />
             <button
               onClick={fetchData}
               disabled={isRefreshing}

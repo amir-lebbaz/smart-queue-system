@@ -34,6 +34,7 @@ import {
   requestNotificationPermission, 
   sendBrowserNotification 
 } from '@/lib/notifications';
+import ThemeToggle from '@/components/ThemeToggle';
 
 interface CachedTicket {
   ticketId?: number;
@@ -593,12 +594,12 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   }
 
   return (
-    <main className="flex-1 max-w-md mx-auto w-full p-4 flex flex-col justify-between bg-[#08131F] text-[#E8EFF3] min-h-screen relative font-sans" dir="rtl">
+    <main className="flex-1 max-w-md mx-auto w-full p-4 flex flex-col justify-between bg-slateNavy-950 text-slateNavy-100 min-h-screen relative font-sans" dir="rtl">
       {/* Background Ambient Glow in Arctic Harbor Theme */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div className="absolute inset-0 arctic-grid-pattern opacity-15" />
-        <div className="absolute top-10 -right-20 w-72 h-72 rounded-full bg-[#16314A]/60 blur-[90px]" />
-        <div className="absolute bottom-20 -left-20 w-72 h-72 rounded-full bg-[#2E4F6B]/40 blur-[90px]" />
+        <div className="absolute top-10 -right-20 w-72 h-72 rounded-full bg-slateNavy-900/60 blur-[90px]" />
+        <div className="absolute bottom-20 -left-20 w-72 h-72 rounded-full bg-slateNavy-800/40 blur-[90px]" />
       </div>
       {/* Top Header & Offline Status */}
       <header className="mb-3">
@@ -618,6 +619,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
           </div>
 
           <div className="flex items-center gap-2">
+            <ThemeToggle variant="compact" showLabel={false} />
             {isOnline ? (
               <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slateNavy-100 bg-slateNavy-900 border border-slateNavy-800 px-2.5 py-0.5 rounded-full">
                 <Wifi className="w-3 h-3 text-emerald-400" />
@@ -643,7 +645,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
       {/* CASE 1: HELD TICKET (التوقيف المؤقت - لم يحضر عند النداء) */}
       {isHeldForMe && myTicket ? (
         <div className="space-y-4 my-auto">
-          <div className="bg-[#16314A] border-2 border-amber-400/80 rounded-3xl p-6 text-center shadow-[0_0_40px_-10px_rgba(251,191,36,0.3)] space-y-5">
+          <div className="bg-slateNavy-900 border-2 border-amber-400/80 rounded-3xl p-6 text-center shadow-[0_0_40px_-10px_rgba(251,191,36,0.3)] space-y-5">
             <div className="w-16 h-16 rounded-3xl bg-amber-500/10 border-2 border-amber-400 text-amber-400 flex items-center justify-center mx-auto shadow-lg shadow-amber-950/40">
               <Clock className="w-9 h-9 animate-pulse" />
             </div>
@@ -652,21 +654,21 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
               <span className="text-[11px] font-black px-3.5 py-1 bg-amber-500/20 border border-amber-500/40 text-amber-300 rounded-full inline-block">
                 تأجيل مؤقت ⏸️
               </span>
-              <h2 className="text-xl font-black text-[#E8EFF3]">دورك في وضع الانتظار المؤقت</h2>
-              <p className="text-xs text-[#A9BDC9] leading-relaxed max-w-xs mx-auto">
+              <h2 className="text-xl font-black text-slateNavy-100">دورك في وضع الانتظار المؤقت</h2>
+              <p className="text-xs text-slateNavy-400 leading-relaxed max-w-xs mx-auto">
                 تم استدعاء رقمك <strong>#{myTicket.ticketNumber}</strong> سابقاً ولم تكن متواجداً في القاعة، فقام {staffTitle} بتعليق دورك مؤقتاً لإعطاء الفرصة للمراجعين الحاضرين.
               </p>
             </div>
 
             {/* Ticket Details Box */}
-            <div className="p-3.5 bg-[#08131F]/90 border border-[#2E4F6B] rounded-2xl flex items-center justify-around">
+            <div className="p-3.5 bg-slateNavy-950/90 border border-slateNavy-800 rounded-2xl flex items-center justify-around">
               <div>
-                <p className="text-[10px] text-[#A9BDC9]">رقم تذكرتك</p>
-                <p className="text-3xl font-black text-[#E8EFF3]">#{myTicket.ticketNumber}</p>
+                <p className="text-[10px] text-slateNavy-400">رقم تذكرتك</p>
+                <p className="text-3xl font-black text-slateNavy-100">#{myTicket.ticketNumber}</p>
               </div>
-              <div className="h-9 border-r border-[#2E4F6B]" />
+              <div className="h-9 border-r border-slateNavy-800" />
               <div>
-                <p className="text-[10px] text-[#A9BDC9]">الحالة الحالية</p>
+                <p className="text-[10px] text-slateNavy-400">الحالة الحالية</p>
                 <p className="text-xs font-bold text-amber-400 flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
                   معلق ومحفوظ
@@ -675,7 +677,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
             </div>
 
             {/* Guidance Note */}
-            <div className="p-3 bg-[#08131F]/60 border border-amber-500/30 rounded-2xl text-[11px] text-[#A9BDC9] text-right space-y-1">
+            <div className="p-3 bg-slateNavy-950/60 border border-amber-500/30 rounded-2xl text-[11px] text-slateNavy-400 text-right space-y-1">
               <p className="font-bold text-amber-300 flex items-center gap-1">
                 <span>💡</span> مكانك محفوظ ولا تحتاج لحجز تذكرة جديدة!
               </p>
@@ -691,7 +693,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                   تم إشعار {staffTitle} بوجودك في القاعة!
                 </p>
-                <p className="text-[11px] text-[#A9BDC9]">خليك منتبهاً لرنين الهاتف وشاشة الصالة لاستدعائك قريباً جداً.</p>
+                <p className="text-[11px] text-slateNavy-400">خليك منتبهاً لرنين الهاتف وشاشة الصالة لاستدعائك قريباً جداً.</p>
               </div>
             ) : (
               <button
@@ -708,7 +710,7 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
           {/* Reset / Leave option */}
           <button
             onClick={handleLeaveQueue}
-            className="w-full py-3 px-4 bg-[#16314A]/60 hover:bg-[#16314A] border border-[#2E4F6B] text-[#A9BDC9] hover:text-[#E8EFF3] rounded-2xl text-xs font-semibold transition"
+            className="w-full py-3 px-4 bg-slateNavy-900/60 hover:bg-slateNavy-900 border border-slateNavy-800 text-slateNavy-400 hover:text-slateNavy-100 rounded-2xl text-xs font-semibold transition"
           >
             مغادرة الطابور وإلغاء هذه التذكرة
           </button>
@@ -716,19 +718,19 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
       ) : isCancelledForMe && myTicket ? (
         /* CASE 2: CANCELLED TICKET */
         <div className="space-y-4 my-auto">
-          <div className="bg-[#16314A] border border-rose-500/40 rounded-3xl p-6 text-center shadow-xl space-y-4">
+          <div className="bg-slateNavy-900 border border-rose-500/40 rounded-3xl p-6 text-center shadow-xl space-y-4">
             <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center mx-auto">
               <AlertTriangle className="w-7 h-7" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-lg font-black text-[#E8EFF3]">تم إلغاء التذكرة</h3>
-              <p className="text-xs text-[#A9BDC9] leading-relaxed">
+              <h3 className="text-lg font-black text-slateNavy-100">تم إلغاء التذكرة</h3>
+              <p className="text-xs text-slateNavy-400 leading-relaxed">
                 تم إلغاء التذكرة رقم #{myTicket.ticketNumber} أو إعادة ضبط طابور اليوم من قِبل {staffTitle}.
               </p>
             </div>
             <button
               onClick={handleResetForNewBooking}
-              className="w-full py-3.5 px-4 bg-[#2E4F6B] hover:bg-[#3D6282] text-[#E8EFF3] font-bold rounded-2xl text-xs transition"
+              className="w-full py-3.5 px-4 bg-slateNavy-800 hover:bg-slateNavy-700 text-slateNavy-100 font-bold rounded-2xl text-xs transition"
             >
               حجز تذكرة جديدة
             </button>
@@ -1136,18 +1138,18 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
             </div>
 
             {/* Regulatory Transparency Notice (Fair-Usage & Cooldown Rule) */}
-            <div className="p-3.5 bg-[#16314A]/90 border border-[#2E4F6B] rounded-2xl flex items-start gap-3 text-right shadow-sm">
-              <div className="w-8 h-8 rounded-xl bg-[#2E4F6B]/60 text-sky-300 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+            <div className="p-3.5 bg-slateNavy-900/90 border border-slateNavy-800 rounded-2xl flex items-start gap-3 text-right shadow-sm">
+              <div className="w-8 h-8 rounded-xl bg-slateNavy-800/60 text-sky-300 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                 <ShieldCheck className="w-4 h-4 text-sky-300" />
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <h4 className="text-xs font-black text-[#E8EFF3]">ملاحظة تنظيمية هامة:</h4>
+                  <h4 className="text-xs font-black text-slateNavy-100">ملاحظة تنظيمية هامة:</h4>
                   <span className="text-[10px] px-2 py-0.5 bg-sky-950 text-sky-300 border border-sky-600/40 rounded-full font-bold">
                     حجز واحد فقط لكل هاتف
                   </span>
                 </div>
-                <p className="text-[11px] text-[#A9BDC9] leading-relaxed">
+                <p className="text-[11px] text-slateNavy-400 leading-relaxed">
                   لكل هاتف حجز نشط واحد فقط. بعد إتمام الفحص سيتوجب عليك الانتظار <strong className="text-white">90 دقيقة</strong> لإعادة الحجز حرصاً على إتاحة الفرصة للجميع (إلا إذا كانت العيادة خالية تماماً، أو بالتنسيق المباشر مع موظف الاستقبال).
                 </p>
               </div>
