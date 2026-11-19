@@ -1567,105 +1567,98 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
               
               {/* =========================================================================
                   ULTRA-MINIMAL LUXURY A4 STAND POSTER (#printable-stand)
-                  Pure White #ffffff | Frameless QR | Apple/Nordic Symmetry (210mm x 297mm)
+                  Exact Millimeter Print Spec (210mm x 297mm) | Pure White #ffffff
                   ========================================================================= */}
               <div
                 id="printable-stand"
-                className="w-full max-w-[430px] aspect-[210/297] bg-[#ffffff] text-slate-900 shadow-2xl rounded-2xl border border-slate-200/90 p-6 sm:p-10 flex flex-col justify-between items-center text-center transition-all relative overflow-hidden select-none"
+                className="w-full max-w-[440px] aspect-[210/297] bg-[#ffffff] text-slate-900 shadow-2xl rounded-2xl border border-slate-200/90 p-6 sm:p-10 flex flex-col justify-between items-center text-center transition-all relative overflow-hidden select-none"
                 style={{ backgroundColor: '#ffffff' }}
               >
                 
-                {/* 1. TOP LOCKUP & OPTIONAL CLINIC LOGO */}
-                {standStyle === 'charcoal' ? (
-                  <div className="w-full bg-[#313c45] text-[#f8fafc] py-4 sm:py-5 px-6 rounded-2xl shadow-sm mb-3 sm:mb-4 flex flex-col items-center justify-center space-y-1 shrink-0">
-                    <div className="flex items-center justify-center gap-4 sm:gap-5">
-                      {clinicLogo && (
-                        <>
-                          <img
-                            src={clinicLogo}
-                            alt="شعار المؤسسة"
-                            className="h-9 sm:h-11 max-w-[110px] object-contain brightness-0 invert"
-                          />
-                          <div className="h-7 w-[1px] bg-[#778ca4]/50" />
-                        </>
-                      )}
-                      <div className="flex items-center gap-2.5" dir="ltr">
-                        <svg width="40" height="26" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
+                {/* 1. TOP SECTION (BRAND LOCKUP + CLINIC NAME) */}
+                <div className="stand-top-section w-full flex flex-col items-center justify-center shrink-0">
+                  {standStyle === 'charcoal' ? (
+                    <div className="w-full bg-[#313c45] text-[#f8fafc] py-4 sm:py-5 px-6 rounded-2xl shadow-sm mb-3 sm:mb-4 flex flex-col items-center justify-center space-y-1">
+                      <div className="stand-brand-lockup flex items-center justify-center gap-4 sm:gap-5" dir="ltr">
+                        {clinicLogo && (
+                          <>
+                            <img
+                              src={clinicLogo}
+                              alt="شعار المؤسسة"
+                              className="stand-clinic-logo h-8 sm:h-10 max-w-[100px] object-contain brightness-0 invert"
+                            />
+                            <div className="stand-logo-divider h-6 sm:h-7 w-[1px] bg-[#778ca4]/50" />
+                          </>
+                        )}
+                        <svg className="stand-ticket-svg w-[32px] h-[20px] sm:w-[36px] sm:h-[23px] shrink-0" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
                           <path d="M4 4H60V14C56.686 14 54 16.686 54 20C54 23.314 56.686 26 60 26V36H4V26C7.314 26 10 23.314 10 20C10 16.686 7.314 14 4 14V4Z" stroke="#ffffff" strokeWidth="3.5" strokeLinejoin="round" fill="#313c45"/>
                           <path d="M16 12H36L45 20L36 28H16L22 20L16 12Z" fill="#778ca4" fillOpacity="0.4"/>
                           <path d="M18 20H40M40 20L32 12.5M40 20L32 27.5" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
-                        <span className="text-xl sm:text-2xl font-bold tracking-tight">
+                        <span className="stand-brand-wordmark text-2xl sm:text-3xl font-bold tracking-tight">
                           <span className="text-white">Next</span>
                           <span style={{ color: '#778ca4' }}>DZ</span>
                         </span>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="w-full flex items-center justify-center gap-4 sm:gap-5 pt-1 sm:pt-2 shrink-0">
-                    {clinicLogo && (
-                      <>
-                        <img
-                          src={clinicLogo}
-                          alt="شعار المؤسسة"
-                          className="h-9 sm:h-11 max-w-[110px] object-contain"
-                        />
-                        <div className="h-7 w-[1px] bg-[#b3bfcb]" />
-                      </>
-                    )}
-                    <div className="flex items-center gap-2.5" dir="ltr">
-                      <svg width="42" height="27" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
+                  ) : (
+                    <div className="stand-brand-lockup flex items-center justify-center gap-4 sm:gap-5 pt-1 sm:pt-2" dir="ltr">
+                      {clinicLogo && (
+                        <>
+                          <img
+                            src={clinicLogo}
+                            alt="شعار المؤسسة"
+                            className="stand-clinic-logo h-8 sm:h-10 max-w-[100px] object-contain"
+                          />
+                          <div className="stand-logo-divider h-6 sm:h-7 w-[1px] bg-[#b3bfcb]" />
+                        </>
+                      )}
+                      <svg className="stand-ticket-svg w-[34px] h-[22px] sm:w-[38px] sm:h-[24px] shrink-0" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
                         <path d="M4 4H60V14C56.686 14 54 16.686 54 20C54 23.314 56.686 26 60 26V36H4V26C7.314 26 10 23.314 10 20C10 16.686 7.314 14 4 14V4Z" stroke="#313c45" strokeWidth="3.5" strokeLinejoin="round" fill="#eef1f5"/>
                         <path d="M16 12H36L45 20L36 28H16L22 20L16 12Z" fill="#778ca4" fillOpacity="0.35"/>
                         <path d="M18 20H40M40 20L32 12.5M40 20L32 27.5" stroke="#313c45" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                      <span className="text-xl sm:text-2xl font-bold tracking-tight">
+                      <span className="stand-brand-wordmark text-2xl sm:text-3xl font-bold tracking-tight">
                         <span style={{ color: '#313c45' }}>Next</span>
                         <span style={{ color: '#778ca4' }}>DZ</span>
                       </span>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* 2. CLINIC IDENTITY (ORGANIZATION NAME) */}
-                <div className="w-full mt-1 sm:mt-2 shrink-0">
-                  <h2 className="text-xl sm:text-2xl font-semibold tracking-normal text-[#4f6271]">
+                  {/* Clinic Name (org.name) */}
+                  <h2 className="stand-clinic-name text-xl sm:text-2xl font-bold tracking-normal text-[#4f6271] mt-2.5 sm:mt-3">
                     {queueState?.organization.name || org?.name || 'العيادة الطبية'}
                   </h2>
                 </div>
 
-                {/* 3. MAIN SCAN HEADLINE */}
-                <div className="w-full my-auto py-2 sm:py-3 space-y-1 sm:space-y-1.5 shrink-0">
-                  <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#313c45]">
+                {/* 2. MIDDLE SECTION (HEADLINE + COMMANDING QR CODE GROUPED TOGETHER) */}
+                <div className="stand-middle-group w-full flex flex-col items-center justify-center gap-3 sm:gap-4 my-auto shrink-0">
+                  <h1 className="stand-headline text-3xl sm:text-4xl font-bold tracking-tight text-[#313c45] leading-tight">
                     امسح الكود واحجز دورك
                   </h1>
-                  <p className="text-[11px] sm:text-xs font-normal text-[#778ca4]">
-                    لا حاجة لتثبيت أي تطبيق • ستصلك رسالة وتنبيه عند اقتراب دورك
-                  </p>
+
+                  <div className="stand-qr-container flex flex-col items-center justify-center">
+                    {qrDataUrl ? (
+                      <img
+                        src={qrDataUrl}
+                        alt="رمز QR لحجز التذكرة"
+                        className="stand-qr-img w-48 h-48 sm:w-56 sm:h-56 object-contain select-none"
+                      />
+                    ) : (
+                      <div className="w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center text-xs text-[#778ca4]">
+                        جاري إنشاء الرمز بدقة عالية...
+                      </div>
+                    )}
+                    <span className="stand-short-url mt-2 text-[10px] sm:text-[11px] font-mono font-medium text-[#778ca4] tracking-tight dir-ltr select-all whitespace-nowrap">
+                      smart-queue-system-zeta.vercel.app/q/{slug}
+                    </span>
+                  </div>
                 </div>
 
-                {/* 4. CENTERPIECE QR CODE (FRAMELESS & HIGH-CONTRAST #0f172a ON #ffffff) */}
-                <div className="flex flex-col items-center justify-center my-auto shrink-0">
-                  {qrDataUrl ? (
-                    <img
-                      src={qrDataUrl}
-                      alt="رمز QR لحجز التذكرة"
-                      className="w-44 h-44 sm:w-52 sm:h-52 object-contain select-none"
-                    />
-                  ) : (
-                    <div className="w-44 h-44 sm:w-52 sm:h-52 flex items-center justify-center text-xs text-[#778ca4]">
-                      جاري إنشاء الرمز بدقة عالية...
-                    </div>
-                  )}
-                  <span className="mt-2 text-[10px] sm:text-[11px] font-mono font-medium text-[#778ca4] tracking-tight dir-ltr select-all whitespace-nowrap">
-                    smart-queue-system-zeta.vercel.app/q/{slug}
-                  </span>
-                </div>
-
-                {/* 5. BOTTOM FOOTER SLOGAN (QUIET & CENTERED) */}
-                <div className="w-full pt-3 sm:pt-4 border-t border-[#e2e8f0]/90 text-center shrink-0">
-                  <p className="text-xs sm:text-sm font-normal text-[#4f6271] tracking-wide">
+                {/* 3. BOTTOM SECTION (ANCHORED SLOGAN WITH HAIRLINE — GUARANTEED PAGE 1) */}
+                <div className="stand-bottom-section w-full flex flex-col items-center justify-center shrink-0">
+                  <div className="stand-hairline w-10 sm:w-12 h-[1px] bg-[#d5dbe2] mb-2 sm:mb-2.5 mx-auto" />
+                  <p className="stand-slogan text-xs sm:text-sm font-medium text-[#4f6271] tracking-wide">
                     قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون
                   </p>
                 </div>
