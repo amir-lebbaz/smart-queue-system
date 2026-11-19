@@ -54,20 +54,13 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  var p = window.location.pathname || '';
-                  var isApp = p.startsWith('/admin') || p.startsWith('/q') || p.startsWith('/display') || p.startsWith('/super-admin');
-                  if (isApp) {
+                  var saved = localStorage.getItem('smart_queue_theme');
+                  if (saved === 'frozen') {
+                    document.documentElement.setAttribute('data-theme', 'frozen');
+                    document.documentElement.classList.add('theme-frozen');
+                  } else {
                     document.documentElement.setAttribute('data-theme', 'arctic');
                     document.documentElement.classList.remove('theme-frozen');
-                  } else {
-                    var saved = localStorage.getItem('smart_queue_theme');
-                    if (saved === 'frozen') {
-                      document.documentElement.setAttribute('data-theme', 'frozen');
-                      document.documentElement.classList.add('theme-frozen');
-                    } else {
-                      document.documentElement.setAttribute('data-theme', 'arctic');
-                      document.documentElement.classList.remove('theme-frozen');
-                    }
                   }
                 } catch(e) {}
               })();
@@ -84,7 +77,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen font-sans antialiased text-[#CCD0CF] bg-[#06141B] selection:bg-[#253745] selection:text-[#CCD0CF]">
+      <body className="min-h-screen font-sans antialiased text-[var(--foreground)] bg-[var(--background)] selection:bg-[#778ca4]/30 selection:text-[var(--foreground)] transition-colors duration-200">
         <ServiceWorkerRegister />
         {children}
       </body>

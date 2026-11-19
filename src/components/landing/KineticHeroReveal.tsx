@@ -20,36 +20,36 @@ export default function KineticHeroReveal() {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 1.1 } });
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 0.6 } });
 
       tl.fromTo(
         badgeRef.current,
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.8 }
+        { opacity: 0.4, y: 10 },
+        { opacity: 1, y: 0, duration: 0.5 }
       )
         .fromTo(
           titleRef.current,
-          { opacity: 0, y: 25 },
-          { opacity: 1, y: 0, duration: 1.0 },
-          '-=0.5'
+          { opacity: 0.4, y: 15 },
+          { opacity: 1, y: 0, duration: 0.6 },
+          '-=0.3'
         )
         .fromTo(
           subtitleRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.9 },
-          '-=0.6'
+          { opacity: 0.4, y: 12 },
+          { opacity: 1, y: 0, duration: 0.5 },
+          '-=0.3'
         )
         .fromTo(
           ctaRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.8 },
-          '-=0.5'
+          { opacity: 0.8, y: 10 },
+          { opacity: 1, y: 0, duration: 0.4 },
+          '-=0.2'
         )
         .fromTo(
           pillRef.current,
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.8 },
-          '-=0.4'
+          { opacity: 0.6, y: 10 },
+          { opacity: 1, y: 0, duration: 0.4 },
+          '-=0.2'
         );
     }, containerRef);
 

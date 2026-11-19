@@ -83,7 +83,7 @@ export default function ScenarioTabs() {
   return (
     <div className="w-full max-w-5xl mx-auto space-y-8">
       {/* Editorial Scenario Navigation Tabs - Responsive Wrapping on 390px */}
-      <div className="flex flex-wrap items-center justify-center gap-2 border-b border-[#b3bfcb]/40 pb-4">
+      <div className="flex flex-wrap items-center justify-center gap-2 border-b border-[#b3bfcb] pb-4">
         {scenarios.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -94,11 +94,11 @@ export default function ScenarioTabs() {
               onClick={() => setActiveTab(item.id)}
               className={`flex items-center gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 ${
                 isActive
-                  ? 'bg-[#313c45] text-[#f7f9fb] shadow-[0_4px_16px_rgba(49,60,69,0.18)]'
-                  : 'bg-[#ffffff] text-[#313c45] hover:bg-[#eef1f4] border border-[#b3bfcb]/60'
+                  ? 'bg-[#313c45] text-[#ffffff] shadow-[0_4px_16px_rgba(49,60,69,0.18)]'
+                  : 'bg-[#ffffff] text-[#313c45] hover:bg-[#d5dbe2] border border-[#b3bfcb]'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-[#b3bfcb]' : 'text-[#4f6271]'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-[#ffffff]' : 'text-[#4f6271]'}`} />
               <span>{item.tabLabel}</span>
             </button>
           );
@@ -106,10 +106,10 @@ export default function ScenarioTabs() {
       </div>
 
       {/* Active Tab Editorial Showcase */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#ffffff] rounded-3xl p-6 sm:p-10 border border-[#b3bfcb]/70 shadow-[0_4px_30px_rgba(119,140,164,0.06)]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#ffffff] rounded-3xl p-6 sm:p-10 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)]">
         {/* Text Description Column */}
         <div className="lg:col-span-7 space-y-5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#eef1f4] border border-[#b3bfcb]/50 text-[#313c45] text-xs font-semibold">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] text-xs font-semibold">
             <ShieldCheck className="w-3.5 h-3.5 text-[#313c45]" />
             <span>{current.liveEvidence}</span>
           </div>
@@ -119,7 +119,7 @@ export default function ScenarioTabs() {
           </h3>
 
           <div className="space-y-3 text-sm text-[#4f6271] leading-relaxed">
-            <p className="bg-[#eef1f4] p-3.5 rounded-xl border border-[#b3bfcb]/40 text-[#313c45]">
+            <p className="bg-[#d5dbe2] p-3.5 rounded-xl border border-[#b3bfcb] text-[#313c45]">
               <strong className="text-[#313c45] font-bold block mb-1">المشكلة الواقعية:</strong>
               {current.problem}
             </p>
@@ -131,22 +131,22 @@ export default function ScenarioTabs() {
         </div>
 
         {/* Visual Scenario Card (Flat Luxury Container) */}
-        <div className="lg:col-span-5 bg-[#eef1f4] rounded-2xl p-6 border border-[#b3bfcb]/80 shadow-sm space-y-5">
-          <div className="flex items-center justify-between border-b border-[#b3bfcb]/50 pb-3">
+        <div className="lg:col-span-5 bg-[#d5dbe2] rounded-2xl p-6 border border-[#b3bfcb] shadow-sm space-y-5">
+          <div className="flex items-center justify-between border-b border-[#b3bfcb] pb-3">
             <span className="text-xs font-bold text-[#313c45] uppercase tracking-wider">
               {current.previewCard.badge}
             </span>
             <span className="inline-block w-2 h-2 rounded-full bg-[#4f6271]" />
           </div>
 
-          <div className="p-3.5 rounded-xl bg-[#ffffff] border border-[#b3bfcb]/60 text-xs font-bold text-[#313c45]">
+          <div className="p-3.5 rounded-xl bg-[#ffffff] border border-[#b3bfcb] text-xs font-bold text-[#313c45]">
             {current.previewCard.actionText}
           </div>
 
           <ul className="space-y-2.5 text-xs text-[#313c45] font-medium">
             {current.previewCard.details.map((detail, idx) => (
               <li key={idx} className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded-full bg-[#313c45] text-[#f7f9fb] flex items-center justify-center flex-shrink-0 text-[10px]">
+                <span className="w-4 h-4 rounded-full bg-[#313c45] text-[#ffffff] flex items-center justify-center flex-shrink-0 text-[10px]">
                   ✓
                 </span>
                 <span>{detail}</span>

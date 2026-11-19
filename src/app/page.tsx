@@ -29,7 +29,7 @@ const WHATSAPP_URL = 'https://wa.me/213666568039?text=مرحباً،%20أريد%
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#f7f9fb] text-[#313c45] font-sans antialiased overflow-x-hidden selection:bg-[#b3bfcb]/40 selection:text-[#313c45]">
+    <div className="min-h-screen bg-[#eef1f5] text-[#313c45] font-sans antialiased overflow-x-hidden selection:bg-[#778ca4]/30 selection:text-[#313c45]">
       
       {/* =========================================================================
           TOP COMMERCIAL NOTIFICATION TICKER - Responsive 390px
@@ -56,7 +56,7 @@ export default function Home() {
       {/* =========================================================================
           NAVIGATION HEADER
           ========================================================================= */}
-      <header className="sticky top-0 z-40 bg-[#f7f9fb]/90 backdrop-blur-md border-b border-[#b3bfcb]/50 transition-all">
+      <header className="sticky top-0 z-40 bg-[#eef1f5]/90 backdrop-blur-md border-b border-[#b3bfcb] transition-all">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between">
           
           {/* Brand Logo & Wordmark */}
@@ -118,12 +118,12 @@ export default function Home() {
 
         {/* Physical-to-Digital Minimalist Artifact Showcase */}
         <div className="max-w-4xl mx-auto w-full mt-2">
-          <div className="bg-[#ffffff] rounded-3xl p-5 sm:p-8 border border-[#b3bfcb] shadow-[0_12px_40px_rgba(119,140,164,0.12)]">
+          <div className="bg-[#ffffff] rounded-3xl p-5 sm:p-8 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)]">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
               
               {/* The Physical Stand (Right in RTL) */}
-              <div className="md:col-span-5 bg-[#eef1f4] rounded-2xl p-6 border border-[#b3bfcb]/70 text-center space-y-3.5">
-                <div className="inline-block px-3 py-1 rounded-full bg-[#313c45] text-[#f7f9fb] text-[11px] font-bold">
+              <div className="md:col-span-5 bg-[#d5dbe2] rounded-2xl p-6 border border-[#b3bfcb] text-center space-y-3.5">
+                <div className="inline-block px-3 py-1 rounded-full bg-[#313c45] text-[#ffffff] text-[11px] font-bold">
                   ملصق الاستقبال الذكي
                 </div>
                 <div className="flex items-center justify-center pt-1" dir="ltr">
@@ -139,8 +139,8 @@ export default function Home() {
               </div>
 
               {/* The Visitor Phone Screen (Left in RTL) */}
-              <div className="md:col-span-7 bg-[#ffffff] rounded-2xl p-5 sm:p-6 border border-[#b3bfcb] shadow-sm space-y-4 text-right">
-                <div className="flex items-center justify-between border-b border-[#b3bfcb]/50 pb-3">
+              <div className="md:col-span-7 bg-[#ffffff] rounded-2xl p-5 sm:p-6 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-4 text-right">
+                <div className="flex items-center justify-between border-b border-[#b3bfcb] pb-3">
                   <span className="text-xs font-bold text-[#313c45]">تذكرة انتظار رقمية تفاعلية</span>
                   <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#313c45]">
                     <Volume2 className="w-3.5 h-3.5 text-[#4f6271]" />
@@ -149,17 +149,17 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3 rounded-xl bg-[#f7f9fb] border border-[#b3bfcb]/60">
+                  <div className="p-3 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb]">
                     <span className="text-[11px] font-bold text-[#4f6271] block mb-1">تذكرتك الحالية</span>
                     <span className="text-xl sm:text-2xl font-bold text-[#313c45] tracking-tight">دورك قادم</span>
                   </div>
-                  <div className="p-3 rounded-xl bg-[#f7f9fb] border border-[#b3bfcb]/60">
+                  <div className="p-3 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb]">
                     <span className="text-[11px] font-bold text-[#4f6271] block mb-1">حالة الاستدعاء</span>
                     <span className="text-xl sm:text-2xl font-bold text-[#313c45] tracking-tight">المراجع الحالي داخل</span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#eef1f4] border border-[#b3bfcb]/60 flex items-center justify-between text-xs">
+                <div className="p-3 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] flex items-center justify-between text-xs">
                   <span className="text-[#313c45] font-bold">باقي أمامك القليل فقط</span>
                   <span className="text-[#4f6271] font-medium">تنبيه بالدخول فور اقتراب موعدك</span>
                 </div>
@@ -177,7 +177,7 @@ export default function Home() {
       {/* =========================================================================
           SECTION 2: هل تعاني من هذه المشاكل يومياً؟ (THE PAIN VS SERENITY)
           ========================================================================= */}
-      <section id="comparison" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f4] border-t border-[#b3bfcb]/50">
+      <section id="comparison" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
         <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 mb-12 sm:mb-14">
           <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase">
             مقارنة واقعية
@@ -196,7 +196,7 @@ export default function Home() {
       {/* =========================================================================
           SECTION 3: كيف يعمل في 3 خطوات بسيطة؟ (HOW IT WORKS)
           ========================================================================= */}
-      <section id="how-it-works" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#f7f9fb] border-t border-[#b3bfcb]/50">
+      <section id="how-it-works" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
         <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 mb-14 sm:mb-16">
           <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase">
             بساطة مطلقة
@@ -212,8 +212,8 @@ export default function Home() {
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* Step 1 */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-8 border border-[#b3bfcb] shadow-sm space-y-4 text-right">
-            <div className="w-10 h-10 rounded-xl bg-[#eef1f4] text-[#313c45] flex items-center justify-center font-bold">
+          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-8 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-4 text-right">
+            <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center font-bold">
               <QrCode className="w-5 h-5" />
             </div>
             <h3 className="text-base sm:text-lg font-bold text-[#313c45]">
@@ -225,8 +225,8 @@ export default function Home() {
           </div>
 
           {/* Step 2 */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-8 border border-[#b3bfcb] shadow-sm space-y-4 text-right">
-            <div className="w-10 h-10 rounded-xl bg-[#eef1f4] text-[#313c45] flex items-center justify-center font-bold">
+          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-8 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-4 text-right">
+            <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center font-bold">
               <Smartphone className="w-5 h-5" />
             </div>
             <h3 className="text-base sm:text-lg font-bold text-[#313c45]">
@@ -238,8 +238,8 @@ export default function Home() {
           </div>
 
           {/* Step 3 */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-8 border border-[#b3bfcb] shadow-sm space-y-4 text-right">
-            <div className="w-10 h-10 rounded-xl bg-[#eef1f4] text-[#313c45] flex items-center justify-center font-bold">
+          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-8 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-4 text-right">
+            <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center font-bold">
               <Volume2 className="w-5 h-5" />
             </div>
             <h3 className="text-base sm:text-lg font-bold text-[#313c45]">
@@ -256,7 +256,7 @@ export default function Home() {
       {/* =========================================================================
           SECTION 4: مصمم لكل الحالات الواقعية (REAL-WORLD SOLUTIONS)
           ========================================================================= */}
-      <section id="real-scenarios" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f4] border-t border-[#b3bfcb]/50">
+      <section id="real-scenarios" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
         <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 mb-12 sm:mb-14">
           <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase">
             حلول ميدانية واقعية
@@ -275,7 +275,7 @@ export default function Home() {
       {/* =========================================================================
           SECTION 5: لمن صُمّم NextDZ؟ (WHO IT IS BUILT FOR)
           ========================================================================= */}
-      <section id="for-who" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#f7f9fb] border-t border-[#b3bfcb]/50">
+      <section id="for-who" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
         <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 mb-14 sm:mb-16">
           <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase">
             القطاعات المستفيدة
@@ -291,8 +291,8 @@ export default function Home() {
         <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           
           {/* Card 1: Clinics */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-7 border border-[#b3bfcb] shadow-sm space-y-3 sm:space-y-4 text-right hover:border-[#4f6271] transition-all duration-300">
-            <div className="w-11 h-11 rounded-xl bg-[#eef1f4] text-[#313c45] flex items-center justify-center">
+          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-3 sm:space-y-4 text-right hover:border-[#778ca4] transition-all duration-300">
+            <div className="w-11 h-11 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
               <Stethoscope className="w-5 h-5" />
             </div>
             <h3 className="text-base font-bold text-[#313c45]">
@@ -304,8 +304,8 @@ export default function Home() {
           </div>
 
           {/* Card 2: Labs */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-7 border border-[#b3bfcb] shadow-sm space-y-3 sm:space-y-4 text-right hover:border-[#4f6271] transition-all duration-300">
-            <div className="w-11 h-11 rounded-xl bg-[#eef1f4] text-[#313c45] flex items-center justify-center">
+          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-3 sm:space-y-4 text-right hover:border-[#778ca4] transition-all duration-300">
+            <div className="w-11 h-11 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
               <TestTube2 className="w-5 h-5" />
             </div>
             <h3 className="text-base font-bold text-[#313c45]">
@@ -317,8 +317,8 @@ export default function Home() {
           </div>
 
           {/* Card 3: Salons */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-7 border border-[#b3bfcb] shadow-sm space-y-3 sm:space-y-4 text-right hover:border-[#4f6271] transition-all duration-300">
-            <div className="w-11 h-11 rounded-xl bg-[#eef1f4] text-[#313c45] flex items-center justify-center">
+          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-3 sm:space-y-4 text-right hover:border-[#778ca4] transition-all duration-300">
+            <div className="w-11 h-11 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
               <Scissors className="w-5 h-5" />
             </div>
             <h3 className="text-base font-bold text-[#313c45]">
@@ -330,8 +330,8 @@ export default function Home() {
           </div>
 
           {/* Card 4: Notary */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-7 border border-[#b3bfcb] shadow-sm space-y-3 sm:space-y-4 text-right hover:border-[#4f6271] transition-all duration-300">
-            <div className="w-11 h-11 rounded-xl bg-[#eef1f4] text-[#313c45] flex items-center justify-center">
+          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-3 sm:space-y-4 text-right hover:border-[#778ca4] transition-all duration-300">
+            <div className="w-11 h-11 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
               <Scale className="w-5 h-5" />
             </div>
             <h3 className="text-base font-bold text-[#313c45]">
@@ -348,7 +348,7 @@ export default function Home() {
       {/* =========================================================================
           SECTION 5.5: جرّب بنفسك تجربة النظام الحقيقية (LIVE SYSTEM VERIFICATION)
           ========================================================================= */}
-      <section id="live-experience" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f4] border-t border-[#b3bfcb]/60">
+      <section id="live-experience" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
         <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 mb-12 sm:mb-14">
           <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase">
             معاينة فورية حقيقية
@@ -364,9 +364,9 @@ export default function Home() {
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* Live Screen 1: Visitor Mobile Ticket */}
-          <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-7 border border-[#b3bfcb] shadow-sm space-y-5 text-right flex flex-col justify-between">
+          <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-5 text-right flex flex-col justify-between">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#eef1f4] text-[#313c45] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
                 <Smartphone className="w-5 h-5" />
               </div>
               <h3 className="text-base font-bold text-[#313c45]">
@@ -377,12 +377,12 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="pt-4 border-t border-[#b3bfcb]/50">
+            <div className="pt-4 border-t border-[#b3bfcb]">
               <a
                 href="/q/clinic-amal"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#313c45] text-[#f7f9fb] text-xs font-bold hover:bg-[#232b32] transition"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#313c45] text-[#ffffff] text-xs font-bold hover:bg-[#4f6271] transition shadow-sm"
               >
                 <span>فتح تذكرة المراجع الحية</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -391,9 +391,9 @@ export default function Home() {
           </div>
 
           {/* Live Screen 2: Controller Dashboard */}
-          <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-7 border border-[#b3bfcb] shadow-sm space-y-5 text-right flex flex-col justify-between">
+          <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-5 text-right flex flex-col justify-between">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#eef1f4] text-[#313c45] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
                 <Users className="w-5 h-5" />
               </div>
               <h3 className="text-base font-bold text-[#313c45]">
@@ -404,12 +404,12 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="pt-4 border-t border-[#b3bfcb]/50">
+            <div className="pt-4 border-t border-[#b3bfcb]">
               <a
                 href="/admin/clinic-amal"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#313c45] text-[#f7f9fb] text-xs font-bold hover:bg-[#232b32] transition"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#313c45] text-[#ffffff] text-xs font-bold hover:bg-[#4f6271] transition shadow-sm"
               >
                 <span>فتح لوحة التحكم التجريبية</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -418,9 +418,9 @@ export default function Home() {
           </div>
 
           {/* Live Screen 3: Smart TV Waiting Hall */}
-          <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-7 border border-[#b3bfcb] shadow-sm space-y-5 text-right flex flex-col justify-between">
+          <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-5 text-right flex flex-col justify-between">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#eef1f4] text-[#313c45] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
                 <Tv className="w-5 h-5" />
               </div>
               <h3 className="text-base font-bold text-[#313c45]">
@@ -431,12 +431,12 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="pt-4 border-t border-[#b3bfcb]/50">
+            <div className="pt-4 border-t border-[#b3bfcb]">
               <a
                 href="/display/clinic-amal"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#313c45] text-[#f7f9fb] text-xs font-bold hover:bg-[#232b32] transition"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#313c45] text-[#ffffff] text-xs font-bold hover:bg-[#4f6271] transition shadow-sm"
               >
                 <span>معاينة شاشة الصالة</span>
                 <ExternalLink className="w-3.5 h-3.5" />

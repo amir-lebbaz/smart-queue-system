@@ -51,18 +51,18 @@
 }
 
 [data-theme="frozen"], html.theme-frozen {
-  --background: #eef1f4;
+  --background: #eef1f5;
   --foreground: #313c45;
 
   /* Theme 2: Landing Page Frozen Whisper (شتاء هادئ) */
-  --canvas-bg: #eef1f4;
-  --canvas-bg-rgb: 238 241 244;
+  --canvas-bg: #eef1f5;
+  --canvas-bg-rgb: 238 241 245;
 
   --surface-bg: #ffffff;
   --surface-bg-rgb: 255 255 255;
 
-  --surface-elevated: #f7f9fb;
-  --surface-elevated-rgb: 247 249 251;
+  --surface-elevated: #d5dbe2;
+  --surface-elevated-rgb: 213 219 226;
 
   --border-color: #b3bfcb;
   --border-color-rgb: 179 191 203;
@@ -82,11 +82,254 @@
   --theme-name: 'frozen';
 }
 
+/* ==========================================================================
+   FROZEN WHISPER (LIGHT THEME) SEMANTIC MAPPING ACROSS ALL APP COMPONENTS
+   Rules:
+   1. Page Canvas: #eef1f5
+   2. Primary Cards & Inputs: #ffffff with 1px solid #b3bfcb & subtle shadow
+   3. Secondary Surfaces / Stat Strips: #d5dbe2 with 1px solid #b3bfcb
+   4. Headings & Numbers: #313c45 (ALWAYS dark)
+   5. Body Text & Descriptions: #4f6271
+   6. Muted / Disabled: #778ca4
+   7. Primary CTA: #313c45 with #ffffff text
+   8. Secondary Button: #ffffff with 1.5px solid #778ca4 border and #313c45 text
+   ========================================================================== */
+[data-theme="frozen"], html.theme-frozen {
+  background-color: #eef1f5 !important;
+  color: #313c45 !important;
+}
+
+[data-theme="frozen"] body, html.theme-frozen body {
+  background-color: #eef1f5 !important;
+  color: #313c45 !important;
+}
+
+/* 1. Page Canvas Classes (Any bg-slateNavy-950 variant) */
+[data-theme="frozen"] [class*="bg-slateNavy-950"],
+html.theme-frozen [class*="bg-slateNavy-950"] {
+  background-color: #eef1f5 !important;
+}
+
+/* Inner stat strips or pill boxes that are nested inside a card */
+[data-theme="frozen"] [class*="bg-slateNavy-900"] [class*="bg-slateNavy-950"],
+html.theme-frozen [class*="bg-slateNavy-900"] [class*="bg-slateNavy-950"] {
+  background-color: #d5dbe2 !important;
+  border-color: #b3bfcb !important;
+}
+
+/* 2. Primary Cards & Modals: Pure White #ffffff with 1px solid #b3bfcb and subtle shadow */
+[data-theme="frozen"] [class*="bg-slateNavy-900"],
+html.theme-frozen [class*="bg-slateNavy-900"] {
+  background-color: #ffffff !important;
+  border-color: #b3bfcb !important;
+  box-shadow: 0 2px 10px rgba(49, 60, 69, 0.05) !important;
+}
+
+/* 3. Secondary Surfaces / Stat Strips / Soft Badges: #d5dbe2 with 1px solid #b3bfcb */
+[data-theme="frozen"] [class*="bg-slateNavy-850"],
+html.theme-frozen [class*="bg-slateNavy-850"] {
+  background-color: #d5dbe2 !important;
+  border-color: #b3bfcb !important;
+}
+
+/* 4. Borders & Dividers: Clouded Steel #b3bfcb */
+[data-theme="frozen"] [class*="border-slateNavy-800"],
+html.theme-frozen [class*="border-slateNavy-800"],
+[data-theme="frozen"] [class*="border-slateNavy-700"],
+html.theme-frozen [class*="border-slateNavy-700"] {
+  border-color: #b3bfcb !important;
+}
+
+[data-theme="frozen"] .divide-slateNavy-800 > :not([hidden]) ~ :not([hidden]),
+html.theme-frozen .divide-slateNavy-800 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #b3bfcb !important;
+}
+
+/* 5. Typography: Headings, Numbers, Primary Labels: #313c45 (ALWAYS dark) */
+[data-theme="frozen"] .text-slateNavy-100,
+html.theme-frozen .text-slateNavy-100,
+[data-theme="frozen"] .text-slateNavy-200,
+html.theme-frozen .text-slateNavy-200 {
+  color: #313c45 !important;
+}
+
+/* 6. Typography: Body Text, Secondary Descriptions: #4f6271 */
+[data-theme="frozen"] .text-slateNavy-300,
+html.theme-frozen .text-slateNavy-300,
+[data-theme="frozen"] .text-slateNavy-400,
+html.theme-frozen .text-slateNavy-400,
+[data-theme="frozen"] .text-slateNavy-500,
+html.theme-frozen .text-slateNavy-500,
+[data-theme="frozen"] .text-slateNavy-600,
+html.theme-frozen .text-slateNavy-600 {
+  color: #4f6271 !important;
+}
+
+/* 7. Muted/Disabled Text ONLY: #778ca4 */
+[data-theme="frozen"] .text-slateNavy-700,
+html.theme-frozen .text-slateNavy-700 {
+  color: #778ca4 !important;
+}
+
+/* 8. Form Inputs in Frozen Mode */
+[data-theme="frozen"] input:not([type="checkbox"]):not([type="radio"]),
+html.theme-frozen input:not([type="checkbox"]):not([type="radio"]),
+[data-theme="frozen"] select,
+html.theme-frozen select,
+[data-theme="frozen"] textarea,
+html.theme-frozen textarea {
+  background-color: #ffffff !important;
+  color: #313c45 !important;
+  border: 1px solid #b3bfcb !important;
+  box-shadow: 0 1px 3px rgba(49, 60, 69, 0.05) !important;
+}
+
+[data-theme="frozen"] input::placeholder,
+html.theme-frozen input::placeholder,
+[data-theme="frozen"] textarea::placeholder,
+html.theme-frozen textarea::placeholder {
+  color: #4f6271 !important;
+  opacity: 0.85 !important;
+}
+
+[data-theme="frozen"] input:focus,
+html.theme-frozen input:focus,
+[data-theme="frozen"] select:focus,
+html.theme-frozen select:focus,
+[data-theme="frozen"] textarea:focus,
+html.theme-frozen textarea:focus {
+  border-color: #778ca4 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(119, 140, 164, 0.25) !important;
+}
+
+/* 9. Buttons & Interactive States */
+/* Primary CTA button (Submit buttons, or buttons with bg-slateNavy-100) */
+[data-theme="frozen"] button[type="submit"],
+html.theme-frozen button[type="submit"],
+[data-theme="frozen"] button.bg-slateNavy-100,
+html.theme-frozen button.bg-slateNavy-100,
+[data-theme="frozen"] .bg-slateNavy-100:is(button, a),
+html.theme-frozen .bg-slateNavy-100:is(button, a) {
+  background-color: #313c45 !important;
+  color: #ffffff !important;
+  border: 1px solid #313c45 !important;
+  box-shadow: 0 4px 16px rgba(49, 60, 69, 0.15) !important;
+}
+[data-theme="frozen"] button[type="submit"]:hover,
+html.theme-frozen button[type="submit"]:hover,
+[data-theme="frozen"] button.bg-slateNavy-100:hover,
+html.theme-frozen button.bg-slateNavy-100:hover,
+[data-theme="frozen"] .bg-slateNavy-100:is(button, a):hover,
+html.theme-frozen .bg-slateNavy-100:is(button, a):hover {
+  background-color: #4f6271 !important;
+  border-color: #4f6271 !important;
+  color: #ffffff !important;
+}
+
+/* Secondary / Outline Button (was bg-slateNavy-800 text-slateNavy-100 in dark) */
+[data-theme="frozen"] button.bg-slateNavy-800:not([type="submit"]),
+html.theme-frozen button.bg-slateNavy-800:not([type="submit"]),
+[data-theme="frozen"] .bg-slateNavy-800:is(button, a):not([type="submit"]),
+html.theme-frozen .bg-slateNavy-800:is(button, a):not([type="submit"]) {
+  background-color: #ffffff !important;
+  color: #313c45 !important;
+  border: 1.5px solid #778ca4 !important;
+  box-shadow: 0 1px 3px rgba(49, 60, 69, 0.05) !important;
+}
+[data-theme="frozen"] button.bg-slateNavy-800:not([type="submit"]):hover,
+html.theme-frozen button.bg-slateNavy-800:not([type="submit"]):hover,
+[data-theme="frozen"] .bg-slateNavy-800:is(button, a):not([type="submit"]):hover,
+html.theme-frozen .bg-slateNavy-800:is(button, a):not([type="submit"]):hover {
+  background-color: #d5dbe2 !important;
+  border-color: #778ca4 !important;
+  color: #313c45 !important;
+}
+
+/* Non-button container that was bg-slateNavy-800 */
+[data-theme="frozen"] div.bg-slateNavy-800,
+html.theme-frozen div.bg-slateNavy-800,
+[data-theme="frozen"] span.bg-slateNavy-800,
+html.theme-frozen span.bg-slateNavy-800 {
+  background-color: #d5dbe2 !important;
+  border-color: #b3bfcb !important;
+  color: #313c45 !important;
+}
+
+/* Bottom utility bar in Admin */
+[data-theme="frozen"] footer.fixed.bottom-0,
+html.theme-frozen footer.fixed.bottom-0 {
+  background-color: #eef1f5 !important;
+  border-color: #b3bfcb !important;
+}
+
+/* Status Badges in Light Mode */
+[data-theme="frozen"] .bg-emerald-950\/80,
+html.theme-frozen .bg-emerald-950\/80,
+[data-theme="frozen"] .bg-emerald-950\/60,
+html.theme-frozen .bg-emerald-950\/60 {
+  background-color: #d1fae5 !important;
+  border-color: #10b981 !important;
+  color: #065f46 !important;
+}
+[data-theme="frozen"] .text-emerald-400,
+html.theme-frozen .text-emerald-400,
+[data-theme="frozen"] .text-emerald-300,
+html.theme-frozen .text-emerald-300 {
+  color: #059669 !important;
+}
+[data-theme="frozen"] .bg-sky-950\/80,
+html.theme-frozen .bg-sky-950\/80,
+[data-theme="frozen"] .bg-sky-950,
+html.theme-frozen .bg-sky-950 {
+  background-color: #e0f2fe !important;
+  border-color: #38bdf8 !important;
+  color: #0369a1 !important;
+}
+[data-theme="frozen"] .text-sky-200,
+html.theme-frozen .text-sky-200,
+[data-theme="frozen"] .text-sky-300,
+html.theme-frozen .text-sky-300 {
+  color: #0284c7 !important;
+}
+[data-theme="frozen"] .bg-amber-950\/80,
+html.theme-frozen .bg-amber-950\/80,
+[data-theme="frozen"] .bg-amber-950\/60,
+html.theme-frozen .bg-amber-950\/60 {
+  background-color: #fef3c7 !important;
+  border-color: #f59e0b !important;
+  color: #92400e !important;
+}
+[data-theme="frozen"] .text-amber-400,
+html.theme-frozen .text-amber-400,
+[data-theme="frozen"] .text-amber-300,
+html.theme-frozen .text-amber-300 {
+  color: #b45309 !important;
+}
+
+/* Modal Backdrops in Frozen Mode */
+[data-theme="frozen"] .fixed.inset-0.bg-black\/80,
+[data-theme="frozen"] .fixed.inset-0.bg-black\/70,
+[data-theme="frozen"] .fixed.inset-0.bg-black\/60,
+html.theme-frozen .fixed.inset-0.bg-black\/80,
+html.theme-frozen .fixed.inset-0.bg-black\/70,
+html.theme-frozen .fixed.inset-0.bg-black\/60 {
+  background-color: rgba(49, 60, 69, 0.45) !important;
+}
+
 /* Suppress synthetic AI laser and harsh glows in Frozen Whisper mode */
-[data-theme="frozen"] .arctic-only-laser {
+[data-theme="frozen"] .arctic-only-laser,
+html.theme-frozen .arctic-only-laser,
+[data-theme="frozen"] .arctic-grid-pattern,
+html.theme-frozen .arctic-grid-pattern {
   display: none !important;
 }
-[data-theme="frozen"] .card-border-beam::before {
+[data-theme="frozen"] .card-border-beam::before,
+html.theme-frozen .card-border-beam::before {
+  display: none !important;
+}
+[data-theme="frozen"] .blur-\[90px\],
+html.theme-frozen .blur-\[90px\] {
   display: none !important;
 }
 

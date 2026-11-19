@@ -33,17 +33,17 @@ export default function BeforeAfterComparison() {
     <div className="w-full max-w-5xl mx-auto space-y-8">
       {/* Editorial Toggle Selector - Smooth Stacking on 390px Mobile */}
       <div className="flex items-center justify-center px-2">
-        <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center p-1.5 rounded-2xl sm:rounded-full bg-[#d5dbe2] border border-[#b3bfcb] shadow-inner gap-1.5">
+        <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center p-1.5 rounded-2xl sm:rounded-full bg-[#d5dbe2] border border-[#b3bfcb] shadow-sm gap-1.5">
           <button
             type="button"
             onClick={() => setActiveMode('after')}
             className={`w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
               activeMode === 'after'
-                ? 'bg-[#313c45] text-[#f7f9fb] shadow-[0_4px_16px_rgba(49,60,69,0.18)]'
-                : 'text-[#313c45] hover:text-[#232b32]'
+                ? 'bg-[#313c45] text-[#ffffff] shadow-[0_4px_16px_rgba(49,60,69,0.18)]'
+                : 'bg-[#ffffff] text-[#313c45] border border-[#b3bfcb] hover:bg-[#d5dbe2]'
             }`}
           >
-            <CheckCircle2 className="w-4 h-4 text-[#b3bfcb]" />
+            <CheckCircle2 className={`w-4 h-4 ${activeMode === 'after' ? 'text-[#ffffff]' : 'text-[#778ca4]'}`} />
             <span>مع NextDZ (قاعة هادئة وراقية)</span>
           </button>
 
@@ -52,11 +52,11 @@ export default function BeforeAfterComparison() {
             onClick={() => setActiveMode('before')}
             className={`w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
               activeMode === 'before'
-                ? 'bg-[#b3bfcb] text-[#313c45] shadow-sm'
-                : 'text-[#4f6271] hover:text-[#313c45]'
+                ? 'bg-[#313c45] text-[#ffffff] shadow-[0_4px_16px_rgba(49,60,69,0.18)]'
+                : 'bg-[#ffffff] text-[#313c45] border border-[#b3bfcb] hover:bg-[#d5dbe2]'
             }`}
           >
-            <XCircle className="w-4 h-4 text-[#4f6271]" />
+            <XCircle className={`w-4 h-4 ${activeMode === 'before' ? 'text-[#ffffff]' : 'text-[#778ca4]'}`} />
             <span>الطريقة التقليدية (فوضى وتوتر)</span>
           </button>
         </div>
@@ -71,16 +71,16 @@ export default function BeforeAfterComparison() {
               key={idx}
               className={`relative overflow-hidden rounded-2xl p-6 sm:p-7 transition-all duration-500 border ${
                 isNextdz
-                  ? 'bg-[#ffffff] border-[#b3bfcb] shadow-[0_4px_24px_rgba(119,140,164,0.08)]'
-                  : 'bg-[#eef1f4] border-[#b3bfcb]/60'
+                  ? 'bg-[#ffffff] border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)]'
+                  : 'bg-[#d5dbe2] border-[#b3bfcb]'
               }`}
             >
               <div className="flex items-start gap-3.5 mb-3">
                 <span
                   className={`mt-1 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
                     isNextdz
-                      ? 'bg-[#313c45] text-[#f7f9fb]'
-                      : 'bg-[#b3bfcb] text-[#313c45]'
+                      ? 'bg-[#313c45] text-[#ffffff]'
+                      : 'bg-[#ffffff] text-[#313c45] border border-[#b3bfcb]'
                   }`}
                 >
                   {isNextdz ? (
@@ -103,8 +103,8 @@ export default function BeforeAfterComparison() {
                 <span
                   className={`inline-flex items-center text-xs font-bold px-3 py-1 rounded-full ${
                     isNextdz
-                      ? 'bg-[#313c45] text-[#f7f9fb]'
-                      : 'bg-[#b3bfcb] text-[#313c45]'
+                      ? 'bg-[#313c45] text-[#ffffff]'
+                      : 'bg-[#ffffff] text-[#313c45] border border-[#b3bfcb]'
                   }`}
                 >
                   {isNextdz ? '✓ تجربة مريحة ومحسوبة' : '✕ استنزاف للمال والراحة'}

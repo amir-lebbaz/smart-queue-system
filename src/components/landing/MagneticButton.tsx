@@ -45,15 +45,15 @@ export default function MagneticButton({
     'relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full text-sm font-bold transition-all duration-300 active:scale-[0.98] select-none';
 
   const variants = {
-    // Primary: Charcoal Mist (#313c45) with crisp pale text (WCAG AAA)
+    // Primary: Charcoal Mist (#313c45) with crisp pure white text (#ffffff)
     primary:
-      'bg-[#313c45] text-[#f7f9fb] shadow-[0_4px_20px_rgba(49,60,69,0.18)] hover:bg-[#232b32] hover:shadow-[0_8px_30px_rgba(49,60,69,0.25)] border border-[#313c45]',
-    // Secondary: Icy Blue outline & white container
+      'bg-[#313c45] text-[#ffffff] shadow-[0_4px_16px_rgba(49,60,69,0.15)] hover:bg-[#4f6271] hover:shadow-[0_6px_22px_rgba(49,60,69,0.22)] border border-[#313c45]',
+    // Secondary: Pure White container with 1.5px solid Icy Blue (#778ca4) border and Charcoal Mist (#313c45) text
     secondary:
-      'bg-[#ffffff] text-[#313c45] border border-[#b3bfcb] hover:border-[#4f6271] hover:bg-[#eef1f4] shadow-sm',
+      'bg-[#ffffff] text-[#313c45] border-[1.5px] border-[#778ca4] hover:bg-[#d5dbe2] hover:border-[#778ca4] shadow-[0_1px_3px_rgba(49,60,69,0.05)]',
     // Subtle: Slate Mist hover
     subtle:
-      'bg-transparent text-[#313c45] hover:bg-[#b3bfcb]/20 border border-transparent',
+      'bg-transparent text-[#313c45] hover:bg-[#d5dbe2] border border-transparent',
   };
 
   const isFullWidth = className.includes('w-full');
