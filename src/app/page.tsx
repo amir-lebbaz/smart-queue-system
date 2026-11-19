@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   QrCode, 
@@ -15,7 +15,11 @@ import {
   PhoneCall, 
   Tv, 
   Sparkles, 
-  Users 
+  Users,
+  Check,
+  ChevronDown,
+  ShieldCheck,
+  ArrowLeft
 } from 'lucide-react';
 import CalmMistCanvas from '@/components/landing/CalmMistCanvas';
 import KineticHeroReveal from '@/components/landing/KineticHeroReveal';
@@ -24,11 +28,101 @@ import ScenarioTabs from '@/components/landing/ScenarioTabs';
 import MagneticButton from '@/components/landing/MagneticButton';
 import NextDZLogo from '@/components/NextDZLogo';
 import ThemeToggle from '@/components/ThemeToggle';
+import PlanBadge from '@/components/PlanBadge';
 
 const PHONE_NUMBER = '0666 56 80 39';
+const WHATSAPP_INTL = '213666568039';
 const WHATSAPP_URL = 'https://wa.me/213666568039?text=مرحباً،%20أريد%20تفعيل%20نظام%20NextDZ%20لقاعة%20الانتظار%20لدي';
 
 export default function Home() {
+  const [isYearly, setIsYearly] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+  const pricing = {
+    starter: {
+      title: 'الباقة الأساسية',
+      subtitle: 'للعيادات الفردية، صالونات الحلاقة، ومكاتب الأعمال الفردية',
+      price: isYearly ? '15,000' : '1,500',
+      period: isYearly ? 'سنوياً' : 'شهرياً',
+      subtext: isYearly ? 'ما يعادل 1,250 دج / شهر فقط (وفرت شهرين مجاناً)' : 'تجديد شهري مرن بدون أي التزام مسبق',
+      features: [
+        { text: 'رابط خاص وملصق QR رسمي للعيادة جاهز للطباعة (A4)', included: true },
+        { text: 'تذاكر رقمية تفاعلية غير محدودة طوال فترة الاشتراك', included: true },
+        { text: 'تنبيه صوتي واهتزاز على هاتف المراجع عند اقتراب دوره', included: true },
+        { text: 'ريموت المسير للهاتف والكمبيوتر (استدعاء، تأكيد، إنهاء)', included: true },
+        { text: 'دعم فني وإعداد أولي سريع في دقائق معدودة', included: true },
+        { text: 'شاشة صالة الانتظار للتلفاز الذكي (Smart TV)', included: false },
+        { text: 'نظام التأجيل الذكي (Hold) للزبائن المتأخرين', included: false },
+        { text: 'تصدير تقارير Excel و CSV اليومية لحساب الإحصائيات', included: false },
+      ],
+      whatsappMsg: `مرحباً، أريد الاشتراك في الباقة الأساسية لنظام NextDZ (${isYearly ? '15,000 دج / سنوياً' : '1,500 دج / شهرياً'})`,
+    },
+    pro: {
+      title: 'باقة المحترفين (Pro)',
+      subtitle: 'الحل المتكامل للعيادات التخصصية، طب الأسنان، والمراكز النشطة',
+      price: isYearly ? '25,000' : '2,500',
+      period: isYearly ? 'سنوياً' : 'شهرياً',
+      subtext: isYearly ? 'ما يعادل 2,080 دج / شهر فقط (وفرت 5,000 دج سنوياً)' : 'الباقة الأكثر طلباً للعيادات والمراكز النشطة',
+      features: [
+        { text: 'كل مميزات الباقة الأساسية بالكامل', included: true, highlight: true },
+        { text: 'شاشة صالة الانتظار للتلفاز Full HD 1080p (بفتح الرابط فقط)', included: true, highlight: true },
+        { text: 'جرس نداء صوتي عربي تلقائي عند استدعاء كل مراجع', included: true, highlight: true },
+        { text: 'نظام التأجيل الذكي (Hold) للمتأخرين دون ضياع ترتيبهم', included: true, highlight: true },
+        { text: 'تصدير تقارير Excel و CSV اليومية لسجلات المؤسسة بضغطة زر', included: true },
+        { text: 'تقييمات رضا المراجعين الفورية (😄/😐/🙁) عند الخروج', included: true },
+        { text: 'دعم فني وتدريب مجاني للسكرتيرة وطاقم العمل', included: true },
+      ],
+      whatsappMsg: `مرحباً، أريد الاشتراك في باقة المحترفين Pro لنظام NextDZ (${isYearly ? '25,000 دج / سنوياً' : '2,500 دج / شهرياً'})`,
+    },
+    elite: {
+      title: 'باقة النخبة (Elite VIP)',
+      subtitle: 'للمجمعات الطبية الكبرى، المختبرات، والمراكز متعددة المكاتب',
+      price: isYearly ? '30,000' : '3,000',
+      period: isYearly ? 'سنوياً' : 'شهرياً',
+      subtext: isYearly ? 'ما يعادل 2,500 دج / شهر فقط (وفرت 6,000 دج سنوياً)' : 'خصم خاص للمجمعات الطبية والمؤسسات الكبرى',
+      features: [
+        { text: 'كل مميزات باقة المحترفين بالكامل', included: true, highlight: true },
+        { text: 'ربط شاشات تلفاز متعددة في نفس المؤسسة (ممرات وقاعات مختلفة)', included: true, highlight: true },
+        { text: 'تخصيص كامل للهوية (شعارك ورسالتك الترحيبية على كل الشاشات)', included: true, highlight: true },
+        { text: 'إحصائيات تدفق المراجعين المتقدمة بالساعة وأوقات الذروة', included: true },
+        { text: 'أولوية قصوى ودعم فني مخصص ومباشر على مدار الساعة (24/7)', included: true },
+        { text: 'إشراف مباشر ومساعدة متقدمة في التجهيز الميداني والتدريب', included: true },
+      ],
+      whatsappMsg: `مرحباً، أريد الاشتراك في باقة النخبة Elite لنظام NextDZ (${isYearly ? '30,000 دج / سنوياً' : '3,000 دج / شهرياً'})`,
+    },
+  };
+
+  const faqs = [
+    {
+      q: 'كيف أشترك وأفعّل النظام لعيادتي أو صالوني؟',
+      a: 'الأمر فائق البساطة ويستغرق دقائق معدودة! يكفي أن تتواصل معنا عبر واتساب، وسنقوم بتفعيل حساب مؤسستك وتحديد الباقة المناسبة، وإرسال رابط لوحة التحكم وملصق الـ QR الجاهز للطباعة فوراً.',
+    },
+    {
+      q: 'ما الفرق الجوهري بين الباقة الأساسية (1,500 دج) وباقة المحترفين (2,500 دج)؟',
+      a: 'الباقة الأساسية ممتازة لمن يريد إلغاء التزاحم والطوابير الورقية والتحكم من الهاتف أو الكمبيوتر. بينما باقة المحترفين تشمل شاشة تلفاز صالة الانتظار Full HD مع جرس النداء الصوتي، وتصدير تقارير Excel، ونظام التأجيل الذكي (Hold) للزبائن المتأخرين، وتقييمات رضا المراجعين.',
+    },
+    {
+      q: 'هل يمكنني الدفع شهرياً أو الاستفادة من خصم الدفع السنوي؟',
+      a: 'نعم بالتأكيد! يمكنك الدفع شهرياً بكل مرونة دون التزام، أو اختيار الاشتراك السنوي لتحصل على شهرين كاملين مجاناً (توفير حتى 6,000 دج سنوياً) مع تثبيت السعر لعام كامل.',
+    },
+    {
+      q: 'هل يحتاج المراجع أو المريض إلى تحميل أي تطبيق على هاتفه؟',
+      a: 'إطلاقاً! يفتح المراجع كاميرا هاتفه ويمسح رمز QR الموجود على الملصق، فيفتح له النظام فوراً كصفحة ويب سريعة جداً تعمل على أي هاتف (iPhone أو Android) بدون تحميل تطبيق أو إنشاء حساب.',
+    },
+    {
+      q: 'هل أحتاج لشراء شاشات باهظة أو طابعات تذاكر ورقية إضافية؟',
+      a: 'لا نهائياً، تكلفة العتاد الإضافي 0 دج! تتحكم مباشرة من هاتفك الذكي أو حاسوبك المكتبي الحالي، وإذا أردت شاشة لصالة الانتظار، يكفي فتح رابط الشاشة في متصفح أي تلفاز Smart TV موجود لديك.',
+    },
+    {
+      q: 'ماذا لو جاء مراجع كبير في السن أو لا يملك هاتفاً ذكياً؟',
+      a: 'تم تزويد ريموت المسير بزر "تذكرة حضورية": يسجله المسير في ثوانٍ معدودة، ويظهر له النظام فوراً رقم التذكرة ووقت الدخول التقريبي ليخبره به، مع إمكانية إدخال رقم هاتفه لإجراء رنة سريعة (Bip) له عند اقتراب دوره.',
+    },
+    {
+      q: 'ماذا يحدث إذا تأخر الزبون وكان خارج القاعة؟',
+      a: 'يرسل النظام تنبيهاً واهتزازاً للمراجع عند اقتراب دوره ليحضر للقاعة. وإذا نودي ولم يحضر، يضغط الطبيب أو المسير على زر "تأجيل (Hold)" فيمر الذي بعده مباشرة دون تعطيل القاعة، وعندما يعود الزبون يُستدعى بنقرة واحدة.',
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-[#eef1f5] text-[#313c45] font-sans antialiased overflow-x-hidden selection:bg-[#778ca4]/30 selection:text-[#313c45]">
       
@@ -76,12 +170,14 @@ export default function Home() {
           </a>
 
           {/* Editorial Navigation Links */}
-          <nav className="hidden md:flex items-center gap-7 text-xs font-bold text-[#313c45]">
+          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-[#313c45]">
             <a href="#comparison" className="hover:text-[#4f6271] transition">المشاكل والحل</a>
             <a href="#how-it-works" className="hover:text-[#4f6271] transition">كيف يعمل</a>
             <a href="#real-scenarios" className="hover:text-[#4f6271] transition">حالات واقعية</a>
             <a href="#for-who" className="hover:text-[#4f6271] transition">لمن صُمم</a>
             <a href="#live-experience" className="hover:text-[#4f6271] transition">التجربة الحية</a>
+            <a href="#pricing" className="hover:text-[#4f6271] transition">باقات الاشتراك</a>
+            <a href="#faq" className="hover:text-[#4f6271] transition">الأسئلة الشائعة</a>
           </nav>
 
           {/* Quick Header CTA */}
@@ -449,7 +545,287 @@ export default function Home() {
       </section>
 
       {/* =========================================================================
-          SECTION 6: CLOSING COMMERCIAL CTA & HIGH-CONTRAST EDITORIAL FOOTER
+          SECTION 6: باقات الاشتراك وخطط الأسعار (PRICING & PACKAGES)
+          ========================================================================= */}
+      <section id="pricing" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
+        <div className="max-w-6xl mx-auto space-y-12 sm:space-y-14">
+          
+          {/* Section Header */}
+          <div className="max-w-3xl mx-auto text-center space-y-3 sm:space-y-4">
+            <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase inline-flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[#778ca4]" />
+              <span>خطط شفافة ومدروسة</span>
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-bold text-[#313c45] tracking-tight heading-balance">
+              باقات تناسب حجم نشاطك وتضمن هدوء قاعتك
+            </h2>
+            <p className="text-sm sm:text-base font-medium text-[#4f6271] leading-relaxed">
+              ادفع شهرياً بمرونة كاملة بدون أي التزام، أو وفّر شهرين كاملين مجاناً عند اختيار الاشتراك السنوي.
+            </p>
+
+            {/* Monthly / Yearly Switcher */}
+            <div className="pt-4 flex items-center justify-center">
+              <div className="bg-[#ffffff] border border-[#b3bfcb] p-1 rounded-2xl flex items-center gap-1 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setIsYearly(false)}
+                  className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${
+                    !isYearly 
+                      ? 'bg-[#313c45] text-[#ffffff] shadow-sm' 
+                      : 'text-[#4f6271] hover:text-[#313c45]'
+                  }`}
+                >
+                  دفع شهري
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsYearly(true)}
+                  className={`px-5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                    isYearly 
+                      ? 'bg-[#313c45] text-[#ffffff] shadow-sm' 
+                      : 'text-[#4f6271] hover:text-[#313c45]'
+                  }`}
+                >
+                  <span>دفع سنوي</span>
+                  <span className="text-[10px] bg-[#d5dbe2] text-[#313c45] px-2 py-0.5 rounded-full font-bold border border-[#b3bfcb]">
+                    وفر شهرين 🎁
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Pricing Cards Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+            
+            {/* TIER 1: STARTER */}
+            <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-8 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] flex flex-col justify-between space-y-6">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <PlanBadge plan="starter" size="sm" />
+                  <span className="text-[11px] font-bold text-[#4f6271]">العيادات الفردية والصالونات</span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-bold text-[#313c45]">{pricing.starter.title}</h3>
+                  <p className="text-xs text-[#4f6271] font-medium mt-1 leading-relaxed">{pricing.starter.subtitle}</p>
+                </div>
+
+                <div className="py-4 border-y border-[#b3bfcb]/60 space-y-1">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-3xl sm:text-4xl font-bold text-[#313c45] tracking-tight">{pricing.starter.price}</span>
+                    <span className="text-xs font-bold text-[#4f6271]">دج / {pricing.starter.period}</span>
+                  </div>
+                  <p className="text-[11px] text-[#4f6271] font-medium">{pricing.starter.subtext}</p>
+                </div>
+
+                <ul className="space-y-3 text-xs">
+                  {pricing.starter.features.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5">
+                      {item.included ? (
+                        <Check className="w-4 h-4 text-[#313c45] shrink-0 mt-0.5" />
+                      ) : (
+                        <span className="w-4 h-4 text-[#b3bfcb] shrink-0 text-center font-bold text-xs select-none">—</span>
+                      )}
+                      <span className={item.included ? 'text-[#313c45] font-medium' : 'text-[#778ca4] line-through decoration-[#b3bfcb]'}>
+                        {item.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="pt-2">
+                <a
+                  href={`https://wa.me/${WHATSAPP_INTL}?text=${encodeURIComponent(pricing.starter.whatsappMsg)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-[#313c45] text-[#313c45] bg-[#ffffff] hover:bg-[#313c45] hover:text-[#ffffff] text-xs font-bold transition shadow-sm"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>طلب الباقة الأساسية عبر واتساب</span>
+                </a>
+              </div>
+            </div>
+
+            {/* TIER 2: PRO (MOST POPULAR) */}
+            <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-8 border-2 border-[#313c45] shadow-[0_4px_20px_rgba(49,60,69,0.12)] flex flex-col justify-between space-y-6 relative">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#313c45] text-[#ffffff] text-[11px] font-bold rounded-full shadow-md flex items-center gap-1.5 whitespace-nowrap">
+                <Sparkles className="w-3.5 h-3.5 text-[#b3bfcb]" />
+                <span>الباقة الأكثر طلباً للعيادات والمراكز</span>
+              </div>
+
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <PlanBadge plan="pro" size="sm" />
+                  <span className="text-[11px] font-bold text-[#313c45]">العيادات النشطة</span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-bold text-[#313c45]">{pricing.pro.title}</h3>
+                  <p className="text-xs text-[#4f6271] font-medium mt-1 leading-relaxed">{pricing.pro.subtitle}</p>
+                </div>
+
+                <div className="py-4 border-y border-[#b3bfcb]/60 space-y-1">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-3xl sm:text-4xl font-bold text-[#313c45] tracking-tight">{pricing.pro.price}</span>
+                    <span className="text-xs font-bold text-[#4f6271]">دج / {pricing.pro.period}</span>
+                  </div>
+                  <p className="text-[11px] text-[#313c45] font-bold">{pricing.pro.subtext}</p>
+                </div>
+
+                <ul className="space-y-3 text-xs">
+                  {pricing.pro.features.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5">
+                      <Check className="w-4 h-4 text-[#313c45] shrink-0 mt-0.5" />
+                      <span className={item.highlight ? 'text-[#313c45] font-bold' : 'text-[#313c45] font-medium'}>
+                        {item.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="pt-2">
+                <a
+                  href={`https://wa.me/${WHATSAPP_INTL}?text=${encodeURIComponent(pricing.pro.whatsappMsg)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#313c45] text-[#ffffff] hover:bg-[#4f6271] text-xs font-bold transition shadow-md"
+                >
+                  <MessageCircle className="w-4 h-4 text-[#b3bfcb]" />
+                  <span>طلب باقة المحترفين عبر واتساب</span>
+                </a>
+              </div>
+            </div>
+
+            {/* TIER 3: ELITE VIP */}
+            <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-8 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] flex flex-col justify-between space-y-6">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <PlanBadge plan="elite" size="sm" />
+                  <span className="text-[11px] font-bold text-[#4f6271]">المجمعات الكبرى</span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-bold text-[#313c45]">{pricing.elite.title}</h3>
+                  <p className="text-xs text-[#4f6271] font-medium mt-1 leading-relaxed">{pricing.elite.subtitle}</p>
+                </div>
+
+                <div className="py-4 border-y border-[#b3bfcb]/60 space-y-1">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-3xl sm:text-4xl font-bold text-[#313c45] tracking-tight">{pricing.elite.price}</span>
+                    <span className="text-xs font-bold text-[#4f6271]">دج / {pricing.elite.period}</span>
+                  </div>
+                  <p className="text-[11px] text-[#4f6271] font-medium">{pricing.elite.subtext}</p>
+                </div>
+
+                <ul className="space-y-3 text-xs">
+                  {pricing.elite.features.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5">
+                      <Check className="w-4 h-4 text-[#313c45] shrink-0 mt-0.5" />
+                      <span className={item.highlight ? 'text-[#313c45] font-bold' : 'text-[#313c45] font-medium'}>
+                        {item.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="pt-2">
+                <a
+                  href={`https://wa.me/${WHATSAPP_INTL}?text=${encodeURIComponent(pricing.elite.whatsappMsg)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-[#313c45] text-[#313c45] bg-[#ffffff] hover:bg-[#313c45] hover:text-[#ffffff] text-xs font-bold transition shadow-sm"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>طلب باقة النخبة عبر واتساب</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Zero-Hardware & Peace-of-Mind Guarantee Strip */}
+          <div className="bg-[#ffffff] rounded-2xl p-5 sm:p-6 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-right">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] flex items-center justify-center text-[#313c45] shrink-0">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-[#313c45]">تكلفة العتاد الإضافي 0 دج • بدون أي التزام طويل الأجل</h4>
+                <p className="text-xs text-[#4f6271] font-medium">يعمل مباشرة على هاتفك وحاسوبك المكتبي وتلفازك الموجود حالياً، دون شراء أي أجهزة خاصة.</p>
+              </div>
+            </div>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#313c45] hover:text-[#4f6271] underline underline-offset-4 shrink-0"
+            >
+              <span>استشارة سريعة لتحديد باقتك</span>
+              <ArrowLeft className="w-3.5 h-3.5" />
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 7: الأسئلة الأكثر شيوعاً (FAQ ACCORDION)
+          ========================================================================= */}
+      <section id="faq" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
+        <div className="max-w-4xl mx-auto space-y-10 sm:space-y-12">
+          
+          <div className="text-center space-y-3 sm:space-y-4">
+            <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase">
+              إجابات واضحة ومباشرة
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-bold text-[#313c45] tracking-tight heading-balance">
+              الأسئلة الأكثر شيوعاً
+            </h2>
+            <p className="text-sm sm:text-base font-medium text-[#4f6271] max-w-2xl mx-auto leading-relaxed">
+              كل ما ترغب بمعرفته حول آلية التشغيل، شاشات العرض، وإلغاء الطابور الورقي نهائياً.
+            </p>
+          </div>
+
+          <div className="space-y-3.5">
+            {faqs.map((faq, idx) => {
+              const isOpen = openFaq === idx;
+              return (
+                <div
+                  key={idx}
+                  className="bg-[#ffffff] border border-[#b3bfcb] rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(49,60,69,0.03)] transition-all"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    className="w-full p-4 sm:p-5 text-right flex items-center justify-between gap-4 font-bold text-xs sm:text-sm text-[#313c45] hover:bg-[#f7f9fb] transition"
+                  >
+                    <span>{faq.q}</span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-[#778ca4] shrink-0 transition-transform duration-200 ${
+                        isOpen ? 'rotate-180 text-[#313c45]' : ''
+                      }`}
+                    />
+                  </button>
+
+                  {isOpen && (
+                    <div className="p-4 sm:p-5 pt-0 text-xs sm:text-sm text-[#4f6271] font-medium leading-relaxed border-t border-[#b3bfcb]/40 bg-[#f7f9fb]">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+        </div>
+      </section>
+
+      {/* =========================================================================
+          SECTION 8: CLOSING COMMERCIAL CTA & HIGH-CONTRAST EDITORIAL FOOTER
           ========================================================================= */}
       <footer className="bg-[#313c45] text-[#d5dbe2] pt-16 sm:pt-20 pb-12 px-4 sm:px-6 border-t border-[#232b32]">
         <div className="max-w-4xl mx-auto text-center space-y-7 sm:space-y-8">
@@ -510,6 +886,14 @@ export default function Home() {
 
             {/* Discreet Legal & Policy Links */}
             <div className="flex items-center gap-4 text-xs font-normal text-[#d5dbe2]/80">
+              <a href="#pricing" className="hover:text-[#ffffff] transition hover:underline underline-offset-4">
+                باقات الاشتراك
+              </a>
+              <span className="text-[#4f6271] select-none">•</span>
+              <a href="#faq" className="hover:text-[#ffffff] transition hover:underline underline-offset-4">
+                الأسئلة الشائعة
+              </a>
+              <span className="text-[#4f6271] select-none">•</span>
               <Link 
                 href="/terms" 
                 className="hover:text-[#ffffff] transition hover:underline underline-offset-4"
