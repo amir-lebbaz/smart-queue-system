@@ -38,6 +38,8 @@ import {
 } from 'lucide-react';
 import { Organization, GlobalSystemStats } from '@/lib/types';
 import ThemeToggle from '@/components/ThemeToggle';
+import NextDZLogo from '@/components/NextDZLogo';
+import PlanBadge from '@/components/PlanBadge';
 
 export default function SuperAdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -377,13 +379,13 @@ export default function SuperAdminPage() {
           <ThemeToggle variant="compact" showLabel={false} />
         </div>
         <div className="w-full max-w-sm bg-slateNavy-900 border border-slateNavy-800 rounded-3xl p-7 shadow-2xl text-center space-y-5">
-          <div className="w-16 h-16 bg-gradient-to-br from-slateNavy-800 via-slateNavy-900 to-slateNavy-950 text-white rounded-3xl flex items-center justify-center mx-auto border border-slateNavy-700 shadow-xl">
-            <Lock className="w-7 h-7 text-amber-400" />
+          <div className="flex items-center justify-center pt-2" dir="ltr">
+            <NextDZLogo width={46} height={29} textSize="text-xl" />
           </div>
           <div>
-            <h1 className="text-lg font-black text-white">منطقة المالك المحمية (Super Admin)</h1>
+            <h1 className="text-lg font-black text-slateNavy-100 mt-2">منطقة الإدارة المركزية (Super Admin)</h1>
             <p className="text-xs text-slateNavy-400 mt-1 leading-relaxed">
-              هذه اللوحة خاصة بمالك النظام لإدارة المشتركين، تفعيل الاشتراكات، ومراقبة العمليات المالية.
+              إدارة المشتركين، تفعيل ومتابعة الباقات، ومراقبة العمليات المالية.
             </p>
           </div>
 
@@ -395,7 +397,7 @@ export default function SuperAdminPage() {
               placeholder="أدخل رمز المالك السري..."
               value={masterPin}
               onChange={(e) => setMasterPin(e.target.value)}
-              className="w-full bg-slateNavy-950 border border-slateNavy-800 rounded-2xl px-4 py-3 text-center text-sm font-bold text-white tracking-widest focus:outline-none focus:border-slateNavy-400 shadow-inner"
+              className="w-full bg-slateNavy-950 border border-slateNavy-800 rounded-2xl px-4 py-3 text-center text-sm font-bold text-slateNavy-100 tracking-widest focus:outline-none focus:border-slateNavy-400 shadow-inner"
             />
             {pinError && (
               <p className="text-xs text-rose-400 font-semibold bg-rose-950/40 py-1.5 px-3 rounded-xl border border-rose-800">
@@ -404,15 +406,15 @@ export default function SuperAdminPage() {
             )}
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-slateNavy-100 to-white hover:from-white hover:to-slateNavy-200 text-slateNavy-950 font-black rounded-2xl text-xs transition shadow-lg shadow-black/40"
+              className="w-full py-3 bg-slateNavy-100 hover:bg-white text-slateNavy-950 font-bold rounded-2xl text-xs transition shadow-md active:scale-95"
             >
-              تسجيل دخول المشرف العام 👑
+              تسجيل الدخول المركزي
             </button>
           </form>
 
           <div className="pt-3 border-t border-slateNavy-800">
-            <Link href="/" className="text-xs text-slateNavy-400 hover:text-white transition flex items-center justify-center gap-1">
-              <span>← العودة للموقع الترويجي</span>
+            <Link href="/" className="text-xs text-slateNavy-400 hover:text-slateNavy-100 transition flex items-center justify-center gap-1">
+              <span>← العودة للموقع الرئيسي</span>
             </Link>
           </div>
         </div>
@@ -428,16 +430,16 @@ export default function SuperAdminPage() {
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slateNavy-800">
           <div>
             <div className="flex items-center gap-3">
-              <span className="w-10 h-10 rounded-2xl bg-gradient-to-br from-slateNavy-800 to-slateNavy-900 border border-slateNavy-700 text-amber-400 flex items-center justify-center font-black text-xl shadow-lg">
-                👑
-              </span>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
-                  <span>لوحة تحكم المالك المركزي</span>
-                  <span className="text-[10px] bg-amber-400/10 text-amber-300 border border-amber-400/30 px-2 py-0.5 rounded-full font-mono font-bold">MASTER</span>
+              <Link href="/" className="inline-block group" aria-label="NextDZ الصفحة الرئيسية">
+                <NextDZLogo width={42} height={27} textSize="text-xl" />
+              </Link>
+              <div className="border-r border-slateNavy-800 pr-3 mr-1">
+                <h1 className="text-lg sm:text-xl font-bold text-slateNavy-100 flex items-center gap-2">
+                  <span>لوحة الإدارة المركزية (Super Admin)</span>
+                  <span className="text-[10px] bg-slateNavy-800 text-slateNavy-300 border border-slateNavy-700 px-2 py-0.5 rounded-full font-mono font-bold">MASTER</span>
                 </h1>
                 <p className="text-xs text-slateNavy-400 mt-0.5">
-                  إدارة المشتركين، متابعة الدخل، تمديد وتعديل الباقات، والتحكم الفوري في الطوابير
+                  قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون — إدارة المؤسسات ومتابعة الاشتراكات
                 </p>
               </div>
             </div>
@@ -451,7 +453,7 @@ export default function SuperAdminPage() {
               className="py-2.5 px-3.5 bg-slateNavy-900 hover:bg-slateNavy-850 border border-slateNavy-800 text-slateNavy-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition"
               title="تحديث البيانات"
             >
-              <RefreshCw className={`w-3.5 h-3.5 text-emerald-400 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-slateNavy-400 ${isRefreshing ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline">تحديث</span>
             </button>
 
@@ -464,15 +466,15 @@ export default function SuperAdminPage() {
 
             <button
               onClick={() => setShowCreateModal(true)}
-              className="py-2.5 px-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white rounded-xl text-xs font-black flex items-center gap-1.5 transition shadow-lg shadow-emerald-950/60 active:scale-95"
+              className="py-2.5 px-4 bg-slateNavy-100 hover:bg-white text-slateNavy-950 rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-sm active:scale-95"
             >
-              <Plus className="w-4 h-4 text-white" />
-              <span>إضافة عيادة / مشترك جديد</span>
+              <Plus className="w-4 h-4" />
+              <span>إضافة مشترك جديد</span>
             </button>
 
             <button
               onClick={handleLogout}
-              className="py-2.5 px-3 bg-rose-950/40 hover:bg-rose-950 border border-rose-800/80 text-rose-300 rounded-xl text-xs font-bold transition"
+              className="py-2.5 px-3 bg-slateNavy-900 hover:bg-rose-950/40 border border-slateNavy-800 hover:border-rose-800/80 text-slateNavy-400 hover:text-rose-400 rounded-xl text-xs font-bold transition"
               title="تسجيل الخروج"
             >
               خروج
@@ -484,60 +486,58 @@ export default function SuperAdminPage() {
         {stats && (
           <section className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
             {/* KPI 1: Estimated MRR */}
-            <div className="bg-slateNavy-900/90 border border-slateNavy-800 rounded-2xl p-4 shadow-xl space-y-1 relative overflow-hidden">
+            <div className="bg-slateNavy-900/90 border border-slateNavy-800 rounded-2xl p-4 shadow-sm space-y-1 relative overflow-hidden">
               <div className="flex items-center justify-between text-slateNavy-400 text-xs font-semibold">
                 <span>الدخل الشهري المتكرر (MRR)</span>
-                <TrendingUp className="w-4 h-4 text-emerald-400" />
+                <TrendingUp className="w-4 h-4 text-slateNavy-400" />
               </div>
-              <p className="text-2xl font-black text-white tracking-tight">
+              <p className="text-2xl font-black text-slateNavy-100 tracking-tight">
                 {stats.financials.estimatedMRR.toLocaleString('ar-DZ')} <span className="text-xs text-slateNavy-400 font-normal">دج / شهر</span>
               </p>
-              <p className="text-[10px] text-emerald-400 font-medium">
+              <p className="text-[10px] text-slateNavy-400 font-medium">
                 ما يعادل {stats.financials.estimatedARR.toLocaleString('ar-DZ')} دج سنوياً (ARR)
               </p>
             </div>
 
             {/* KPI 2: Total Subscribers */}
-            <div className="bg-slateNavy-900/90 border border-slateNavy-800 rounded-2xl p-4 shadow-xl space-y-1">
+            <div className="bg-slateNavy-900/90 border border-slateNavy-800 rounded-2xl p-4 shadow-sm space-y-1">
               <div className="flex items-center justify-between text-slateNavy-400 text-xs font-semibold">
                 <span>إجمالي المشتركين النشطين</span>
-                <Building2 className="w-4 h-4 text-sky-400" />
+                <Building2 className="w-4 h-4 text-slateNavy-400" />
               </div>
-              <p className="text-2xl font-black text-white tracking-tight">
+              <p className="text-2xl font-black text-slateNavy-100 tracking-tight">
                 {stats.activeOrgs} <span className="text-xs text-slateNavy-400 font-normal">من أصل {stats.totalOrgs}</span>
               </p>
-              <div className="flex items-center gap-1.5 text-[10px] text-slateNavy-300">
-                <span className="text-slateNavy-400">{stats.planCounts.starter} أساسية</span>
-                <span>•</span>
-                <span className="text-emerald-400">{stats.planCounts.pro} محترفة ⭐</span>
-                <span>•</span>
-                <span className="text-amber-300">{stats.planCounts.elite} نخبة 👑</span>
+              <div className="flex flex-wrap items-center gap-1.5 pt-1 text-xs font-medium">
+                <PlanBadge plan="starter" count={stats.planCounts.starter} size="xs" />
+                <PlanBadge plan="pro" count={stats.planCounts.pro} size="xs" />
+                <PlanBadge plan="elite" count={stats.planCounts.elite} size="xs" />
               </div>
             </div>
 
             {/* KPI 3: Total Tickets & Traffic */}
-            <div className="bg-slateNavy-900/90 border border-slateNavy-800 rounded-2xl p-4 shadow-xl space-y-1">
+            <div className="bg-slateNavy-900/90 border border-slateNavy-800 rounded-2xl p-4 shadow-sm space-y-1">
               <div className="flex items-center justify-between text-slateNavy-400 text-xs font-semibold">
                 <span>إجمالي التذاكر الصادرة</span>
-                <Activity className="w-4 h-4 text-amber-400" />
+                <Activity className="w-4 h-4 text-slateNavy-400" />
               </div>
-              <p className="text-2xl font-black text-white tracking-tight">
+              <p className="text-2xl font-black text-slateNavy-100 tracking-tight">
                 {stats.tickets.totalIssued.toLocaleString('ar-DZ')} <span className="text-xs text-slateNavy-400 font-normal">تذكرة</span>
               </p>
-              <p className="text-[10px] text-slateNavy-300">
+              <p className="text-[10px] text-slateNavy-400">
                 {stats.tickets.waitingNow} ينتظرون الآن • {stats.tickets.completed} تمت خدمتهم
               </p>
             </div>
 
             {/* KPI 4: Cloud Infrastructure Health */}
-            <div className="bg-slateNavy-900/90 border border-slateNavy-800 rounded-2xl p-4 shadow-xl space-y-1">
+            <div className="bg-slateNavy-900/90 border border-slateNavy-800 rounded-2xl p-4 shadow-sm space-y-1">
               <div className="flex items-center justify-between text-slateNavy-400 text-xs font-semibold">
                 <span>حالة قاعدة البيانات السحابية</span>
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <ShieldCheck className="w-4 h-4 text-slateNavy-400" />
               </div>
               <div className="flex items-center gap-1.5 pt-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-sm font-black text-white">متصل ونشط لحظياً</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span className="text-sm font-bold text-slateNavy-100">سحابي متصل ونشط</span>
               </div>
               <p className="text-[10px] text-slateNavy-400 font-mono">
                 {stats.systemHealth.dbProvider} • {stats.systemHealth.latencyMs}ms
@@ -567,27 +567,27 @@ export default function SuperAdminPage() {
               <span className="text-[10px] text-slateNavy-400 px-2 font-bold">الباقة:</span>
               <button
                 onClick={() => setFilterPlan('all')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterPlan === 'all' ? 'bg-slateNavy-800 text-white' : 'text-slateNavy-400'}`}
+                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterPlan === 'all' ? 'bg-slateNavy-800 text-slateNavy-100' : 'text-slateNavy-400 hover:text-slateNavy-200'}`}
               >
                 الكل
               </button>
               <button
                 onClick={() => setFilterPlan('starter')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterPlan === 'starter' ? 'bg-slateNavy-800 text-white' : 'text-slateNavy-400'}`}
+                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterPlan === 'starter' ? 'bg-slateNavy-800 text-slateNavy-100' : 'text-slateNavy-400 hover:text-slateNavy-200'}`}
               >
                 الأساسية
               </button>
               <button
                 onClick={() => setFilterPlan('pro')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterPlan === 'pro' ? 'bg-emerald-500 text-slateNavy-950 font-black' : 'text-slateNavy-400'}`}
+                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterPlan === 'pro' ? 'bg-slateNavy-800 text-slateNavy-100 font-bold' : 'text-slateNavy-400 hover:text-slateNavy-200'}`}
               >
-                المحترفين ⭐
+                المحترفة
               </button>
               <button
                 onClick={() => setFilterPlan('elite')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterPlan === 'elite' ? 'bg-amber-400 text-slateNavy-950 font-black' : 'text-slateNavy-400'}`}
+                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterPlan === 'elite' ? 'bg-slateNavy-800 text-slateNavy-100 font-bold' : 'text-slateNavy-400 hover:text-slateNavy-200'}`}
               >
-                النخبة 👑
+                النخبة
               </button>
             </div>
 
@@ -595,19 +595,19 @@ export default function SuperAdminPage() {
             <div className="flex items-center gap-1 bg-slateNavy-950 border border-slateNavy-800 p-1 rounded-xl text-xs">
               <button
                 onClick={() => setFilterStatus('all')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterStatus === 'all' ? 'bg-slateNavy-800 text-white' : 'text-slateNavy-400'}`}
+                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterStatus === 'all' ? 'bg-slateNavy-800 text-slateNavy-100' : 'text-slateNavy-400 hover:text-slateNavy-200'}`}
               >
                 كل الحالات
               </button>
               <button
                 onClick={() => setFilterStatus('active')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterStatus === 'active' ? 'bg-slateNavy-800 text-emerald-400' : 'text-slateNavy-400'}`}
+                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterStatus === 'active' ? 'bg-slateNavy-800 text-slateNavy-100 font-bold' : 'text-slateNavy-400 hover:text-slateNavy-200'}`}
               >
                 المفعلة
               </button>
               <button
                 onClick={() => setFilterStatus('inactive')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterStatus === 'inactive' ? 'bg-slateNavy-800 text-rose-400' : 'text-slateNavy-400'}`}
+                className={`px-2.5 py-1 rounded-lg font-bold transition text-[11px] ${filterStatus === 'inactive' ? 'bg-slateNavy-800 text-slateNavy-100 font-bold' : 'text-slateNavy-400 hover:text-slateNavy-200'}`}
               >
                 المعطلة
               </button>
@@ -662,23 +662,15 @@ export default function SuperAdminPage() {
                           </div>
 
                           <div className="flex items-center gap-2 pt-0.5 flex-wrap">
-                            <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${
-                              org.plan === 'starter'
-                                ? 'bg-slateNavy-800 text-slateNavy-300 border-slateNavy-700'
-                                : org.plan === 'elite'
-                                ? 'bg-amber-950/70 text-amber-300 border-amber-700 font-black'
-                                : 'bg-emerald-950/70 text-emerald-300 border-emerald-700 font-black'
-                            }`}>
-                              {org.plan === 'starter' ? 'أساسية (1,500 دج)' : org.plan === 'elite' ? '👑 نخبة VIP (3,000 دج)' : '⭐ محترفة (2,500 دج)'}
-                            </span>
+                            <PlanBadge plan={org.plan || 'starter'} size="xs" showPrice={true} />
 
                             <span className="text-[10px] text-slateNavy-400 bg-slateNavy-950 px-2 py-0.5 rounded-full border border-slateNavy-800">
                               {org.billing_cycle === 'yearly' ? 'اشتراك سنوي' : 'اشتراك شهري'}
                             </span>
 
                             {org.contact_phone && (
-                              <span className="text-[11px] font-mono text-emerald-400 flex items-center gap-1 bg-slateNavy-950 px-2 py-0.5 rounded-full border border-slateNavy-800">
-                                <Phone className="w-3 h-3 text-emerald-400" />
+                              <span className="text-[11px] font-mono text-slateNavy-300 flex items-center gap-1 bg-slateNavy-950 px-2 py-0.5 rounded-full border border-slateNavy-800">
+                                <Phone className="w-3 h-3 text-slateNavy-400" />
                                 <span className="dir-ltr">{org.contact_phone}</span>
                               </span>
                             )}
@@ -690,8 +682,8 @@ export default function SuperAdminPage() {
                           onClick={() => handleToggleActive(org.slug)}
                           className={`px-3 py-1 rounded-full text-xs font-bold border transition flex items-center gap-1.5 shrink-0 ${
                             org.is_active === 1
-                              ? 'bg-emerald-950/80 border-emerald-700 text-emerald-300 hover:bg-emerald-900'
-                              : 'bg-rose-950/80 border-rose-700 text-rose-300 hover:bg-rose-900'
+                              ? 'bg-emerald-950/40 border-emerald-700/60 text-emerald-300 hover:bg-emerald-900/50'
+                              : 'bg-rose-950/40 border-rose-700/60 text-rose-300 hover:bg-rose-900/50'
                           }`}
                         >
                           <Power className="w-3 h-3" />
@@ -1047,40 +1039,55 @@ export default function SuperAdminPage() {
                     <button
                       type="button"
                       onClick={() => setCreatePlan('starter')}
-                      className={`p-2.5 rounded-xl text-xs font-bold border transition text-center ${
+                      className={`p-2.5 rounded-xl text-xs font-bold border transition flex flex-col items-center justify-center gap-1 ${
                         createPlan === 'starter'
-                          ? 'bg-slateNavy-100 text-slateNavy-950 border-white shadow'
-                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800'
+                          ? 'bg-slateNavy-800 text-slateNavy-100 border-slateNavy-600 shadow ring-1 ring-slate-400/40'
+                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800 hover:text-slateNavy-200'
                       }`}
                     >
-                      <span>أساسية</span>
-                      <span className="block text-[10px] font-normal opacity-80 mt-0.5">1,500 دج</span>
+                      <div className="flex items-center gap-1.5">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <span>أساسية</span>
+                      </div>
+                      <span className="text-[10px] font-normal opacity-80">1,500 دج</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setCreatePlan('pro')}
-                      className={`p-2.5 rounded-xl text-xs font-bold border transition text-center ${
+                      className={`p-2.5 rounded-xl text-xs font-bold border transition flex flex-col items-center justify-center gap-1 ${
                         createPlan === 'pro'
-                          ? 'bg-emerald-500 text-slateNavy-950 border-emerald-400 shadow font-black'
-                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800'
+                          ? 'bg-slateNavy-800 text-slateNavy-100 border-slateNavy-600 shadow ring-1 ring-sky-400/50'
+                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800 hover:text-slateNavy-200'
                       }`}
                     >
-                      <span>محترفة ⭐</span>
-                      <span className="block text-[10px] font-normal opacity-80 mt-0.5">2,500 دج</span>
+                      <div className="flex items-center gap-1.5">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                        </svg>
+                        <span>محترفة</span>
+                      </div>
+                      <span className="text-[10px] font-normal opacity-80">2,500 دج</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setCreatePlan('elite')}
-                      className={`p-2.5 rounded-xl text-xs font-bold border transition text-center ${
+                      className={`p-2.5 rounded-xl text-xs font-bold border transition flex flex-col items-center justify-center gap-1 ${
                         createPlan === 'elite'
-                          ? 'bg-amber-400 text-slateNavy-950 border-amber-300 shadow font-black'
-                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800'
+                          ? 'bg-slateNavy-800 text-slateNavy-100 border-slateNavy-600 shadow ring-1 ring-amber-400/50'
+                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800 hover:text-slateNavy-200'
                       }`}
                     >
-                      <span>نخبة VIP 👑</span>
-                      <span className="block text-[10px] font-normal opacity-80 mt-0.5">3,000 دج</span>
+                      <div className="flex items-center gap-1.5">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M6 3h12l4 6-10 13L2 9Z" /><path d="M11 3 8 9l4 13 4-13-3-6" /><path d="M2 9h20" />
+                        </svg>
+                        <span>نخبة</span>
+                      </div>
+                      <span className="text-[10px] font-normal opacity-80">3,000 دج</span>
                     </button>
                   </div>
                 </div>
@@ -1229,40 +1236,55 @@ export default function SuperAdminPage() {
                     <button
                       type="button"
                       onClick={() => setEditPlan('starter')}
-                      className={`p-2.5 rounded-xl text-xs font-bold border transition text-center ${
+                      className={`p-2.5 rounded-xl text-xs font-bold border transition flex flex-col items-center justify-center gap-1 ${
                         editPlan === 'starter'
-                          ? 'bg-slateNavy-100 text-slateNavy-950 border-white shadow'
-                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800'
+                          ? 'bg-slateNavy-800 text-slateNavy-100 border-slateNavy-600 shadow ring-1 ring-slate-400/40'
+                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800 hover:text-slateNavy-200'
                       }`}
                     >
-                      <span>أساسية</span>
-                      <span className="block text-[10px] font-normal opacity-80 mt-0.5">1,500 دج</span>
+                      <div className="flex items-center gap-1.5">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <span>أساسية</span>
+                      </div>
+                      <span className="text-[10px] font-normal opacity-80">1,500 دج</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setEditPlan('pro')}
-                      className={`p-2.5 rounded-xl text-xs font-bold border transition text-center ${
+                      className={`p-2.5 rounded-xl text-xs font-bold border transition flex flex-col items-center justify-center gap-1 ${
                         editPlan === 'pro'
-                          ? 'bg-emerald-500 text-slateNavy-950 border-emerald-400 shadow font-black'
-                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800'
+                          ? 'bg-slateNavy-800 text-slateNavy-100 border-slateNavy-600 shadow ring-1 ring-sky-400/50'
+                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800 hover:text-slateNavy-200'
                       }`}
                     >
-                      <span>محترفة ⭐</span>
-                      <span className="block text-[10px] font-normal opacity-80 mt-0.5">2,500 دج</span>
+                      <div className="flex items-center gap-1.5">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                        </svg>
+                        <span>محترفة</span>
+                      </div>
+                      <span className="text-[10px] font-normal opacity-80">2,500 دج</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setEditPlan('elite')}
-                      className={`p-2.5 rounded-xl text-xs font-bold border transition text-center ${
+                      className={`p-2.5 rounded-xl text-xs font-bold border transition flex flex-col items-center justify-center gap-1 ${
                         editPlan === 'elite'
-                          ? 'bg-amber-400 text-slateNavy-950 border-amber-300 shadow font-black'
-                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800'
+                          ? 'bg-slateNavy-800 text-slateNavy-100 border-slateNavy-600 shadow ring-1 ring-amber-400/50'
+                          : 'bg-slateNavy-950 text-slateNavy-400 border-slateNavy-800 hover:text-slateNavy-200'
                       }`}
                     >
-                      <span>نخبة VIP 👑</span>
-                      <span className="block text-[10px] font-normal opacity-80 mt-0.5">3,000 دج</span>
+                      <div className="flex items-center gap-1.5">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M6 3h12l4 6-10 13L2 9Z" /><path d="M11 3 8 9l4 13 4-13-3-6" /><path d="M2 9h20" />
+                        </svg>
+                        <span>نخبة</span>
+                      </div>
+                      <span className="text-[10px] font-normal opacity-80">3,000 دج</span>
                     </button>
                   </div>
                 </div>

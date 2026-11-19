@@ -21,6 +21,7 @@ import { QueueState } from '@/lib/types';
 import { playQueueChime } from '@/lib/audio';
 import { speakArabicAnnouncement } from '@/lib/speech';
 import ThemeToggle from '@/components/ThemeToggle';
+import PlanBadge from '@/components/PlanBadge';
 
 export default function TvDisplayPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
@@ -183,12 +184,12 @@ export default function TvDisplayPage({ params }: { params: Promise<{ slug: stri
             <Tv className="w-8 h-8" />
           </div>
           <h2 className="text-xl font-black text-white">{org?.name}</h2>
-          <div className="bg-slateNavy-950 p-3 rounded-2xl border border-slateNavy-800">
+          <div className="bg-slateNavy-950 p-3 rounded-2xl border border-slateNavy-800 flex items-center justify-between">
             <span className="text-xs text-slateNavy-400">باقة اشتراك هذه العيادة:</span>
-            <p className="text-sm font-bold text-slateNavy-200 mt-0.5">الباقة الأساسية (Starter - 1,500 دج/شهر)</p>
+            <PlanBadge plan={org?.plan || 'starter'} size="sm" showPrice={true} />
           </div>
           <p className="text-xs text-slateNavy-300 leading-relaxed">
-            شاشة صالة الانتظار التلفزيونية والنداء الصوتي ميزة مخصصة لمشتركي <strong>باقة المحترفين (Pro)</strong> و <strong>باقة النخبة (Elite)</strong>.
+            شاشة صالة الانتظار التلفزيونية والنداء الصوتي ميزة مخصصة لمشتركي <strong>باقة المحترفين</strong> و <strong>باقة النخبة</strong>.
           </p>
           <a
             href="https://wa.me/213666568039?text=مرحباً،%20أريد%20ترقية%20باقتي%20إلى%20باقة%20المحترفين%20(Pro)%20لتشغيل%20شاشة%20التلفاز"

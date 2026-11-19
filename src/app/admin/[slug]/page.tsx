@@ -36,6 +36,7 @@ import { QueueState, Ticket } from '@/lib/types';
 import { playQueueChime } from '@/lib/audio';
 import { announceTicketCall } from '@/lib/speech';
 import ThemeToggle from '@/components/ThemeToggle';
+import PlanBadge from '@/components/PlanBadge';
 
 export default function StaffRemotePage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
@@ -627,15 +628,7 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
               <span className="text-[11px] text-slateNavy-400">
                 ريموت {staffTitle} • خدمة الـ {sectorLabel}
               </span>
-              <span className={`text-[9px] px-2 py-0.2 rounded-full font-bold border ${
-                org?.plan === 'starter'
-                  ? 'bg-slateNavy-900 text-slateNavy-400 border-slateNavy-800'
-                  : org?.plan === 'elite'
-                  ? 'bg-amber-950/60 text-amber-300 border-amber-700/80'
-                  : 'bg-emerald-950/60 text-emerald-300 border-emerald-700/80'
-              }`}>
-                {org?.plan === 'starter' ? 'أساسية' : org?.plan === 'elite' ? '👑 نخبة VIP' : '⭐ محترفة PRO'}
-              </span>
+              <PlanBadge plan={org?.plan || 'starter'} size="xs" />
             </div>
           </div>
 

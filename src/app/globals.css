@@ -307,6 +307,29 @@ html.theme-frozen .text-amber-300 {
   color: #b45309 !important;
 }
 
+/* Frozen Whisper (Light Mode) Executive 4-Color Plan Badges */
+[data-theme="frozen"] .border-slate-500\/30,
+html.theme-frozen .border-slate-500\/30 {
+  border-color: #b3bfcb !important;
+  background-color: #d5dbe2 !important;
+  color: #4f6271 !important;
+}
+
+[data-theme="frozen"] .border-sky-400\/30,
+html.theme-frozen .border-sky-400\/30 {
+  border-color: #778ca4 !important;
+  background-color: #e4e9ef !important;
+  color: #313c45 !important;
+}
+
+[data-theme="frozen"] .border-amber-400\/30,
+html.theme-frozen .border-amber-400\/30 {
+  border-color: #b3bfcb !important;
+  background-color: #ffffff !important;
+  color: #313c45 !important;
+  box-shadow: 0 1px 3px rgba(49, 60, 69, 0.05) !important;
+}
+
 /* Modal Backdrops in Frozen Mode */
 [data-theme="frozen"] .fixed.inset-0.bg-black\/80,
 [data-theme="frozen"] .fixed.inset-0.bg-black\/70,
