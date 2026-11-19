@@ -1571,26 +1571,26 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
                   ========================================================================= */}
               <div
                 id="printable-stand"
-                className="w-full max-w-[430px] aspect-[210/297] bg-[#ffffff] text-slate-900 shadow-2xl rounded-2xl border border-slate-200/90 p-8 sm:p-12 flex flex-col justify-between items-center text-center transition-all relative overflow-hidden select-none"
+                className="w-full max-w-[430px] aspect-[210/297] bg-[#ffffff] text-slate-900 shadow-2xl rounded-2xl border border-slate-200/90 p-6 sm:p-10 flex flex-col justify-between items-center text-center transition-all relative overflow-hidden select-none"
                 style={{ backgroundColor: '#ffffff' }}
               >
                 
                 {/* 1. TOP LOCKUP & OPTIONAL CLINIC LOGO */}
                 {standStyle === 'charcoal' ? (
-                  <div className="w-full bg-[#313c45] text-[#f8fafc] py-5 px-6 rounded-2xl shadow-sm mb-4 flex flex-col items-center justify-center space-y-1">
-                    <div className="flex items-center justify-center gap-5">
+                  <div className="w-full bg-[#313c45] text-[#f8fafc] py-4 sm:py-5 px-6 rounded-2xl shadow-sm mb-3 sm:mb-4 flex flex-col items-center justify-center space-y-1 shrink-0">
+                    <div className="flex items-center justify-center gap-4 sm:gap-5">
                       {clinicLogo && (
                         <>
                           <img
                             src={clinicLogo}
                             alt="شعار المؤسسة"
-                            className="h-10 sm:h-12 max-w-[120px] object-contain brightness-0 invert"
+                            className="h-9 sm:h-11 max-w-[110px] object-contain brightness-0 invert"
                           />
                           <div className="h-7 w-[1px] bg-[#778ca4]/50" />
                         </>
                       )}
                       <div className="flex items-center gap-2.5" dir="ltr">
-                        <svg width="42" height="27" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
+                        <svg width="40" height="26" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
                           <path d="M4 4H60V14C56.686 14 54 16.686 54 20C54 23.314 56.686 26 60 26V36H4V26C7.314 26 10 23.314 10 20C10 16.686 7.314 14 4 14V4Z" stroke="#ffffff" strokeWidth="3.5" strokeLinejoin="round" fill="#313c45"/>
                           <path d="M16 12H36L45 20L36 28H16L22 20L16 12Z" fill="#778ca4" fillOpacity="0.4"/>
                           <path d="M18 20H40M40 20L32 12.5M40 20L32 27.5" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1603,19 +1603,19 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
                     </div>
                   </div>
                 ) : (
-                  <div className="w-full flex items-center justify-center gap-5 pt-2">
+                  <div className="w-full flex items-center justify-center gap-4 sm:gap-5 pt-1 sm:pt-2 shrink-0">
                     {clinicLogo && (
                       <>
                         <img
                           src={clinicLogo}
                           alt="شعار المؤسسة"
-                          className="h-10 sm:h-12 max-w-[120px] object-contain"
+                          className="h-9 sm:h-11 max-w-[110px] object-contain"
                         />
                         <div className="h-7 w-[1px] bg-[#b3bfcb]" />
                       </>
                     )}
                     <div className="flex items-center gap-2.5" dir="ltr">
-                      <svg width="44" height="28" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
+                      <svg width="42" height="27" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
                         <path d="M4 4H60V14C56.686 14 54 16.686 54 20C54 23.314 56.686 26 60 26V36H4V26C7.314 26 10 23.314 10 20C10 16.686 7.314 14 4 14V4Z" stroke="#313c45" strokeWidth="3.5" strokeLinejoin="round" fill="#eef1f5"/>
                         <path d="M16 12H36L45 20L36 28H16L22 20L16 12Z" fill="#778ca4" fillOpacity="0.35"/>
                         <path d="M18 20H40M40 20L32 12.5M40 20L32 27.5" stroke="#313c45" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1629,42 +1629,42 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
                 )}
 
                 {/* 2. CLINIC IDENTITY (ORGANIZATION NAME) */}
-                <div className="w-full mt-2 sm:mt-4">
-                  <h2 className="text-2xl font-semibold tracking-normal text-[#4f6271]">
+                <div className="w-full mt-1 sm:mt-2 shrink-0">
+                  <h2 className="text-xl sm:text-2xl font-semibold tracking-normal text-[#4f6271]">
                     {queueState?.organization.name || org?.name || 'العيادة الطبية'}
                   </h2>
                 </div>
 
                 {/* 3. MAIN SCAN HEADLINE */}
-                <div className="w-full my-auto py-3 sm:py-5 space-y-2">
-                  <h1 className="text-3xl font-medium tracking-tight text-[#313c45]">
+                <div className="w-full my-auto py-2 sm:py-3 space-y-1 sm:space-y-1.5 shrink-0">
+                  <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-[#313c45]">
                     امسح الكود واحجز دورك
                   </h1>
-                  <p className="text-xs sm:text-sm font-normal text-[#778ca4]">
+                  <p className="text-[11px] sm:text-xs font-normal text-[#778ca4]">
                     لا حاجة لتثبيت أي تطبيق • ستصلك رسالة وتنبيه عند اقتراب دورك
                   </p>
                 </div>
 
                 {/* 4. CENTERPIECE QR CODE (FRAMELESS & HIGH-CONTRAST #0f172a ON #ffffff) */}
-                <div className="flex flex-col items-center justify-center my-auto">
+                <div className="flex flex-col items-center justify-center my-auto shrink-0">
                   {qrDataUrl ? (
                     <img
                       src={qrDataUrl}
                       alt="رمز QR لحجز التذكرة"
-                      className="w-48 h-48 sm:w-56 sm:h-56 object-contain select-none"
+                      className="w-44 h-44 sm:w-52 sm:h-52 object-contain select-none"
                     />
                   ) : (
-                    <div className="w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center text-xs text-[#778ca4]">
+                    <div className="w-44 h-44 sm:w-52 sm:h-52 flex items-center justify-center text-xs text-[#778ca4]">
                       جاري إنشاء الرمز بدقة عالية...
                     </div>
                   )}
-                  <span className="mt-3 text-[11px] sm:text-xs font-mono font-medium text-[#778ca4] tracking-wider dir-ltr select-all">
+                  <span className="mt-2 text-[10px] sm:text-[11px] font-mono font-medium text-[#778ca4] tracking-tight dir-ltr select-all whitespace-nowrap">
                     smart-queue-system-zeta.vercel.app/q/{slug}
                   </span>
                 </div>
 
                 {/* 5. BOTTOM FOOTER SLOGAN (QUIET & CENTERED) */}
-                <div className="w-full pt-4 sm:pt-6 border-t border-[#e2e8f0]/90 text-center">
+                <div className="w-full pt-3 sm:pt-4 border-t border-[#e2e8f0]/90 text-center shrink-0">
                   <p className="text-xs sm:text-sm font-normal text-[#4f6271] tracking-wide">
                     قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون
                   </p>
