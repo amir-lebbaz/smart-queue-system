@@ -473,8 +473,8 @@ export default function Home() {
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              variant="primary"
-              className="w-full sm:w-auto bg-[#f7f9fb] text-[#313c45] hover:bg-[#eef1f4] hover:text-[#232b32] text-sm sm:text-base px-7 py-3.5 sm:py-4 shadow-[0_4px_25px_rgba(0,0,0,0.3)] border-transparent justify-center"
+              variant="inverted"
+              className="w-full sm:w-auto text-sm sm:text-base px-7 py-3.5 sm:py-4 justify-center"
             >
               <MessageCircle className="w-5 h-5 text-[#313c45]" />
               <span>تواصل عبر واتساب: {PHONE_NUMBER}</span>

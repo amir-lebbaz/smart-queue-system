@@ -7,7 +7,7 @@ interface MagneticButtonProps {
   href?: string;
   onClick?: () => void;
   className?: string;
-  variant?: 'primary' | 'secondary' | 'subtle';
+  variant?: 'primary' | 'secondary' | 'subtle' | 'inverted';
   target?: string;
   rel?: string;
 }
@@ -54,6 +54,9 @@ export default function MagneticButton({
     // Subtle: Slate Mist hover
     subtle:
       'bg-transparent text-[#313c45] hover:bg-[#d5dbe2] border border-transparent',
+    // Inverted (for dark bands): Pure White background with Charcoal Mist (#313c45) text
+    inverted:
+      'bg-[#f7f9fb] text-[#313c45] shadow-[0_4px_20px_rgba(0,0,0,0.25)] hover:bg-[#eef1f4] hover:text-[#232b32] border border-transparent font-bold',
   };
 
   const isFullWidth = className.includes('w-full');
