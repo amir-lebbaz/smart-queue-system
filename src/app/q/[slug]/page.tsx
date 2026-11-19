@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, useRef, use } from 'react';
 import Link from 'next/link';
 import { 
   Clock, 
@@ -82,6 +82,14 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   const [completionNotified, setCompletionNotified] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  // Manual refresh button states
+  const [isManualRefreshing, setIsManualRefreshing] = useState(false);
+  const [justUpdated, setJustUpdated] = useState(false);
+  const [lastUpdatedTime, setLastUpdatedTime] = useState<string>('');
+
+  // Queue progression tracker to prevent resetting countdown on page refresh
+  const prevPeopleAheadRef = useRef<number | null>(null);
+
   // Notifications & Wake Lock state
   const [wakeLockActive, setWakeLockActive] = useState(false);
   const [notificationsAllowed, setNotificationsAllowed] = useState(false);
@@ -105,6 +113,12 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
             localStorage.removeItem(`smart_queue_feedback_${slug}`);
           } else {
             setMyTicket(parsed);
+            // Immediately compute remaining seconds from persisted target timestamp!
+            if (parsed.estimatedTargetTimestamp) {
+              const diffMs = parsed.estimatedTargetTimestamp - Date.now();
+              const leftSecs = Math.max(0, Math.floor(diffMs / 1000));
+              setRemainingSeconds(leftSecs);
+            }
           }
         } catch (e) {
           console.error('Failed to parse cached ticket', e);
@@ -135,12 +149,19 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
   }, [slug]);
 
   // Fetch queue state from server
-  const fetchState = async () => {
+  const fetchState = async (forceBust = false) => {
     try {
+      const cacheBuster = forceBust ? `&_t=${Date.now()}` : '';
       const ticketParam = myTicket?.ticketNumber 
-        ? `?ticketNumber=${myTicket.ticketNumber}&ticketId=${myTicket.ticketId || ''}` 
-        : '';
-      const res = await fetch(`/api/organizations/${slug}${ticketParam}`);
+        ? `?ticketNumber=${myTicket.ticketNumber}&ticketId=${myTicket.ticketId || ''}${cacheBuster}` 
+        : forceBust ? `?_t=${Date.now()}` : '';
+      const res = await fetch(`/api/organizations/${slug}${ticketParam}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+        },
+      });
       if (!res.ok) {
         if (res.status === 404) {
           setError('المؤسسة غير موجودة');
@@ -158,6 +179,30 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
       setIsOnline(false);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Manual tactile refresh handler with haptic vibration and Algiers timestamp
+  const handleManualRefresh = async () => {
+    if (isManualRefreshing) return;
+    setIsManualRefreshing(true);
+    try {
+      if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+        try { navigator.vibrate(35); } catch {}
+      }
+      await fetchState(true);
+      setJustUpdated(true);
+      const algeriaTime = new Date().toLocaleTimeString('ar-DZ', {
+        timeZone: 'Africa/Algiers',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      });
+      setLastUpdatedTime(algeriaTime);
+      setTimeout(() => setJustUpdated(false), 2500);
+    } finally {
+      setTimeout(() => setIsManualRefreshing(false), 450);
     }
   };
 
@@ -202,15 +247,17 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
     }
   }
 
-  // Dynamic live estimated arrival clock time (using Algeria timezone)
-  const liveWaitMins = Math.max(1, livePeopleAhead * (org?.avg_service_mins || 15));
-  const liveEstimatedClockTime = (livePeopleAhead > 0 && !isMyTurnCalled && !isMyTurnInside)
-    ? new Date(Date.now() + liveWaitMins * 60 * 1000).toLocaleTimeString('ar-DZ', {
-        timeZone: 'Africa/Algiers',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      })
+  // Dynamic live estimated arrival clock time (anchored to ticket's target timestamp in Algeria timezone)
+  const liveEstimatedClockTime = (myTicket && livePeopleAhead > 0 && !isMyTurnCalled && !isMyTurnInside)
+    ? (Date.now() >= myTicket.estimatedTargetTimestamp
+        ? 'أي لحظة الآن'
+        : new Date(myTicket.estimatedTargetTimestamp).toLocaleTimeString('ar-DZ', {
+            timeZone: 'Africa/Algiers',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          })
+      )
     : myTicket?.initialEstimatedClockTime || 'دورك القادم';
 
   // Adaptive Smart Polling (Cuts 80% traffic, protects battery, refreshes instantly on screen wake)
@@ -250,11 +297,11 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
     };
   }, [slug, myTicket?.ticketNumber, isMyTurnCalled, livePeopleAhead]);
 
-  // Autonomous Countdown Timer (works completely offline)
+  // Autonomous Countdown Timer (anchored to persisted target timestamp)
   useEffect(() => {
-    if (!myTicket) return;
+    if (!myTicket?.estimatedTargetTimestamp) return;
 
-    const timer = setInterval(() => {
+    const updateRemaining = () => {
       const now = Date.now();
       const diffMs = myTicket.estimatedTargetTimestamp - now;
       const secondsLeft = Math.max(0, Math.floor(diffMs / 1000));
@@ -268,20 +315,47 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
         );
         setAlertTriggered(true);
       }
-    }, 1000);
+    };
+
+    updateRemaining();
+    const timer = setInterval(updateRemaining, 1000);
 
     return () => clearInterval(timer);
-  }, [myTicket, alertTriggered]);
+  }, [myTicket?.ticketNumber, myTicket?.estimatedTargetTimestamp, alertTriggered]);
 
-  // Synchronize target timestamp with live queue progression
+  // Synchronize target timestamp ONLY when the queue progression actually changes (e.g. someone is called)
   useEffect(() => {
-    if (myTicket && livePeopleAhead > 0 && !isMyTurnCalled && !isMyTurnInside) {
-      const calculatedTarget = Date.now() + livePeopleAhead * (org?.avg_service_mins || 15) * 60 * 1000;
-      myTicket.estimatedTargetTimestamp = calculatedTarget;
-      const leftSecs = Math.max(0, Math.floor((calculatedTarget - Date.now()) / 1000));
-      setRemainingSeconds(leftSecs);
+    if (!myTicket || livePeopleAhead <= 0 || isMyTurnCalled || isMyTurnInside) return;
+
+    // On initial mount / page refresh: anchor current people ahead without resetting the existing timer
+    if (prevPeopleAheadRef.current === null) {
+      prevPeopleAheadRef.current = livePeopleAhead;
+      return;
     }
-  }, [livePeopleAhead, org?.avg_service_mins, isMyTurnCalled, isMyTurnInside, myTicket]);
+
+    // Recalibrate ONLY when the queue actually moves forward (number of people ahead changes)
+    if (prevPeopleAheadRef.current !== livePeopleAhead) {
+      const avgMins = org?.avg_service_mins || 15;
+      const newWaitMins = Math.max(1, livePeopleAhead * avgMins);
+      const newTarget = Date.now() + newWaitMins * 60 * 1000;
+
+      const updatedTicket: CachedTicket = {
+        ...myTicket,
+        estimatedTargetTimestamp: newTarget,
+        totalEstimatedSeconds: newWaitMins * 60,
+      };
+
+      setMyTicket(updatedTicket);
+      try {
+        localStorage.setItem(`smart_queue_ticket_${slug}`, JSON.stringify(updatedTicket));
+      } catch (e) {
+        console.error('Failed to sync ticket to localStorage', e);
+      }
+
+      setRemainingSeconds(newWaitMins * 60);
+      prevPeopleAheadRef.current = livePeopleAhead;
+    }
+  }, [livePeopleAhead, org?.avg_service_mins, isMyTurnCalled, isMyTurnInside, myTicket, slug]);
 
   // Voice announcement when customer is called
   useEffect(() => {
@@ -978,9 +1052,11 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                       <span className="text-xs font-black font-mono text-white">
-                        {formatCountdown(remainingSeconds)}
+                        {remainingSeconds > 0 ? formatCountdown(remainingSeconds) : '00:00'}
                       </span>
-                      <span className="text-[8px] text-slateNavy-400">متبقي</span>
+                      <span className="text-[8px] text-slateNavy-400">
+                        {remainingSeconds > 0 ? 'متبقي' : 'أي لحظة'}
+                      </span>
                     </div>
                   </div>
                 )}
@@ -1039,20 +1115,42 @@ export default function CustomerTicketPage({ params }: { params: Promise<{ slug:
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center gap-2 pt-1">
-            <button
-              onClick={() => fetchState()}
-              className="flex-1 py-3 px-4 bg-slateNavy-900 hover:bg-slateNavy-800 border border-slateNavy-800 text-slateNavy-100 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition"
-            >
-              <RefreshCw className="w-3.5 h-3.5 text-slateNavy-400" />
-              تحديث الحالة
-            </button>
-            <button
-              onClick={handleLeaveQueue}
-              className="py-3 px-4 bg-slateNavy-900 hover:bg-slateNavy-800 text-slateNavy-400 hover:text-rose-400 border border-slateNavy-800 rounded-xl text-xs font-semibold transition"
-            >
-              مغادرة الطابور
-            </button>
+          <div className="space-y-2 pt-1">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleManualRefresh}
+                disabled={isManualRefreshing}
+                className="flex-1 py-3 px-4 bg-slateNavy-900 hover:bg-slateNavy-800 border border-slateNavy-800 text-slateNavy-100 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition active:scale-[0.98] disabled:opacity-85 shadow-sm"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${
+                  isManualRefreshing 
+                    ? 'animate-spin text-sky-400' 
+                    : justUpdated 
+                    ? 'text-emerald-400' 
+                    : 'text-slateNavy-400'
+                }`} />
+                <span>
+                  {isManualRefreshing 
+                    ? 'جاري فحص الطابور...' 
+                    : justUpdated 
+                    ? 'تم التحديث بنجاح ✓' 
+                    : 'تحديث الحالة'}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={handleLeaveQueue}
+                className="py-3 px-4 bg-slateNavy-900 hover:bg-slateNavy-800 text-slateNavy-400 hover:text-rose-400 border border-slateNavy-800 rounded-xl text-xs font-semibold transition"
+              >
+                مغادرة الطابور
+              </button>
+            </div>
+            {lastUpdatedTime && (
+              <p className="text-[10px] text-slateNavy-500 text-center select-none">
+                آخر مزامنة مباشرة: {lastUpdatedTime}
+              </p>
+            )}
           </div>
         </div>
       ) : (
