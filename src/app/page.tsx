@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { 
   QrCode, 
   Smartphone, 
@@ -489,8 +490,8 @@ export default function Home() {
           </div>
 
           {/* Brand Mark and Copyright */}
-          <div className="pt-12 sm:pt-16 mt-12 sm:mt-16 border-t border-[#4f6271]/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-[#d5dbe2]">
-            <div className="flex flex-wrap items-center gap-3 justify-center sm:justify-start">
+          <div className="pt-12 sm:pt-16 mt-12 sm:mt-16 border-t border-[#4f6271]/40 flex flex-col md:flex-row items-center justify-between gap-5 text-xs font-medium text-[#d5dbe2]">
+            <div className="flex flex-wrap items-center gap-3 justify-center md:justify-start">
               <div className="bg-[#eef1f5] px-2.5 py-1 rounded-xl shadow-sm">
                 <div className="flex items-center gap-2" dir="ltr">
                   <svg width="34" height="22" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
@@ -507,7 +508,24 @@ export default function Home() {
               <span>— قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون.</span>
             </div>
 
-            <div>
+            {/* Discreet Legal & Policy Links */}
+            <div className="flex items-center gap-4 text-xs font-normal text-[#d5dbe2]/80">
+              <Link 
+                href="/terms" 
+                className="hover:text-[#ffffff] transition hover:underline underline-offset-4"
+              >
+                شروط الاستخدام
+              </Link>
+              <span className="text-[#4f6271] select-none">•</span>
+              <Link 
+                href="/privacy" 
+                className="hover:text-[#ffffff] transition hover:underline underline-offset-4"
+              >
+                سياسة الخصوصية
+              </Link>
+            </div>
+
+            <div className="text-center md:text-left text-[#d5dbe2]/70 text-[11px]">
               جميع الحقوق محفوظة © {new Date().getFullYear()} NextDZ.
             </div>
           </div>
