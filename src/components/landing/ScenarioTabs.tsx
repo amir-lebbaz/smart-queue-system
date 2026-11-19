@@ -83,7 +83,7 @@ export default function ScenarioTabs() {
   return (
     <div className="w-full max-w-5xl mx-auto space-y-8">
       {/* Editorial Scenario Navigation Tabs - Responsive Wrapping on 390px */}
-      <div className="flex flex-wrap items-center justify-center gap-2 border-b border-[#b3bfcb] pb-4">
+      <div className="flex flex-wrap items-center justify-center gap-2 border-b border-slateNavy-800 pb-4">
         {scenarios.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -94,11 +94,11 @@ export default function ScenarioTabs() {
               onClick={() => setActiveTab(item.id)}
               className={`flex items-center gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 ${
                 isActive
-                  ? 'bg-[#313c45] text-[#ffffff] shadow-[0_4px_16px_rgba(49,60,69,0.18)]'
-                  : 'bg-[#ffffff] text-[#313c45] hover:bg-[#d5dbe2] border border-[#b3bfcb]'
+                  ? 'bg-slateNavy-900 text-slateNavy-100 shadow-md border border-slateNavy-700'
+                  : 'bg-slateNavy-950 text-slateNavy-400 hover:text-slateNavy-200 border border-slateNavy-800'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-[#ffffff]' : 'text-[#4f6271]'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-slateNavy-100' : 'text-slateNavy-400'}`} />
               <span>{item.tabLabel}</span>
             </button>
           );
@@ -106,47 +106,47 @@ export default function ScenarioTabs() {
       </div>
 
       {/* Active Tab Editorial Showcase */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#ffffff] rounded-3xl p-6 sm:p-10 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slateNavy-900 rounded-3xl p-6 sm:p-10 border border-slateNavy-800 shadow-sm">
         {/* Text Description Column */}
         <div className="lg:col-span-7 space-y-5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] text-xs font-semibold">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#313c45]" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slateNavy-850 border border-slateNavy-800 text-slateNavy-100 text-xs font-semibold">
+            <ShieldCheck className="w-3.5 h-3.5 text-slateNavy-100" />
             <span>{current.liveEvidence}</span>
           </div>
 
-          <h3 className="text-xl sm:text-2xl font-bold text-[#313c45] tracking-tight heading-balance leading-snug">
+          <h3 className="text-xl sm:text-2xl font-bold text-slateNavy-100 tracking-tight heading-balance leading-snug">
             {current.headline}
           </h3>
 
-          <div className="space-y-3 text-sm text-[#4f6271] leading-relaxed">
-            <p className="bg-[#d5dbe2] p-3.5 rounded-xl border border-[#b3bfcb] text-[#313c45]">
-              <strong className="text-[#313c45] font-bold block mb-1">المشكلة الواقعية:</strong>
+          <div className="space-y-3 text-sm text-slateNavy-300 leading-relaxed">
+            <p className="bg-slateNavy-850 p-3.5 rounded-xl border border-slateNavy-800 text-slateNavy-300">
+              <strong className="text-slateNavy-100 font-bold block mb-1">المشكلة الواقعية:</strong>
               {current.problem}
             </p>
-            <p className="text-[#313c45]">
-              <strong className="text-[#313c45] font-bold block mb-1">الحل مع NextDZ:</strong>
+            <p className="text-slateNavy-300">
+              <strong className="text-slateNavy-100 font-bold block mb-1">الحل مع NextDZ:</strong>
               {current.solution}
             </p>
           </div>
         </div>
 
         {/* Visual Scenario Card (Flat Luxury Container) */}
-        <div className="lg:col-span-5 bg-[#d5dbe2] rounded-2xl p-6 border border-[#b3bfcb] shadow-sm space-y-5">
-          <div className="flex items-center justify-between border-b border-[#b3bfcb] pb-3">
-            <span className="text-xs font-bold text-[#313c45] uppercase tracking-wider">
+        <div className="lg:col-span-5 bg-slateNavy-850 rounded-2xl p-6 border border-slateNavy-800 shadow-sm space-y-5">
+          <div className="flex items-center justify-between border-b border-slateNavy-800 pb-3">
+            <span className="text-xs font-bold text-slateNavy-100 uppercase tracking-wider">
               {current.previewCard.badge}
             </span>
-            <span className="inline-block w-2 h-2 rounded-full bg-[#4f6271]" />
+            <span className="inline-block w-2 h-2 rounded-full bg-slateNavy-400" />
           </div>
 
-          <div className="p-3.5 rounded-xl bg-[#ffffff] border border-[#b3bfcb] text-xs font-bold text-[#313c45]">
+          <div className="p-3.5 rounded-xl bg-slateNavy-900 border border-slateNavy-800 text-xs font-bold text-slateNavy-100">
             {current.previewCard.actionText}
           </div>
 
-          <ul className="space-y-2.5 text-xs text-[#313c45] font-medium">
+          <ul className="space-y-2.5 text-xs text-slateNavy-300 font-medium">
             {current.previewCard.details.map((detail, idx) => (
               <li key={idx} className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded-full bg-[#313c45] text-[#ffffff] flex items-center justify-center flex-shrink-0 text-[10px]">
+                <span className="w-4 h-4 rounded-full bg-slateNavy-800 text-slateNavy-100 flex items-center justify-center flex-shrink-0 text-[10px] border border-slateNavy-700">
                   ✓
                 </span>
                 <span>{detail}</span>
@@ -154,12 +154,12 @@ export default function ScenarioTabs() {
             ))}
           </ul>
 
-          <div className="pt-2 border-t border-[#b3bfcb]/40">
+          <div className="pt-2 border-t border-slateNavy-800/60">
             <a
               href="/admin/clinic-amal"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs font-bold text-[#313c45] hover:text-[#4f6271] transition"
+              className="inline-flex items-center gap-2 text-xs font-bold text-slateNavy-300 hover:text-slateNavy-100 transition"
             >
               <span>معاينة لوحة التحكم الحقيقية مباشرة</span>
               <ArrowRight className="w-3.5 h-3.5 rotate-180" />

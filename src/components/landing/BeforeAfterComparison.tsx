@@ -33,17 +33,17 @@ export default function BeforeAfterComparison() {
     <div className="w-full max-w-5xl mx-auto space-y-8">
       {/* Editorial Toggle Selector - Smooth Stacking on 390px Mobile */}
       <div className="flex items-center justify-center px-2">
-        <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center p-1.5 rounded-2xl sm:rounded-full bg-[#d5dbe2] border border-[#b3bfcb] shadow-sm gap-1.5">
+        <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center p-1.5 rounded-2xl sm:rounded-full bg-slateNavy-850 border border-slateNavy-800 shadow-sm gap-1.5">
           <button
             type="button"
             onClick={() => setActiveMode('after')}
             className={`w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
               activeMode === 'after'
-                ? 'bg-[#313c45] text-[#ffffff] shadow-[0_4px_16px_rgba(49,60,69,0.18)]'
-                : 'bg-[#ffffff] text-[#313c45] border border-[#b3bfcb] hover:bg-[#d5dbe2]'
+                ? 'bg-slateNavy-900 text-slateNavy-100 shadow-md border border-slateNavy-700'
+                : 'bg-slateNavy-950 text-slateNavy-400 border border-slateNavy-800 hover:text-slateNavy-200'
             }`}
           >
-            <CheckCircle2 className={`w-4 h-4 ${activeMode === 'after' ? 'text-[#ffffff]' : 'text-[#778ca4]'}`} />
+            <CheckCircle2 className={`w-4 h-4 ${activeMode === 'after' ? 'text-slateNavy-100' : 'text-slateNavy-400'}`} />
             <span>مع NextDZ (قاعة هادئة وراقية)</span>
           </button>
 
@@ -52,11 +52,11 @@ export default function BeforeAfterComparison() {
             onClick={() => setActiveMode('before')}
             className={`w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl sm:rounded-full text-xs sm:text-sm font-bold transition-all duration-300 ${
               activeMode === 'before'
-                ? 'bg-[#313c45] text-[#ffffff] shadow-[0_4px_16px_rgba(49,60,69,0.18)]'
-                : 'bg-[#ffffff] text-[#313c45] border border-[#b3bfcb] hover:bg-[#d5dbe2]'
+                ? 'bg-slateNavy-900 text-slateNavy-100 shadow-md border border-slateNavy-700'
+                : 'bg-slateNavy-950 text-slateNavy-400 border border-slateNavy-800 hover:text-slateNavy-200'
             }`}
           >
-            <XCircle className={`w-4 h-4 ${activeMode === 'before' ? 'text-[#ffffff]' : 'text-[#778ca4]'}`} />
+            <XCircle className={`w-4 h-4 ${activeMode === 'before' ? 'text-slateNavy-100' : 'text-slateNavy-400'}`} />
             <span>الطريقة التقليدية (فوضى وتوتر)</span>
           </button>
         </div>
@@ -71,16 +71,16 @@ export default function BeforeAfterComparison() {
               key={idx}
               className={`relative overflow-hidden rounded-2xl p-6 sm:p-7 transition-all duration-500 border ${
                 isNextdz
-                  ? 'bg-[#ffffff] border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)]'
-                  : 'bg-[#d5dbe2] border-[#b3bfcb]'
+                  ? 'bg-slateNavy-900 border-slateNavy-800 shadow-sm'
+                  : 'bg-slateNavy-850 border-slateNavy-800'
               }`}
             >
               <div className="flex items-start gap-3.5 mb-3">
                 <span
                   className={`mt-1 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
                     isNextdz
-                      ? 'bg-[#313c45] text-[#ffffff]'
-                      : 'bg-[#ffffff] text-[#313c45] border border-[#b3bfcb]'
+                      ? 'bg-slateNavy-800 text-slateNavy-100 border border-slateNavy-700'
+                      : 'bg-slateNavy-950 text-slateNavy-400 border border-slateNavy-800'
                   }`}
                 >
                   {isNextdz ? (
@@ -89,12 +89,12 @@ export default function BeforeAfterComparison() {
                     <XCircle className="w-4 h-4" />
                   )}
                 </span>
-                <h4 className="text-base font-bold text-[#313c45] tracking-tight">
+                <h4 className="text-base font-bold text-slateNavy-100 tracking-tight">
                   {item.title}
                 </h4>
               </div>
 
-              <p className="text-sm font-medium text-[#4f6271] leading-relaxed pr-9">
+              <p className="text-sm font-medium text-slateNavy-400 leading-relaxed pr-9">
                 {isNextdz ? item.nextdz : item.traditional}
               </p>
 
@@ -103,8 +103,8 @@ export default function BeforeAfterComparison() {
                 <span
                   className={`inline-flex items-center text-xs font-bold px-3 py-1 rounded-full ${
                     isNextdz
-                      ? 'bg-[#313c45] text-[#ffffff]'
-                      : 'bg-[#ffffff] text-[#313c45] border border-[#b3bfcb]'
+                      ? 'bg-slateNavy-800 text-slateNavy-100 border border-slateNavy-700'
+                      : 'bg-slateNavy-950 text-slateNavy-400 border border-slateNavy-800'
                   }`}
                 >
                   {isNextdz ? '✓ تجربة مريحة ومحسوبة' : '✕ استنزاف للمال والراحة'}
@@ -116,11 +116,11 @@ export default function BeforeAfterComparison() {
       </div>
 
       {/* Summary Value Banner */}
-      <div className="rounded-2xl p-6 bg-[#d5dbe2] border border-[#b3bfcb] text-center space-y-2">
-        <p className="text-sm font-bold text-[#313c45]">
+      <div className="rounded-2xl p-6 bg-slateNavy-850 border border-slateNavy-800 text-center space-y-2">
+        <p className="text-sm font-bold text-slateNavy-100">
           الفرق بين المكان الذي يفقد زبائنه والمكان الذي يُثني عليه الجميع هو احترام وقت المراجع.
         </p>
-        <p className="text-xs font-medium text-[#4f6271]">
+        <p className="text-xs font-medium text-slateNavy-400">
           لا يتطلب منك الأمر سوى وضع ملصق كود على طاولتك لتبدأ قاعتك عهداً جديداً من الهدوء.
         </p>
       </div>

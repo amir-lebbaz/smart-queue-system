@@ -124,25 +124,25 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#eef1f5] text-[#313c45] font-sans antialiased overflow-x-hidden selection:bg-[#778ca4]/30 selection:text-[#313c45]">
+    <div className="min-h-screen bg-slateNavy-950 text-slateNavy-100 font-sans antialiased overflow-x-hidden selection:bg-[#778ca4]/30 selection:text-slateNavy-100">
       
       {/* =========================================================================
           TOP COMMERCIAL NOTIFICATION TICKER - Responsive 390px
           ========================================================================= */}
-      <div className="bg-[#313c45] text-[#d5dbe2] text-xs py-2 px-3 sm:px-4 border-b border-[#4f6271]/30">
+      <div className="bg-slateNavy-900 text-slateNavy-400 text-xs py-2 px-3 sm:px-4 border-b border-slateNavy-800">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-3 text-center sm:text-right">
           <span className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#b3bfcb] inline-block animate-ping" />
-            <span className="font-bold text-[#f7f9fb]">NextDZ</span>
-            <span className="text-[#d5dbe2]">— قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-slateNavy-400 inline-block animate-ping" />
+            <span className="font-bold text-slateNavy-100">NextDZ</span>
+            <span className="text-slateNavy-400">— قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون</span>
           </span>
           <a
             href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs text-[#d5dbe2] hover:text-[#f7f9fb] transition font-bold"
+            className="inline-flex items-center gap-1.5 text-xs text-slateNavy-300 hover:text-slateNavy-100 transition font-bold"
           >
-            <MessageCircle className="w-3.5 h-3.5 text-[#b3bfcb]" />
+            <MessageCircle className="w-3.5 h-3.5 text-slateNavy-400" />
             <span>طلب التفعيل الفوري عبر واتساب: {PHONE_NUMBER}</span>
           </a>
         </div>
@@ -151,33 +151,23 @@ export default function Home() {
       {/* =========================================================================
           NAVIGATION HEADER
           ========================================================================= */}
-      <header className="sticky top-0 z-40 bg-[#eef1f5]/90 backdrop-blur-md border-b border-[#b3bfcb] transition-all">
+      <header className="sticky top-0 z-40 bg-slateNavy-950/90 backdrop-blur-md border-b border-slateNavy-800 transition-all">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between">
           
           {/* Brand Logo & Wordmark */}
           <a href="#" className="inline-block group" aria-label="NextDZ الصفحة الرئيسية">
-            <div className="flex items-center gap-2.5" dir="ltr">
-              <svg width="40" height="26" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
-                <path d="M4 4H60V14C56.686 14 54 16.686 54 20C54 23.314 56.686 26 60 26V36H4V26C7.314 26 10 23.314 10 20C10 16.686 7.314 14 4 14V4Z" stroke="#313c45" strokeWidth="3.5" strokeLinejoin="round" fill="#eef1f5"/>
-                <path d="M16 12H36L45 20L36 28H16L22 20L16 12Z" fill="#778ca4" fillOpacity="0.35"/>
-                <path d="M18 20H40M40 20L32 12.5M40 20L32 27.5" stroke="#313c45" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              <span className="text-xl font-bold tracking-tight">
-                <span style={{ color: '#313c45' }}>Next</span>
-                <span style={{ color: '#778ca4' }}>DZ</span>
-              </span>
-            </div>
+            <NextDZLogo width={40} height={26} />
           </a>
 
           {/* Editorial Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-[#313c45]">
-            <a href="#comparison" className="hover:text-[#4f6271] transition">المشاكل والحل</a>
-            <a href="#how-it-works" className="hover:text-[#4f6271] transition">كيف يعمل</a>
-            <a href="#real-scenarios" className="hover:text-[#4f6271] transition">حالات واقعية</a>
-            <a href="#for-who" className="hover:text-[#4f6271] transition">لمن صُمم</a>
-            <a href="#live-experience" className="hover:text-[#4f6271] transition">التجربة الحية</a>
-            <a href="#pricing" className="hover:text-[#4f6271] transition">باقات الاشتراك</a>
-            <a href="#faq" className="hover:text-[#4f6271] transition">الأسئلة الشائعة</a>
+          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-slateNavy-300">
+            <a href="#comparison" className="hover:text-slateNavy-100 transition">المشاكل والحل</a>
+            <a href="#how-it-works" className="hover:text-slateNavy-100 transition">كيف يعمل</a>
+            <a href="#real-scenarios" className="hover:text-slateNavy-100 transition">حالات واقعية</a>
+            <a href="#for-who" className="hover:text-slateNavy-100 transition">لمن صُمم</a>
+            <a href="#live-experience" className="hover:text-slateNavy-100 transition">التجربة الحية</a>
+            <a href="#pricing" className="hover:text-slateNavy-100 transition">باقات الاشتراك</a>
+            <a href="#faq" className="hover:text-slateNavy-100 transition">الأسئلة الشائعة</a>
           </nav>
 
           {/* Quick Header CTA */}
@@ -185,7 +175,7 @@ export default function Home() {
             <ThemeToggle variant="compact" showLabel={false} />
             <a
               href="#live-experience"
-              className="hidden sm:inline-flex text-xs font-bold text-[#313c45] hover:text-[#4f6271] px-3 py-2 transition"
+              className="hidden sm:inline-flex text-xs font-bold text-slateNavy-300 hover:text-slateNavy-100 px-3 py-2 transition"
             >
               معاينة حية
             </a>
@@ -196,7 +186,7 @@ export default function Home() {
               variant="primary"
               className="text-xs px-3.5 sm:px-4 py-2 sm:py-2.5"
             >
-              <MessageCircle className="w-3.5 h-3.5 text-[#b3bfcb]" />
+              <MessageCircle className="w-3.5 h-3.5 text-slateNavy-300" />
               <span>تواصل واتساب</span>
             </MagneticButton>
           </div>
@@ -215,53 +205,53 @@ export default function Home() {
 
         {/* Physical-to-Digital Minimalist Artifact Showcase */}
         <div className="max-w-4xl mx-auto w-full mt-2">
-          <div className="bg-[#ffffff] rounded-3xl p-5 sm:p-8 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)]">
+          <div className="bg-slateNavy-900 rounded-3xl p-5 sm:p-8 border border-slateNavy-800 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
               
               {/* The Physical Stand (Right in RTL) */}
-              <div className="md:col-span-5 bg-[#d5dbe2] rounded-2xl p-6 border border-[#b3bfcb] text-center space-y-3.5">
-                <div className="inline-block px-3 py-1 rounded-full bg-[#313c45] text-[#ffffff] text-[11px] font-bold">
+              <div className="md:col-span-5 bg-slateNavy-850 rounded-2xl p-6 border border-slateNavy-800 text-center space-y-3.5">
+                <div className="inline-block px-3 py-1 rounded-full bg-slateNavy-900 border border-slateNavy-800 text-slateNavy-100 text-[11px] font-bold">
                   ملصق الاستقبال الذكي
                 </div>
                 <div className="flex items-center justify-center pt-1" dir="ltr">
                   <NextDZLogo width={36} height={23} textSize="text-base" />
                 </div>
-                <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto bg-[#ffffff] rounded-2xl p-3 border border-[#b3bfcb] flex items-center justify-center shadow-sm">
-                  <QrCode className="w-full h-full text-[#313c45]" />
+                <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto bg-white rounded-2xl p-3 border border-slateNavy-800 flex items-center justify-center shadow-sm">
+                  <QrCode className="w-full h-full text-slate-900" />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs font-bold text-[#313c45]">امسح الكود بهاتفك وخذ دورك</p>
-                  <p className="text-[11px] text-[#4f6271] font-medium">بدون تحميل أي تطبيق • في ثوانٍ معدودة</p>
+                  <p className="text-xs font-bold text-slateNavy-100">امسح الكود بهاتفك وخذ دورك</p>
+                  <p className="text-[11px] text-slateNavy-400 font-medium">بدون تحميل أي تطبيق • في ثوانٍ معدودة</p>
                 </div>
               </div>
 
               {/* The Visitor Phone Screen (Left in RTL) */}
-              <div className="md:col-span-7 bg-[#ffffff] rounded-2xl p-5 sm:p-6 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-4 text-right">
-                <div className="flex items-center justify-between border-b border-[#b3bfcb] pb-3">
-                  <span className="text-xs font-bold text-[#313c45]">تذكرة انتظار رقمية تفاعلية</span>
-                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#313c45]">
-                    <Volume2 className="w-3.5 h-3.5 text-[#4f6271]" />
+              <div className="md:col-span-7 bg-slateNavy-900 rounded-2xl p-5 sm:p-6 border border-slateNavy-800 shadow-sm space-y-4 text-right">
+                <div className="flex items-center justify-between border-b border-slateNavy-800 pb-3">
+                  <span className="text-xs font-bold text-slateNavy-100">تذكرة انتظار رقمية تفاعلية</span>
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slateNavy-100">
+                    <Volume2 className="w-3.5 h-3.5 text-slateNavy-400" />
                     <span>تنبيه صوتي مفعّل</span>
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb]">
-                    <span className="text-[11px] font-bold text-[#4f6271] block mb-1">تذكرتك الحالية</span>
-                    <span className="text-xl sm:text-2xl font-bold text-[#313c45] tracking-tight">دورك قادم</span>
+                  <div className="p-3 rounded-xl bg-slateNavy-850 border border-slateNavy-800">
+                    <span className="text-[11px] font-bold text-slateNavy-400 block mb-1">تذكرتك الحالية</span>
+                    <span className="text-xl sm:text-2xl font-bold text-slateNavy-100 tracking-tight">دورك قادم</span>
                   </div>
-                  <div className="p-3 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb]">
-                    <span className="text-[11px] font-bold text-[#4f6271] block mb-1">حالة الاستدعاء</span>
-                    <span className="text-xl sm:text-2xl font-bold text-[#313c45] tracking-tight">المراجع الحالي داخل</span>
+                  <div className="p-3 rounded-xl bg-slateNavy-850 border border-slateNavy-800">
+                    <span className="text-[11px] font-bold text-slateNavy-400 block mb-1">حالة الاستدعاء</span>
+                    <span className="text-xl sm:text-2xl font-bold text-slateNavy-100 tracking-tight">المراجع الحالي داخل</span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] flex items-center justify-between text-xs">
-                  <span className="text-[#313c45] font-bold">باقي أمامك القليل فقط</span>
-                  <span className="text-[#4f6271] font-medium">تنبيه بالدخول فور اقتراب موعدك</span>
+                <div className="p-3 rounded-xl bg-slateNavy-850 border border-slateNavy-800 flex items-center justify-between text-xs">
+                  <span className="text-slateNavy-100 font-bold">باقي أمامك القليل فقط</span>
+                  <span className="text-slateNavy-400 font-medium">تنبيه بالدخول فور اقتراب موعدك</span>
                 </div>
 
-                <p className="text-[11px] text-[#4f6271] font-medium leading-relaxed">
+                <p className="text-[11px] text-slateNavy-400 font-medium leading-relaxed">
                   يمكن للزائر إغلاق هاتفه أو التنقل بحرية خارج القاعة؛ ستهتز شاشته ويصدر نغمة تنبيه لطيفة عندما يحين وقته للحضور.
                 </p>
               </div>
@@ -274,15 +264,15 @@ export default function Home() {
       {/* =========================================================================
           SECTION 2: هل تعاني من هذه المشاكل يومياً؟ (THE PAIN VS SERENITY)
           ========================================================================= */}
-      <section id="comparison" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
+      <section id="comparison" className="py-20 sm:py-24 px-4 sm:px-6 bg-slateNavy-950 border-t border-slateNavy-800">
         <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 mb-12 sm:mb-14">
-          <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase">
+          <span className="text-xs font-bold tracking-wider text-slateNavy-400 uppercase">
             مقارنة واقعية
           </span>
-          <h2 className="text-2xl sm:text-4xl font-bold text-[#313c45] tracking-tight heading-balance">
+          <h2 className="text-2xl sm:text-4xl font-bold text-slateNavy-100 tracking-tight heading-balance">
             هل تعاني من هذه المشاكل في قاعة انتظارك كل يوم؟
           </h2>
-          <p className="text-sm sm:text-base font-medium text-[#4f6271] max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base font-medium text-slateNavy-400 max-w-2xl mx-auto leading-relaxed">
             الفوضى والتوتر ليسا قدراً محتوماً في قاعات الاستقبال. انظر كيف يتحول يومك العملي مع NextDZ.
           </p>
         </div>
@@ -293,15 +283,15 @@ export default function Home() {
       {/* =========================================================================
           SECTION 3: كيف يعمل في 3 خطوات بسيطة؟ (HOW IT WORKS)
           ========================================================================= */}
-      <section id="how-it-works" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
+      <section id="how-it-works" className="py-20 sm:py-24 px-4 sm:px-6 bg-slateNavy-950 border-t border-slateNavy-800">
         <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 mb-14 sm:mb-16">
-          <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase">
+          <span className="text-xs font-bold tracking-wider text-slateNavy-400 uppercase">
             بساطة مطلقة
           </span>
-          <h2 className="text-2xl sm:text-4xl font-bold text-[#313c45] tracking-tight heading-balance">
+          <h2 className="text-2xl sm:text-4xl font-bold text-slateNavy-100 tracking-tight heading-balance">
             كيف يعمل NextDZ في خطوات بسيطة؟
           </h2>
-          <p className="text-sm sm:text-base font-medium text-[#4f6271] max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base font-medium text-slateNavy-400 max-w-2xl mx-auto leading-relaxed">
             بدون فني تركيب، وبدون عقود صيانة معقدة. يبدأ النظام بالعمل في عيادتك أو محلك خلال دقائق معدودة.
           </p>
         </div>
@@ -309,40 +299,40 @@ export default function Home() {
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* Step 1 */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-8 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-4 text-right">
-            <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center font-bold">
+          <div className="bg-slateNavy-900 rounded-2xl p-6 sm:p-8 border border-slateNavy-800 shadow-sm space-y-4 text-right">
+            <div className="w-10 h-10 rounded-xl bg-slateNavy-850 border border-slateNavy-800 text-slateNavy-100 flex items-center justify-center font-bold">
               <QrCode className="w-5 h-5" />
             </div>
-            <h3 className="text-base sm:text-lg font-bold text-[#313c45]">
+            <h3 className="text-base sm:text-lg font-bold text-slateNavy-100">
               اطبع ملصق الكود وضعه في الاستقبال
             </h3>
-            <p className="text-xs sm:text-sm text-[#4f6271] font-medium leading-relaxed">
+            <p className="text-xs sm:text-sm text-slateNavy-400 font-medium leading-relaxed">
               نوفر لك كود استقبال مخصص لنشاطك. اطبعه على ورقة عادية أو استاند أنيق وضعه على طاولة السكرتيرة. لا أسلاك، ولا أجهزة كشك مكلفة.
             </p>
           </div>
 
           {/* Step 2 */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-8 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-4 text-right">
-            <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center font-bold">
+          <div className="bg-slateNavy-900 rounded-2xl p-6 sm:p-8 border border-slateNavy-800 shadow-sm space-y-4 text-right">
+            <div className="w-10 h-10 rounded-xl bg-slateNavy-850 border border-slateNavy-800 text-slateNavy-100 flex items-center justify-center font-bold">
               <Smartphone className="w-5 h-5" />
             </div>
-            <h3 className="text-base sm:text-lg font-bold text-[#313c45]">
+            <h3 className="text-base sm:text-lg font-bold text-slateNavy-100">
               يمسح الزائر الكود بهاتفه ويغادر بارتياح
             </h3>
-            <p className="text-xs sm:text-sm text-[#4f6271] font-medium leading-relaxed">
+            <p className="text-xs sm:text-sm text-slateNavy-400 font-medium leading-relaxed">
               بدون تحميل تطبيق أو إنشاء حساب. يرى الزائر دوره ووقت دخوله التقريبي، وله كامل الحرية في الانتظار بالخارج أو في مكان مريح.
             </p>
           </div>
 
           {/* Step 3 */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-8 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-4 text-right">
-            <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center font-bold">
+          <div className="bg-slateNavy-900 rounded-2xl p-6 sm:p-8 border border-slateNavy-800 shadow-sm space-y-4 text-right">
+            <div className="w-10 h-10 rounded-xl bg-slateNavy-850 border border-slateNavy-800 text-slateNavy-100 flex items-center justify-center font-bold">
               <Volume2 className="w-5 h-5" />
             </div>
-            <h3 className="text-base sm:text-lg font-bold text-[#313c45]">
+            <h3 className="text-base sm:text-lg font-bold text-slateNavy-100">
               تناديه بضغطة زر ويصلك في وقته
             </h3>
-            <p className="text-xs sm:text-sm text-[#4f6271] font-medium leading-relaxed">
+            <p className="text-xs sm:text-sm text-slateNavy-400 font-medium leading-relaxed">
               من هاتفك أو كمبيوترك، اضغط استدعاء التالي. يهتز هاتف المراجع بنغمة لطيفة ليدخل مباشرة، ثم يقيّم تجربته بلمسة واحدة عند خروجه.
             </p>
           </div>
@@ -353,15 +343,15 @@ export default function Home() {
       {/* =========================================================================
           SECTION 4: مصمم لكل الحالات الواقعية (REAL-WORLD SOLUTIONS)
           ========================================================================= */}
-      <section id="real-scenarios" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
+      <section id="real-scenarios" className="py-20 sm:py-24 px-4 sm:px-6 bg-slateNavy-950 border-t border-slateNavy-800">
         <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 mb-12 sm:mb-14">
-          <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase">
+          <span className="text-xs font-bold tracking-wider text-slateNavy-400 uppercase">
             حلول ميدانية واقعية
           </span>
-          <h2 className="text-2xl sm:text-4xl font-bold text-[#313c45] tracking-tight heading-balance">
+          <h2 className="text-2xl sm:text-4xl font-bold text-slateNavy-100 tracking-tight heading-balance">
             مصمم لكل الحالات الواقعية التي تحدث كل يوم
           </h2>
-          <p className="text-sm sm:text-base font-medium text-[#4f6271] max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base font-medium text-slateNavy-400 max-w-2xl mx-auto leading-relaxed">
             فهمنا تفاصيل العمل اليومي؛ لذلك صممنا حلولاً جاهزة للتأخير المؤقت، كبار السن، وشاشات العرض الكبيرة.
           </p>
         </div>
@@ -372,15 +362,15 @@ export default function Home() {
       {/* =========================================================================
           SECTION 5: لمن صُمّم NextDZ؟ (WHO IT IS BUILT FOR)
           ========================================================================= */}
-      <section id="for-who" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
+      <section id="for-who" className="py-20 sm:py-24 px-4 sm:px-6 bg-slateNavy-950 border-t border-slateNavy-800">
         <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 mb-14 sm:mb-16">
-          <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase">
+          <span className="text-xs font-bold tracking-wider text-slateNavy-400 uppercase">
             القطاعات المستفيدة
           </span>
-          <h2 className="text-2xl sm:text-4xl font-bold text-[#313c45] tracking-tight heading-balance">
+          <h2 className="text-2xl sm:text-4xl font-bold text-slateNavy-100 tracking-tight heading-balance">
             لمن صُمّم NextDZ؟
           </h2>
-          <p className="text-sm sm:text-base font-medium text-[#4f6271] max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base font-medium text-slateNavy-400 max-w-2xl mx-auto leading-relaxed">
             لكل مؤسسة أو مهني يقدّر وقته ويريد تقديم تجربة استقبال تليق بمكانته وسمعته.
           </p>
         </div>
@@ -388,53 +378,53 @@ export default function Home() {
         <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
           
           {/* Card 1: Clinics */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-3 sm:space-y-4 text-right hover:border-[#778ca4] transition-all duration-300">
-            <div className="w-11 h-11 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
+          <div className="bg-slateNavy-900 rounded-2xl p-6 sm:p-7 border border-slateNavy-800 shadow-sm space-y-3 sm:space-y-4 text-right hover:border-slateNavy-700 transition-all duration-300">
+            <div className="w-11 h-11 rounded-xl bg-slateNavy-850 border border-slateNavy-800 text-slateNavy-100 flex items-center justify-center">
               <Stethoscope className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-[#313c45]">
+            <h3 className="text-base font-bold text-slateNavy-100">
               العيادات الطبية والمراكز الصحية
             </h3>
-            <p className="text-xs text-[#4f6271] font-medium leading-relaxed">
+            <p className="text-xs text-slateNavy-400 font-medium leading-relaxed">
               إنهاء الضجيج والتجمهر حول مكتب السكرتيرة، وتنظيم فترات الكشف بخصوصية وراحة نفسية للمرضى وذويهم.
             </p>
           </div>
 
           {/* Card 2: Labs */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-3 sm:space-y-4 text-right hover:border-[#778ca4] transition-all duration-300">
-            <div className="w-11 h-11 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
+          <div className="bg-slateNavy-900 rounded-2xl p-6 sm:p-7 border border-slateNavy-800 shadow-sm space-y-3 sm:space-y-4 text-right hover:border-slateNavy-700 transition-all duration-300">
+            <div className="w-11 h-11 rounded-xl bg-slateNavy-850 border border-slateNavy-800 text-slateNavy-100 flex items-center justify-center">
               <TestTube2 className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-[#313c45]">
+            <h3 className="text-base font-bold text-slateNavy-100">
               مخابر التحاليل ومراكز الأشعة
             </h3>
-            <p className="text-xs text-[#4f6271] font-medium leading-relaxed">
+            <p className="text-xs text-slateNavy-400 font-medium leading-relaxed">
               توزيع سحب العينات وتسليم النتائج بسلاسة تامة، مع منع الاكتظاظ في الممرات الصباحية المزدحمة.
             </p>
           </div>
 
           {/* Card 3: Salons */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-3 sm:space-y-4 text-right hover:border-[#778ca4] transition-all duration-300">
-            <div className="w-11 h-11 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
+          <div className="bg-slateNavy-900 rounded-2xl p-6 sm:p-7 border border-slateNavy-800 shadow-sm space-y-3 sm:space-y-4 text-right hover:border-slateNavy-700 transition-all duration-300">
+            <div className="w-11 h-11 rounded-xl bg-slateNavy-850 border border-slateNavy-800 text-slateNavy-100 flex items-center justify-center">
               <Scissors className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-[#313c45]">
+            <h3 className="text-base font-bold text-slateNavy-100">
               صالونات الحلاقة ومراكز العناية
             </h3>
-            <p className="text-xs text-[#4f6271] font-medium leading-relaxed">
+            <p className="text-xs text-slateNavy-400 font-medium leading-relaxed">
               احترام وقت الزبون؛ يأخذ دوره وينتظر في سيارته أو يقضي مشاويره ويعود قبل كرسيه بدقائق.
             </p>
           </div>
 
           {/* Card 4: Notary */}
-          <div className="bg-[#ffffff] rounded-2xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-3 sm:space-y-4 text-right hover:border-[#778ca4] transition-all duration-300">
-            <div className="w-11 h-11 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
+          <div className="bg-slateNavy-900 rounded-2xl p-6 sm:p-7 border border-slateNavy-800 shadow-sm space-y-3 sm:space-y-4 text-right hover:border-slateNavy-700 transition-all duration-300">
+            <div className="w-11 h-11 rounded-xl bg-slateNavy-850 border border-slateNavy-800 text-slateNavy-100 flex items-center justify-center">
               <Scale className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-[#313c45]">
+            <h3 className="text-base font-bold text-slateNavy-100">
               مكاتب التوثيق والاستشارات
             </h3>
-            <p className="text-xs text-[#4f6271] font-medium leading-relaxed">
+            <p className="text-xs text-slateNavy-400 font-medium leading-relaxed">
               تنظيم مراجعي المعاملات والعقود الرسمية في هدوء تام يحفظ للمكتب وقاره وهيبته المهنية.
             </p>
           </div>
@@ -445,15 +435,15 @@ export default function Home() {
       {/* =========================================================================
           SECTION 5.5: جرّب بنفسك تجربة النظام الحقيقية (LIVE SYSTEM VERIFICATION)
           ========================================================================= */}
-      <section id="live-experience" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
+      <section id="live-experience" className="py-20 sm:py-24 px-4 sm:px-6 bg-slateNavy-950 border-t border-slateNavy-800">
         <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 mb-12 sm:mb-14">
-          <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase">
+          <span className="text-xs font-bold tracking-wider text-slateNavy-400 uppercase">
             معاينة فورية حقيقية
           </span>
-          <h2 className="text-2xl sm:text-4xl font-bold text-[#313c45] tracking-tight heading-balance">
+          <h2 className="text-2xl sm:text-4xl font-bold text-slateNavy-100 tracking-tight heading-balance">
             جرّب النظام الحقيقي بنفسك الآن
           </h2>
-          <p className="text-sm sm:text-base font-medium text-[#4f6271] max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base font-medium text-slateNavy-400 max-w-2xl mx-auto leading-relaxed">
             النظام يعمل بكامل طاقته الآن. اضغط على أي شاشة بالأسفل لتجربتها مباشرة في متصفحك.
           </p>
         </div>
@@ -461,25 +451,25 @@ export default function Home() {
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* Live Screen 1: Visitor Mobile Ticket */}
-          <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-5 text-right flex flex-col justify-between">
+          <div className="bg-slateNavy-900 rounded-3xl p-6 sm:p-7 border border-slateNavy-800 shadow-sm space-y-5 text-right flex flex-col justify-between">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-slateNavy-850 border border-slateNavy-800 text-slateNavy-100 flex items-center justify-center">
                 <Smartphone className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-[#313c45]">
+              <h3 className="text-base font-bold text-slateNavy-100">
                 شاشة المراجع التفاعلية
               </h3>
-              <p className="text-xs text-[#4f6271] font-medium leading-relaxed">
+              <p className="text-xs text-slateNavy-400 font-medium leading-relaxed">
                 افتح الرابط بهاتفك كأنك زائر مسح الكود، وشاهد التذكرة والعد التنازلي ونغمة التنبيه عند اقتراب دورك.
               </p>
             </div>
 
-            <div className="pt-4 border-t border-[#b3bfcb]">
+            <div className="pt-4 border-t border-slateNavy-800">
               <a
                 href="/q/clinic-amal"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#313c45] text-[#ffffff] text-xs font-bold hover:bg-[#4f6271] transition shadow-sm"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slateNavy-950 hover:bg-slateNavy-850 text-slateNavy-100 text-xs font-bold border border-slateNavy-800 transition shadow-sm"
               >
                 <span>فتح تذكرة المراجع الحية</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -488,25 +478,25 @@ export default function Home() {
           </div>
 
           {/* Live Screen 2: Controller Dashboard */}
-          <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-5 text-right flex flex-col justify-between">
+          <div className="bg-slateNavy-900 rounded-3xl p-6 sm:p-7 border border-slateNavy-800 shadow-sm space-y-5 text-right flex flex-col justify-between">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-slateNavy-850 border border-slateNavy-800 text-slateNavy-100 flex items-center justify-center">
                 <Users className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-[#313c45]">
+              <h3 className="text-base font-bold text-slateNavy-100">
                 لوحة تحكم المسير والطبيب
               </h3>
-              <p className="text-xs text-[#4f6271] font-medium leading-relaxed">
+              <p className="text-xs text-slateNavy-400 font-medium leading-relaxed">
                 لوحة سريعة محمية برمز دخول تجريبي خاص، تتيح لك الاستدعاء، التأجيل، وإنهاء الكشف بلمسة واحدة.
               </p>
             </div>
 
-            <div className="pt-4 border-t border-[#b3bfcb]">
+            <div className="pt-4 border-t border-slateNavy-800">
               <a
                 href="/admin/clinic-amal"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#313c45] text-[#ffffff] text-xs font-bold hover:bg-[#4f6271] transition shadow-sm"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slateNavy-950 hover:bg-slateNavy-850 text-slateNavy-100 text-xs font-bold border border-slateNavy-800 transition shadow-sm"
               >
                 <span>فتح لوحة التحكم التجريبية</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -515,25 +505,25 @@ export default function Home() {
           </div>
 
           {/* Live Screen 3: Smart TV Waiting Hall */}
-          <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-7 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] space-y-5 text-right flex flex-col justify-between">
+          <div className="bg-slateNavy-900 rounded-3xl p-6 sm:p-7 border border-slateNavy-800 shadow-sm space-y-5 text-right flex flex-col justify-between">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] text-[#313c45] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-slateNavy-850 border border-slateNavy-800 text-slateNavy-100 flex items-center justify-center">
                 <Tv className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-[#313c45]">
+              <h3 className="text-base font-bold text-slateNavy-100">
                 شاشة العرض لصالة الانتظار
               </h3>
-              <p className="text-xs text-[#4f6271] font-medium leading-relaxed">
+              <p className="text-xs text-slateNavy-400 font-medium leading-relaxed">
                 شاشة سينمائية عالية الوضوح تعمل على أي شاشة متصلة بالإنترنت، مع جرس نداء صوتي عند استدعاء كل تذكرة.
               </p>
             </div>
 
-            <div className="pt-4 border-t border-[#b3bfcb]">
+            <div className="pt-4 border-t border-slateNavy-800">
               <a
                 href="/display/clinic-amal"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#313c45] text-[#ffffff] text-xs font-bold hover:bg-[#4f6271] transition shadow-sm"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slateNavy-950 hover:bg-slateNavy-850 text-slateNavy-100 text-xs font-bold border border-slateNavy-800 transition shadow-sm"
               >
                 <span>معاينة شاشة الصالة</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -547,32 +537,32 @@ export default function Home() {
       {/* =========================================================================
           SECTION 6: باقات الاشتراك وخطط الأسعار (PRICING & PACKAGES)
           ========================================================================= */}
-      <section id="pricing" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
+      <section id="pricing" className="py-20 sm:py-24 px-4 sm:px-6 bg-slateNavy-950 border-t border-slateNavy-800">
         <div className="max-w-6xl mx-auto space-y-12 sm:space-y-14">
           
           {/* Section Header */}
           <div className="max-w-3xl mx-auto text-center space-y-3 sm:space-y-4">
-            <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase inline-flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-[#778ca4]" />
+            <span className="text-xs font-bold tracking-wider text-slateNavy-400 uppercase inline-flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-slateNavy-300" />
               <span>خطط شفافة ومدروسة</span>
             </span>
-            <h2 className="text-2xl sm:text-4xl font-bold text-[#313c45] tracking-tight heading-balance">
+            <h2 className="text-2xl sm:text-4xl font-bold text-slateNavy-100 tracking-tight heading-balance">
               باقات تناسب حجم نشاطك وتضمن هدوء قاعتك
             </h2>
-            <p className="text-sm sm:text-base font-medium text-[#4f6271] leading-relaxed">
+            <p className="text-sm sm:text-base font-medium text-slateNavy-400 leading-relaxed">
               ادفع شهرياً بمرونة كاملة بدون أي التزام، أو وفّر شهرين كاملين مجاناً عند اختيار الاشتراك السنوي.
             </p>
 
             {/* Monthly / Yearly Switcher */}
             <div className="pt-4 flex items-center justify-center">
-              <div className="bg-[#ffffff] border border-[#b3bfcb] p-1 rounded-2xl flex items-center gap-1 shadow-sm">
+              <div className="bg-slateNavy-900 border border-slateNavy-800 p-1 rounded-2xl flex items-center gap-1 shadow-sm">
                 <button
                   type="button"
                   onClick={() => setIsYearly(false)}
                   className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${
                     !isYearly 
-                      ? 'bg-[#313c45] text-[#ffffff] shadow-sm' 
-                      : 'text-[#4f6271] hover:text-[#313c45]'
+                      ? 'bg-slateNavy-800 text-slateNavy-100 shadow-sm' 
+                      : 'text-slateNavy-400 hover:text-slateNavy-100'
                   }`}
                 >
                   دفع شهري
@@ -582,12 +572,12 @@ export default function Home() {
                   onClick={() => setIsYearly(true)}
                   className={`px-5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                     isYearly 
-                      ? 'bg-[#313c45] text-[#ffffff] shadow-sm' 
-                      : 'text-[#4f6271] hover:text-[#313c45]'
+                      ? 'bg-slateNavy-800 text-slateNavy-100 shadow-sm' 
+                      : 'text-slateNavy-400 hover:text-slateNavy-100'
                   }`}
                 >
                   <span>دفع سنوي</span>
-                  <span className="text-[10px] bg-[#d5dbe2] text-[#313c45] px-2 py-0.5 rounded-full font-bold border border-[#b3bfcb]">
+                  <span className="text-[10px] bg-slateNavy-850 text-slateNavy-200 px-2 py-0.5 rounded-full font-bold border border-slateNavy-800">
                     وفر شهرين 🎁
                   </span>
                 </button>
@@ -599,35 +589,35 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
             
             {/* TIER 1: STARTER */}
-            <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-8 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] flex flex-col justify-between space-y-6">
+            <div className="bg-slateNavy-900 rounded-3xl p-6 sm:p-8 border border-slateNavy-800 shadow-sm flex flex-col justify-between space-y-6">
               <div className="space-y-5">
                 <div className="flex items-center justify-between">
                   <PlanBadge plan="starter" size="sm" />
-                  <span className="text-[11px] font-bold text-[#4f6271]">العيادات الفردية والصالونات</span>
+                  <span className="text-[11px] font-bold text-slateNavy-400">العيادات الفردية والصالونات</span>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-bold text-[#313c45]">{pricing.starter.title}</h3>
-                  <p className="text-xs text-[#4f6271] font-medium mt-1 leading-relaxed">{pricing.starter.subtitle}</p>
+                  <h3 className="text-xl font-bold text-slateNavy-100">{pricing.starter.title}</h3>
+                  <p className="text-xs text-slateNavy-400 font-medium mt-1 leading-relaxed">{pricing.starter.subtitle}</p>
                 </div>
 
-                <div className="py-4 border-y border-[#b3bfcb]/60 space-y-1">
+                <div className="py-4 border-y border-slateNavy-800/80 space-y-1">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-3xl sm:text-4xl font-bold text-[#313c45] tracking-tight">{pricing.starter.price}</span>
-                    <span className="text-xs font-bold text-[#4f6271]">دج / {pricing.starter.period}</span>
+                    <span className="text-3xl sm:text-4xl font-bold text-slateNavy-100 tracking-tight">{pricing.starter.price}</span>
+                    <span className="text-xs font-bold text-slateNavy-400">دج / {pricing.starter.period}</span>
                   </div>
-                  <p className="text-[11px] text-[#4f6271] font-medium">{pricing.starter.subtext}</p>
+                  <p className="text-[11px] text-slateNavy-400 font-medium">{pricing.starter.subtext}</p>
                 </div>
 
                 <ul className="space-y-3 text-xs">
                   {pricing.starter.features.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2.5">
                       {item.included ? (
-                        <Check className="w-4 h-4 text-[#313c45] shrink-0 mt-0.5" />
+                        <Check className="w-4 h-4 text-slateNavy-200 shrink-0 mt-0.5" />
                       ) : (
-                        <span className="w-4 h-4 text-[#b3bfcb] shrink-0 text-center font-bold text-xs select-none">—</span>
+                        <span className="w-4 h-4 text-slateNavy-500 shrink-0 text-center font-bold text-xs select-none">—</span>
                       )}
-                      <span className={item.included ? 'text-[#313c45] font-medium' : 'text-[#778ca4] line-through decoration-[#b3bfcb]'}>
+                      <span className={item.included ? 'text-slateNavy-200 font-medium' : 'text-slateNavy-400 line-through decoration-slateNavy-500'}>
                         {item.text}
                       </span>
                     </li>
@@ -640,45 +630,45 @@ export default function Home() {
                   href={`https://wa.me/${WHATSAPP_INTL}?text=${encodeURIComponent(pricing.starter.whatsappMsg)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-[#313c45] text-[#313c45] bg-[#ffffff] hover:bg-[#313c45] hover:text-[#ffffff] text-xs font-bold transition shadow-sm"
+                  className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-slateNavy-800 text-slateNavy-100 bg-slateNavy-950 hover:bg-slateNavy-850 text-xs font-bold transition shadow-sm"
                 >
-                  <MessageCircle className="w-4 h-4" />
+                  <MessageCircle className="w-4 h-4 text-slateNavy-300" />
                   <span>طلب الباقة الأساسية عبر واتساب</span>
                 </a>
               </div>
             </div>
 
             {/* TIER 2: PRO (MOST POPULAR) */}
-            <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-8 border-2 border-[#313c45] shadow-[0_4px_20px_rgba(49,60,69,0.12)] flex flex-col justify-between space-y-6 relative">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#313c45] text-[#ffffff] text-[11px] font-bold rounded-full shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                <Sparkles className="w-3.5 h-3.5 text-[#b3bfcb]" />
+            <div className="bg-slateNavy-900 rounded-3xl p-6 sm:p-8 border-2 border-slateNavy-700 shadow-lg flex flex-col justify-between space-y-6 relative">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-slateNavy-800 text-slateNavy-100 text-[11px] font-bold rounded-full shadow-md flex items-center gap-1.5 whitespace-nowrap border border-slateNavy-700">
+                <Sparkles className="w-3.5 h-3.5 text-slateNavy-300" />
                 <span>الباقة الأكثر طلباً للعيادات والمراكز</span>
               </div>
 
               <div className="space-y-5">
                 <div className="flex items-center justify-between">
                   <PlanBadge plan="pro" size="sm" />
-                  <span className="text-[11px] font-bold text-[#313c45]">العيادات النشطة</span>
+                  <span className="text-[11px] font-bold text-slateNavy-300">العيادات النشطة</span>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-bold text-[#313c45]">{pricing.pro.title}</h3>
-                  <p className="text-xs text-[#4f6271] font-medium mt-1 leading-relaxed">{pricing.pro.subtitle}</p>
+                  <h3 className="text-xl font-bold text-slateNavy-100">{pricing.pro.title}</h3>
+                  <p className="text-xs text-slateNavy-400 font-medium mt-1 leading-relaxed">{pricing.pro.subtitle}</p>
                 </div>
 
-                <div className="py-4 border-y border-[#b3bfcb]/60 space-y-1">
+                <div className="py-4 border-y border-slateNavy-800/80 space-y-1">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-3xl sm:text-4xl font-bold text-[#313c45] tracking-tight">{pricing.pro.price}</span>
-                    <span className="text-xs font-bold text-[#4f6271]">دج / {pricing.pro.period}</span>
+                    <span className="text-3xl sm:text-4xl font-bold text-slateNavy-100 tracking-tight">{pricing.pro.price}</span>
+                    <span className="text-xs font-bold text-slateNavy-400">دج / {pricing.pro.period}</span>
                   </div>
-                  <p className="text-[11px] text-[#313c45] font-bold">{pricing.pro.subtext}</p>
+                  <p className="text-[11px] text-slateNavy-200 font-bold">{pricing.pro.subtext}</p>
                 </div>
 
                 <ul className="space-y-3 text-xs">
                   {pricing.pro.features.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2.5">
-                      <Check className="w-4 h-4 text-[#313c45] shrink-0 mt-0.5" />
-                      <span className={item.highlight ? 'text-[#313c45] font-bold' : 'text-[#313c45] font-medium'}>
+                      <Check className="w-4 h-4 text-slateNavy-100 shrink-0 mt-0.5" />
+                      <span className={item.highlight ? 'text-slateNavy-100 font-bold' : 'text-slateNavy-200 font-medium'}>
                         {item.text}
                       </span>
                     </li>
@@ -691,40 +681,40 @@ export default function Home() {
                   href={`https://wa.me/${WHATSAPP_INTL}?text=${encodeURIComponent(pricing.pro.whatsappMsg)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#313c45] text-[#ffffff] hover:bg-[#4f6271] text-xs font-bold transition shadow-md"
+                  className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-slateNavy-100 text-slateNavy-950 hover:bg-white text-xs font-bold transition shadow-md"
                 >
-                  <MessageCircle className="w-4 h-4 text-[#b3bfcb]" />
+                  <MessageCircle className="w-4 h-4 text-slateNavy-950" />
                   <span>طلب باقة المحترفين عبر واتساب</span>
                 </a>
               </div>
             </div>
 
             {/* TIER 3: ELITE VIP */}
-            <div className="bg-[#ffffff] rounded-3xl p-6 sm:p-8 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] flex flex-col justify-between space-y-6">
+            <div className="bg-slateNavy-900 rounded-3xl p-6 sm:p-8 border border-slateNavy-800 shadow-sm flex flex-col justify-between space-y-6">
               <div className="space-y-5">
                 <div className="flex items-center justify-between">
                   <PlanBadge plan="elite" size="sm" />
-                  <span className="text-[11px] font-bold text-[#4f6271]">المجمعات الكبرى</span>
+                  <span className="text-[11px] font-bold text-slateNavy-400">المجمعات الكبرى</span>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-bold text-[#313c45]">{pricing.elite.title}</h3>
-                  <p className="text-xs text-[#4f6271] font-medium mt-1 leading-relaxed">{pricing.elite.subtitle}</p>
+                  <h3 className="text-xl font-bold text-slateNavy-100">{pricing.elite.title}</h3>
+                  <p className="text-xs text-slateNavy-400 font-medium mt-1 leading-relaxed">{pricing.elite.subtitle}</p>
                 </div>
 
-                <div className="py-4 border-y border-[#b3bfcb]/60 space-y-1">
+                <div className="py-4 border-y border-slateNavy-800/80 space-y-1">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-3xl sm:text-4xl font-bold text-[#313c45] tracking-tight">{pricing.elite.price}</span>
-                    <span className="text-xs font-bold text-[#4f6271]">دج / {pricing.elite.period}</span>
+                    <span className="text-3xl sm:text-4xl font-bold text-slateNavy-100 tracking-tight">{pricing.elite.price}</span>
+                    <span className="text-xs font-bold text-slateNavy-400">دج / {pricing.elite.period}</span>
                   </div>
-                  <p className="text-[11px] text-[#4f6271] font-medium">{pricing.elite.subtext}</p>
+                  <p className="text-[11px] text-slateNavy-400 font-medium">{pricing.elite.subtext}</p>
                 </div>
 
                 <ul className="space-y-3 text-xs">
                   {pricing.elite.features.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2.5">
-                      <Check className="w-4 h-4 text-[#313c45] shrink-0 mt-0.5" />
-                      <span className={item.highlight ? 'text-[#313c45] font-bold' : 'text-[#313c45] font-medium'}>
+                      <Check className="w-4 h-4 text-slateNavy-200 shrink-0 mt-0.5" />
+                      <span className={item.highlight ? 'text-slateNavy-100 font-bold' : 'text-slateNavy-200 font-medium'}>
                         {item.text}
                       </span>
                     </li>
@@ -737,9 +727,9 @@ export default function Home() {
                   href={`https://wa.me/${WHATSAPP_INTL}?text=${encodeURIComponent(pricing.elite.whatsappMsg)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-[#313c45] text-[#313c45] bg-[#ffffff] hover:bg-[#313c45] hover:text-[#ffffff] text-xs font-bold transition shadow-sm"
+                  className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-slateNavy-800 text-slateNavy-100 bg-slateNavy-950 hover:bg-slateNavy-850 text-xs font-bold transition shadow-sm"
                 >
-                  <MessageCircle className="w-4 h-4" />
+                  <MessageCircle className="w-4 h-4 text-slateNavy-300" />
                   <span>طلب باقة النخبة عبر واتساب</span>
                 </a>
               </div>
@@ -748,21 +738,21 @@ export default function Home() {
           </div>
 
           {/* Zero-Hardware & Peace-of-Mind Guarantee Strip */}
-          <div className="bg-[#ffffff] rounded-2xl p-5 sm:p-6 border border-[#b3bfcb] shadow-[0_2px_10px_rgba(49,60,69,0.05)] flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-right">
+          <div className="bg-slateNavy-900 rounded-2xl p-5 sm:p-6 border border-slateNavy-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-right">
             <div className="flex items-center gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-[#d5dbe2] border border-[#b3bfcb] flex items-center justify-center text-[#313c45] shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-slateNavy-850 border border-slateNavy-800 flex items-center justify-center text-slateNavy-100 shrink-0">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-[#313c45]">تكلفة العتاد الإضافي 0 دج • بدون أي التزام طويل الأجل</h4>
-                <p className="text-xs text-[#4f6271] font-medium">يعمل مباشرة على هاتفك وحاسوبك المكتبي وتلفازك الموجود حالياً، دون شراء أي أجهزة خاصة.</p>
+                <h4 className="text-sm font-bold text-slateNavy-100">تكلفة العتاد الإضافي 0 دج • بدون أي التزام طويل الأجل</h4>
+                <p className="text-xs text-slateNavy-400 font-medium">يعمل مباشرة على هاتفك وحاسوبك المكتبي وتلفازك الموجود حالياً، دون شراء أي أجهزة خاصة.</p>
               </div>
             </div>
             <a
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#313c45] hover:text-[#4f6271] underline underline-offset-4 shrink-0"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slateNavy-100 hover:text-slateNavy-300 underline underline-offset-4 shrink-0"
             >
               <span>استشارة سريعة لتحديد باقتك</span>
               <ArrowLeft className="w-3.5 h-3.5" />
@@ -775,17 +765,17 @@ export default function Home() {
       {/* =========================================================================
           SECTION 7: الأسئلة الأكثر شيوعاً (FAQ ACCORDION)
           ========================================================================= */}
-      <section id="faq" className="py-20 sm:py-24 px-4 sm:px-6 bg-[#eef1f5] border-t border-[#b3bfcb]">
+      <section id="faq" className="py-20 sm:py-24 px-4 sm:px-6 bg-slateNavy-950 border-t border-slateNavy-800">
         <div className="max-w-4xl mx-auto space-y-10 sm:space-y-12">
           
           <div className="text-center space-y-3 sm:space-y-4">
-            <span className="text-xs font-bold tracking-wider text-[#313c45] uppercase">
+            <span className="text-xs font-bold tracking-wider text-slateNavy-400 uppercase">
               إجابات واضحة ومباشرة
             </span>
-            <h2 className="text-2xl sm:text-4xl font-bold text-[#313c45] tracking-tight heading-balance">
+            <h2 className="text-2xl sm:text-4xl font-bold text-slateNavy-100 tracking-tight heading-balance">
               الأسئلة الأكثر شيوعاً
             </h2>
-            <p className="text-sm sm:text-base font-medium text-[#4f6271] max-w-2xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-base font-medium text-slateNavy-400 max-w-2xl mx-auto leading-relaxed">
               كل ما ترغب بمعرفته حول آلية التشغيل، شاشات العرض، وإلغاء الطابور الورقي نهائياً.
             </p>
           </div>
@@ -796,23 +786,23 @@ export default function Home() {
               return (
                 <div
                   key={idx}
-                  className="bg-[#ffffff] border border-[#b3bfcb] rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(49,60,69,0.03)] transition-all"
+                  className="bg-slateNavy-900 border border-slateNavy-800 rounded-2xl overflow-hidden shadow-sm transition-all"
                 >
                   <button
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full p-4 sm:p-5 text-right flex items-center justify-between gap-4 font-bold text-xs sm:text-sm text-[#313c45] hover:bg-[#f7f9fb] transition"
+                    className="w-full p-4 sm:p-5 text-right flex items-center justify-between gap-4 font-bold text-xs sm:text-sm text-slateNavy-100 hover:bg-slateNavy-850 transition"
                   >
                     <span>{faq.q}</span>
                     <ChevronDown
-                      className={`w-4 h-4 text-[#778ca4] shrink-0 transition-transform duration-200 ${
-                        isOpen ? 'rotate-180 text-[#313c45]' : ''
+                      className={`w-4 h-4 text-slateNavy-400 shrink-0 transition-transform duration-200 ${
+                        isOpen ? 'rotate-180 text-slateNavy-100' : ''
                       }`}
                     />
                   </button>
 
                   {isOpen && (
-                    <div className="p-4 sm:p-5 pt-0 text-xs sm:text-sm text-[#4f6271] font-medium leading-relaxed border-t border-[#b3bfcb]/40 bg-[#f7f9fb]">
+                    <div className="p-4 sm:p-5 pt-0 text-xs sm:text-sm text-slateNavy-300 font-medium leading-relaxed border-t border-slateNavy-800 bg-slateNavy-950/40">
                       {faq.a}
                     </div>
                   )}
@@ -827,19 +817,19 @@ export default function Home() {
       {/* =========================================================================
           SECTION 8: CLOSING COMMERCIAL CTA & HIGH-CONTRAST EDITORIAL FOOTER
           ========================================================================= */}
-      <footer className="bg-[#313c45] text-[#d5dbe2] pt-16 sm:pt-20 pb-12 px-4 sm:px-6 border-t border-[#232b32]">
+      <footer className="bg-slateNavy-950 text-slateNavy-400 pt-16 sm:pt-20 pb-12 px-4 sm:px-6 border-t border-slateNavy-800">
         <div className="max-w-4xl mx-auto text-center space-y-7 sm:space-y-8">
           
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#4f6271]/30 border border-[#b3bfcb]/20 text-xs font-bold text-[#f7f9fb]">
-            <Sparkles className="w-3.5 h-3.5 text-[#b3bfcb]" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slateNavy-900 border border-slateNavy-800 text-xs font-bold text-slateNavy-100">
+            <Sparkles className="w-3.5 h-3.5 text-slateNavy-400" />
             <span>ابدأ التحول إلى الهدوء اليوم</span>
           </div>
 
-          <h2 className="text-2xl sm:text-5xl font-bold text-[#f7f9fb] tracking-tight heading-balance leading-tight">
+          <h2 className="text-2xl sm:text-5xl font-bold text-slateNavy-100 tracking-tight heading-balance leading-tight">
             اجعل قاعة انتظارك عنواناً للراحة والاحترافية.
           </h2>
 
-          <p className="text-sm sm:text-base font-normal text-[#d5dbe2] max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base font-normal text-slateNavy-400 max-w-xl mx-auto leading-relaxed">
             لا داعي لتأجيل راحة بالك وسكرتيرتك. تواصل معنا مباشرة لتجهيز كود عيادتك أو صالونك وبدء الاستخدام فوراً.
           </p>
 
@@ -852,64 +842,54 @@ export default function Home() {
               variant="inverted"
               className="w-full sm:w-auto text-sm sm:text-base px-7 py-3.5 sm:py-4 justify-center"
             >
-              <MessageCircle className="w-5 h-5 text-[#313c45]" />
+              <MessageCircle className="w-5 h-5 text-slateNavy-950" />
               <span>تواصل عبر واتساب: {PHONE_NUMBER}</span>
             </MagneticButton>
 
             <a
               href="tel:0666568039"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 rounded-full text-sm font-bold border border-[#b3bfcb]/40 text-[#f7f9fb] hover:bg-[#4f6271]/30 transition"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 rounded-full text-sm font-bold border border-slateNavy-800 text-slateNavy-100 hover:bg-slateNavy-900 transition"
             >
-              <PhoneCall className="w-4 h-4 text-[#b3bfcb]" />
+              <PhoneCall className="w-4 h-4 text-slateNavy-400" />
               <span>اتصال هاتفي مباشر</span>
             </a>
           </div>
 
           {/* Brand Mark and Copyright */}
-          <div className="pt-12 sm:pt-16 mt-12 sm:mt-16 border-t border-[#4f6271]/40 flex flex-col md:flex-row items-center justify-between gap-5 text-xs font-medium text-[#d5dbe2]">
+          <div className="pt-12 sm:pt-16 mt-12 sm:mt-16 border-t border-slateNavy-800/80 flex flex-col md:flex-row items-center justify-between gap-5 text-xs font-medium text-slateNavy-400">
             <div className="flex flex-wrap items-center gap-3 justify-center md:justify-start">
-              <div className="bg-[#eef1f5] px-2.5 py-1 rounded-xl shadow-sm">
-                <div className="flex items-center gap-2" dir="ltr">
-                  <svg width="34" height="22" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
-                    <path d="M4 4H60V14C56.686 14 54 16.686 54 20C54 23.314 56.686 26 60 26V36H4V26C7.314 26 10 23.314 10 20C10 16.686 7.314 14 4 14V4Z" stroke="#313c45" strokeWidth="3.5" strokeLinejoin="round" fill="#eef1f5"/>
-                    <path d="M16 12H36L45 20L36 28H16L22 20L16 12Z" fill="#778ca4" fillOpacity="0.35"/>
-                    <path d="M18 20H40M40 20L32 12.5M40 20L32 27.5" stroke="#313c45" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span className="text-base font-bold tracking-tight">
-                    <span style={{ color: '#313c45' }}>Next</span>
-                    <span style={{ color: '#778ca4' }}>DZ</span>
-                  </span>
-                </div>
+              <div className="bg-slateNavy-900 border border-slateNavy-800 px-2.5 py-1 rounded-xl shadow-sm">
+                <NextDZLogo width={34} height={22} textSize="text-base" />
               </div>
-              <span>— قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون.</span>
+              <span className="text-slateNavy-400">— قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون.</span>
             </div>
 
             {/* Discreet Legal & Policy Links */}
-            <div className="flex items-center gap-4 text-xs font-normal text-[#d5dbe2]/80">
-              <a href="#pricing" className="hover:text-[#ffffff] transition hover:underline underline-offset-4">
+            <div className="flex items-center gap-4 text-xs font-normal text-slateNavy-400">
+              <a href="#pricing" className="hover:text-slateNavy-100 transition hover:underline underline-offset-4">
                 باقات الاشتراك
               </a>
-              <span className="text-[#4f6271] select-none">•</span>
-              <a href="#faq" className="hover:text-[#ffffff] transition hover:underline underline-offset-4">
+              <span className="text-slateNavy-700 select-none">•</span>
+              <a href="#faq" className="hover:text-slateNavy-100 transition hover:underline underline-offset-4">
                 الأسئلة الشائعة
               </a>
-              <span className="text-[#4f6271] select-none">•</span>
+              <span className="text-slateNavy-700 select-none">•</span>
               <Link 
                 href="/terms" 
-                className="hover:text-[#ffffff] transition hover:underline underline-offset-4"
+                className="hover:text-slateNavy-100 transition hover:underline underline-offset-4"
               >
                 شروط الاستخدام
               </Link>
-              <span className="text-[#4f6271] select-none">•</span>
+              <span className="text-slateNavy-700 select-none">•</span>
               <Link 
                 href="/privacy" 
-                className="hover:text-[#ffffff] transition hover:underline underline-offset-4"
+                className="hover:text-slateNavy-100 transition hover:underline underline-offset-4"
               >
                 سياسة الخصوصية
               </Link>
             </div>
 
-            <div className="text-center md:text-left text-[#d5dbe2]/70 text-[11px]">
+            <div className="text-center md:text-left text-slateNavy-400/80 text-[11px]">
               جميع الحقوق محفوظة © {new Date().getFullYear()} NextDZ.
             </div>
           </div>
