@@ -30,7 +30,8 @@ import {
   UserCheck,
   Tv,
   Download,
-  Key
+  Key,
+  Upload
 } from 'lucide-react';
 import { QueueState, Ticket } from '@/lib/types';
 import { playQueueChime } from '@/lib/audio';
@@ -75,6 +76,73 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
   const [qrDataUrl, setQrDataUrl] = useState<string>('');
   const [actionLoading, setActionLoading] = useState(false);
 
+  // Custom Clinic Logo & Stand Style for A4 Poster
+  const [clinicLogo, setClinicLogo] = useState<string | null>(null);
+  const [standStyle, setStandStyle] = useState<'pure-white' | 'charcoal'>('pure-white');
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  // Load saved custom logo & stand style on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedLogo = localStorage.getItem(`clinic_logo_${slug}`);
+      if (savedLogo) setClinicLogo(savedLogo);
+      const savedStyle = localStorage.getItem(`clinic_stand_style_${slug}`) as 'pure-white' | 'charcoal' | null;
+      if (savedStyle) setStandStyle(savedStyle);
+    }
+  }, [slug]);
+
+  // Handle clinic logo upload
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert('حجم الصورة كبير جداً، يرجى اختيار شعار أقل من 2 ميغابايت');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        setClinicLogo(result);
+        try {
+          localStorage.setItem(`clinic_logo_${slug}`, result);
+        } catch (err) {
+          console.warn('Storage quota exceeded, logo kept in memory', err);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle remove logo
+  const handleRemoveLogo = () => {
+    setClinicLogo(null);
+    try {
+      localStorage.removeItem(`clinic_logo_${slug}`);
+    } catch {}
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Toggle stand style
+  const handleToggleStyle = (style: 'pure-white' | 'charcoal') => {
+    setStandStyle(style);
+    try {
+      localStorage.setItem(`clinic_stand_style_${slug}`, style);
+    } catch {}
+  };
+
+  // Download high-resolution QR PNG
+  const handleDownloadQr = () => {
+    if (!qrDataUrl) return;
+    const a = document.createElement('a');
+    a.href = qrDataUrl;
+    a.download = `NextDZ_QR_${slug}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   // Check saved session PIN
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -91,16 +159,16 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
     }
   }, [slug]);
 
-  // Generate pure offline QR Data URL
+  // Generate pure offline QR Data URL (High-contrast #0f172a on #ffffff, 600px for A4)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const fullUrl = `${window.location.origin}/q/${slug}`;
       QRCode.toDataURL(fullUrl, {
-        width: 300,
-        margin: 2,
+        width: 600,
+        margin: 1,
         color: {
-          dark: '#06141B',
-          light: '#CCD0CF',
+          dark: '#0f172a',
+          light: '#ffffff',
         },
       })
         .then((url) => setQrDataUrl(url))
@@ -1370,89 +1438,242 @@ export default function StaffRemotePage({ params }: { params: Promise<{ slug: st
         </div>
       )}
 
-      {/* Modal 4: 100% Offline Vector Printable QR Code Poster */}
+      {/* Modal 4: Ultra-Minimal Luxury A4 Stand Poster Preview & Print */}
       {showQrModal && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slateNavy-900 text-slateNavy-100 border border-slateNavy-800 rounded-3xl p-6 w-full max-w-md shadow-2xl text-center space-y-4 max-h-[92vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-2 border-b border-slateNavy-800">
-              <span className="text-xs font-bold text-slateNavy-400 flex items-center gap-1.5">
-                <QrCode className="w-4 h-4" />
-                معاينة ملصق الطاولة أو الحائط (ستاند A4)
-              </span>
-              <button onClick={() => setShowQrModal(false)} className="text-slateNavy-400 hover:text-white">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+          <div className="bg-slateNavy-900 text-slateNavy-100 border border-slateNavy-800 rounded-3xl p-4 sm:p-6 w-full max-w-2xl shadow-2xl my-auto space-y-4 max-h-[96vh] flex flex-col">
+            
+            {/* Modal Header (Hidden on Print) */}
+            <div className="no-print flex items-center justify-between pb-3 border-b border-slateNavy-800 shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-slateNavy-850 border border-slateNavy-800 flex items-center justify-center text-slateNavy-100 shadow-sm">
+                  <QrCode className="w-4 h-4 text-slateNavy-300" />
+                </div>
+                <div className="text-right">
+                  <h3 className="text-sm font-bold text-slateNavy-100">
+                    معاينة ملصق الطاولة أو الحائط (ستاند A4)
+                  </h3>
+                  <p className="text-[11px] text-slateNavy-400 font-medium">
+                    تصميم Apple / Nordic فائق النقاء بدقة طباعة 300DPI جاهز فوراً
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowQrModal(false)}
+                className="p-1.5 rounded-xl text-slateNavy-400 hover:text-slateNavy-100 hover:bg-slateNavy-850 transition"
+                aria-label="إغلاق المعاينة"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Printable Stand Container (Clean high-contrast for A4 print) */}
-            <div id="printable-stand" className="bg-white text-slate-900 p-6 rounded-2xl flex flex-col items-center justify-between border border-slate-200 shadow-md space-y-4">
-              <div className="w-full text-center border-b pb-3 border-slate-200">
-                <span className="inline-block px-3 py-0.5 bg-slate-100 text-slate-700 rounded-full text-[11px] font-bold tracking-wider mb-1.5">
-                  نظام الانتظار الرقمي الذكي
-                </span>
-                <h2 className="text-2xl font-black text-slate-950">{org?.name}</h2>
-                <p className="text-xs text-slate-600 mt-0.5 font-medium">
-                  احجز دورك وغادر القاعة، وسننبهك صوتياً عبر هاتفك عند اقتراب موعدك
-                </p>
-              </div>
-
-              <div className="py-2 flex flex-col items-center justify-center">
-                <div className="p-3 bg-white border-2 border-slate-900 rounded-2xl shadow-sm">
-                  {qrDataUrl ? (
-                    <img
-                      src={qrDataUrl}
-                      alt="QR Code"
-                      className="w-48 h-48 rounded-lg"
-                    />
+            {/* Interactive Preview Controls Toolbar (Hidden on Print) */}
+            <div className="no-print bg-slateNavy-950 border border-slateNavy-800 rounded-2xl p-3 sm:p-3.5 space-y-3 shrink-0 text-right">
+              
+              {/* Row 1: Logo Upload & Style Switcher */}
+              <div className="flex flex-wrap items-center justify-between gap-2.5">
+                
+                {/* Logo Upload / Remove Button */}
+                <div className="flex items-center gap-2">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/*"
+                    onChange={handleLogoUpload}
+                    className="hidden"
+                  />
+                  {!clinicLogo ? (
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slateNavy-900 hover:bg-slateNavy-850 text-slateNavy-200 border border-slateNavy-800 text-xs font-bold transition shadow-sm active:scale-95"
+                    >
+                      <Upload className="w-3.5 h-3.5 text-slateNavy-400" />
+                      <span>رفع شعار العيادة</span>
+                    </button>
                   ) : (
-                    <div className="w-48 h-48 flex items-center justify-center text-xs text-slate-400">
-                      جاري التوليد...
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-medium text-emerald-400 flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-xl">
+                        <CheckCircle className="w-3.5 h-3.5" />
+                        تم إدراج الشعار
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleRemoveLogo}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 text-xs font-bold transition active:scale-95"
+                        title="إزالة الشعار المرفوع"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>إزالة</span>
+                      </button>
                     </div>
                   )}
                 </div>
-                <p className="text-[11px] font-mono font-bold text-slate-700 mt-2 dir-ltr">
-                  smart-queue-system-zeta.vercel.app/q/{slug}
-                </p>
+
+                {/* Style Switcher Toggle */}
+                <div className="flex items-center gap-1 bg-slateNavy-900 border border-slateNavy-800 p-1 rounded-xl text-xs font-bold">
+                  <button
+                    type="button"
+                    onClick={() => handleToggleStyle('pure-white')}
+                    className={`px-3 py-1.5 rounded-lg transition-all ${
+                      standStyle === 'pure-white'
+                        ? 'bg-slateNavy-800 text-slateNavy-100 shadow-sm font-bold'
+                        : 'text-slateNavy-400 hover:text-slateNavy-200'
+                    }`}
+                  >
+                    أبيض نقي (الهوية)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleToggleStyle('charcoal')}
+                    className={`px-3 py-1.5 rounded-lg transition-all ${
+                      standStyle === 'charcoal'
+                        ? 'bg-slateNavy-800 text-slateNavy-100 shadow-sm font-bold'
+                        : 'text-slateNavy-400 hover:text-slateNavy-200'
+                    }`}
+                  >
+                    ترويسة فحمية (#313c45)
+                  </button>
+                </div>
+
               </div>
 
-              {/* 3 Steps instructions */}
-              <div className="w-full text-right bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
-                <div className="flex items-start gap-2">
-                  <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
-                  <p className="text-xs text-slate-800 font-semibold leading-relaxed">
-                    <strong>امسح الرمز بكاميرا الهاتف:</strong> لا داعي لتثبيت أي تطبيق أو كتابة اسمك.
-                  </p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
-                  <p className="text-xs text-slate-800 font-semibold leading-relaxed">
-                    <strong>شاهد دورك والوقت المتبقي:</strong> ستعرف بدقة كم شخص قبلك وساعة دخولك.
-                  </p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="w-5 h-5 rounded-full bg-slate-900 text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
-                  <p className="text-xs text-slate-800 font-semibold leading-relaxed">
-                    <strong>انتظر في أي مكان براحتك:</strong> سيرن هاتفك تلقائياً عندما يتبقى شخصين قبلك لتأتي للقاعة.
-                  </p>
-                </div>
+              {/* Row 2: Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-center gap-2 pt-2 border-t border-slateNavy-850">
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="w-full sm:flex-1 py-2.5 px-4 bg-slateNavy-100 hover:bg-white text-slateNavy-950 font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition shadow-md active:scale-95"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>طباعة / حفظ A4 PDF</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadQr}
+                  className="w-full sm:w-auto py-2.5 px-4 bg-slateNavy-900 hover:bg-slateNavy-850 text-slateNavy-200 border border-slateNavy-800 font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow-sm"
+                >
+                  <Download className="w-4 h-4 text-slateNavy-400" />
+                  <span>تحميل كود QR</span>
+                </button>
               </div>
 
-              <div className="w-full text-center pt-2 text-[11px] text-slate-500 font-medium">
-                نتشرف بخدمتكم دائماً | نرجو التواجد فور استلام التنبيه الصوتي
-              </div>
             </div>
 
-            <div className="text-xs text-slateNavy-400 leading-relaxed">
-              اطبع هذا الملصق وعلقه عند المدخل أو ضعه على طاولة الاستقبال.
+            {/* Scrollable Live A4 Preview Wrapper */}
+            <div className="flex-1 overflow-y-auto p-2 sm:p-4 flex justify-center items-center bg-slateNavy-950/60 rounded-2xl border border-slateNavy-800/60 min-h-[460px]">
+              
+              {/* =========================================================================
+                  ULTRA-MINIMAL LUXURY A4 STAND POSTER (#printable-stand)
+                  Pure White #ffffff | Frameless QR | Apple/Nordic Symmetry (210mm x 297mm)
+                  ========================================================================= */}
+              <div
+                id="printable-stand"
+                className="w-full max-w-[430px] aspect-[210/297] bg-[#ffffff] text-slate-900 shadow-2xl rounded-2xl border border-slate-200/90 p-8 sm:p-12 flex flex-col justify-between items-center text-center transition-all relative overflow-hidden select-none"
+                style={{ backgroundColor: '#ffffff' }}
+              >
+                
+                {/* 1. TOP LOCKUP & OPTIONAL CLINIC LOGO */}
+                {standStyle === 'charcoal' ? (
+                  <div className="w-full bg-[#313c45] text-[#f8fafc] py-5 px-6 rounded-2xl shadow-sm mb-4 flex flex-col items-center justify-center space-y-1">
+                    <div className="flex items-center justify-center gap-5">
+                      {clinicLogo && (
+                        <>
+                          <img
+                            src={clinicLogo}
+                            alt="شعار المؤسسة"
+                            className="h-10 sm:h-12 max-w-[120px] object-contain brightness-0 invert"
+                          />
+                          <div className="h-7 w-[1px] bg-[#778ca4]/50" />
+                        </>
+                      )}
+                      <div className="flex items-center gap-2.5" dir="ltr">
+                        <svg width="42" height="27" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
+                          <path d="M4 4H60V14C56.686 14 54 16.686 54 20C54 23.314 56.686 26 60 26V36H4V26C7.314 26 10 23.314 10 20C10 16.686 7.314 14 4 14V4Z" stroke="#ffffff" strokeWidth="3.5" strokeLinejoin="round" fill="#313c45"/>
+                          <path d="M16 12H36L45 20L36 28H16L22 20L16 12Z" fill="#778ca4" fillOpacity="0.4"/>
+                          <path d="M18 20H40M40 20L32 12.5M40 20L32 27.5" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span className="text-xl sm:text-2xl font-bold tracking-tight">
+                          <span className="text-white">Next</span>
+                          <span style={{ color: '#778ca4' }}>DZ</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full flex items-center justify-center gap-5 pt-2">
+                    {clinicLogo && (
+                      <>
+                        <img
+                          src={clinicLogo}
+                          alt="شعار المؤسسة"
+                          className="h-10 sm:h-12 max-w-[120px] object-contain"
+                        />
+                        <div className="h-7 w-[1px] bg-[#b3bfcb]" />
+                      </>
+                    )}
+                    <div className="flex items-center gap-2.5" dir="ltr">
+                      <svg width="44" height="28" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="NextDZ Queue Ticket Logo">
+                        <path d="M4 4H60V14C56.686 14 54 16.686 54 20C54 23.314 56.686 26 60 26V36H4V26C7.314 26 10 23.314 10 20C10 16.686 7.314 14 4 14V4Z" stroke="#313c45" strokeWidth="3.5" strokeLinejoin="round" fill="#eef1f5"/>
+                        <path d="M16 12H36L45 20L36 28H16L22 20L16 12Z" fill="#778ca4" fillOpacity="0.35"/>
+                        <path d="M18 20H40M40 20L32 12.5M40 20L32 27.5" stroke="#313c45" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span className="text-xl sm:text-2xl font-bold tracking-tight">
+                        <span style={{ color: '#313c45' }}>Next</span>
+                        <span style={{ color: '#778ca4' }}>DZ</span>
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. CLINIC IDENTITY (ORGANIZATION NAME) */}
+                <div className="w-full mt-2 sm:mt-4">
+                  <h2 className="text-2xl font-semibold tracking-normal text-[#4f6271]">
+                    {queueState?.organization.name || org?.name || 'العيادة الطبية'}
+                  </h2>
+                </div>
+
+                {/* 3. MAIN SCAN HEADLINE */}
+                <div className="w-full my-auto py-3 sm:py-5 space-y-2">
+                  <h1 className="text-3xl font-medium tracking-tight text-[#313c45]">
+                    امسح الكود واحجز دورك
+                  </h1>
+                  <p className="text-xs sm:text-sm font-normal text-[#778ca4]">
+                    لا حاجة لتثبيت أي تطبيق • ستصلك رسالة وتنبيه عند اقتراب دورك
+                  </p>
+                </div>
+
+                {/* 4. CENTERPIECE QR CODE (FRAMELESS & HIGH-CONTRAST #0f172a ON #ffffff) */}
+                <div className="flex flex-col items-center justify-center my-auto">
+                  {qrDataUrl ? (
+                    <img
+                      src={qrDataUrl}
+                      alt="رمز QR لحجز التذكرة"
+                      className="w-48 h-48 sm:w-56 sm:h-56 object-contain select-none"
+                    />
+                  ) : (
+                    <div className="w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center text-xs text-[#778ca4]">
+                      جاري إنشاء الرمز بدقة عالية...
+                    </div>
+                  )}
+                  <span className="mt-3 text-[11px] sm:text-xs font-mono font-medium text-[#778ca4] tracking-wider dir-ltr select-all">
+                    smart-queue-system-zeta.vercel.app/q/{slug}
+                  </span>
+                </div>
+
+                {/* 5. BOTTOM FOOTER SLOGAN (QUIET & CENTERED) */}
+                <div className="w-full pt-4 sm:pt-6 border-t border-[#e2e8f0]/90 text-center">
+                  <p className="text-xs sm:text-sm font-normal text-[#4f6271] tracking-wide">
+                    قاعة هادئة، سكرتيرة مرتاحة، زبائن راضون
+                  </p>
+                </div>
+
+              </div>
+
             </div>
 
-            <button
-              onClick={() => window.print()}
-              className="w-full py-3 bg-slateNavy-100 hover:bg-white text-slateNavy-950 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition shadow-lg"
-            >
-              <Printer className="w-4 h-4" />
-              طباعة ملصق الحائط الآن (A4)
-            </button>
           </div>
         </div>
       )}
